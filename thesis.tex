@@ -3,6 +3,8 @@
 \input{global-const.tex}
 \input{header}
 
+\def\thesislang{en}
+
 \makeatletter
 \def\bstctlcite{\@ifnextchar[{\@bstctlcite}{\@bstctlcite[@auxout]}}
 \def\@bstctlcite[#1]#2{\@bsphack
@@ -56,6 +58,12 @@
 }
 {
  % keep at list of listing
+}
+% Set English listing, figures and tables names when thesislang is 'en'
+\IfStrEq{\thesislang}{en}{
+	\renewcommand{\lstlistlistingname}{List of Listings}
+	\renewcommand{\listfigurename}{List of Figures}
+	\renewcommand{\listtablename}{List of Tables}
 }
 
 \tableofcontents
@@ -121,22 +129,27 @@
 \setauthor{Filip Schauer}
 \input{./sections/3_implementation/4_f_extensibility.tex}
 
-\section{Preprocessor [X]}
+\section{Database [X]}
 \setauthor{Axel Csomany}
 \input{./sections/3_implementation/5_x_database.tex}
 
 \newpage
 \pagenumbering{Roman}
 \setcounter{page}{\value{RPages}}
-\input{glossary}
+\input{./glossary.tex}
 %\setlength{\glsdescwidth}{0.8\linewidth}
 \glsnogroupskiptrue
+\glsaddall
 \IfStrEq{\thesislang}{de}
 {
 	\printglossary[title=Glossar,toctitle=Glossar] %,style=long]
 }
 {
 	\printglossary[title=Glossary,toctitle=Glossary] %,style=long]
+}
+\IfStrEq{\thesislang}{en}{
+    \renewcommand{\refname}{References}
+    \renewcommand{\bibname}{References}
 }
 \spacing{1}{
 \IfStrEq{\thesislang}{de}
@@ -146,6 +159,7 @@
 {
 	\bibliographystyle{IEEEtran}
 }
+\nocite{*}
 \bibliography{bib}
 }
 \listoffigures

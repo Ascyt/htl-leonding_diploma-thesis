@@ -46,7 +46,7 @@
 \pagenumbering{Roman}
 \newpage
 \input{oath}
-\input{./sections/abstract}
+\input{./sections/0_abstract.tex}
 
 \pagestyle{plain}
 
@@ -66,29 +66,64 @@
 \pagestyle{scrheadings}
 
 \begin{spacing}{1}
-\chapter{Einleitung}\label{chapter:introduction}
+\chapter{Introduction [X, F]}\label{chapter:introduction}
 \end{spacing}
-\input{./sections/introduction}
+
+\section{Background [X]}
+\setauthor{Axel Csomany}
+\input{./sections/1_introduction/1_x_background.tex}
+
+\section{Initial Problem [X]}
+\setauthor{Axel Csomany}
+\input{./sections/1_introduction/2_x_problem.tex}
+
+\section{Used Technologies [F]}
+\setauthor{Filip Schauer}
+\input{./sections/1_introduction/3_f_technologies.tex}
 
 \begin{spacing}{1}
-\chapter{Umfeldanalyse}
+\chapter{EBNF [A, F]}\label{chapter:ebnf}
 \end{spacing}
-\input{./sections/related_work}
+
+\section{Overview of EBNF [A]}
+\setauthor{Adam Höllerl}
+\input{./sections/2_ebnf/1_a_ebnf-overview.tex}
+
+\section{Approaches to EBNF [A]}
+\setauthor{Adam Höllerl}
+\input{./sections/2_ebnf/2_a_ebnf-approaches.tex}
+
+\section{A Problem with EBNF [F]}
+\setauthor{Filip Schauer}
+\input{./sections/2_ebnf/3_f_ebnf-problem.tex}
+
+\section{Our EBNF [F]}
+\setauthor{Filip Schauer}
+\input{./sections/2_ebnf/4_f_our-ebnf.tex}
 
 \begin{spacing}{1}
-\chapter{Technologien}\label{chapter:tech}
+\chapter{Implementation [A, F, X]}\label{chapter:implementation}
 \end{spacing}
-\input{./sections/technologies}
 
-\begin{spacing}{1}
-\chapter{Umsetzung}\label{chapter:implementation}
-\end{spacing}
-\input{./sections/implementation}
+\section{Preprocessor [A]}
+\setauthor{Adam Höllerl}
+\input{./sections/3_implementation/1_a_preprocessor.tex}
 
-\begin{spacing}{1}
-\chapter{Zusammenfassung}
-\end{spacing}
-\input{./sections/summary}
+\section{Parser [F, A]}
+\setauthor{Filip Schauer, Adam Höllerl}
+\input{./sections/3_implementation/2_fa_parser.tex}
+
+\section{Syntax Highlighting [A]}
+\setauthor{Adam Höllerl}
+\input{./sections/3_implementation/3_a_syntax-highlighting.tex}
+
+\section{Extensibility [F]}
+\setauthor{Filip Schauer}
+\input{./sections/3_implementation/4_f_extensibility.tex}
+
+\section{Preprocessor [X]}
+\setauthor{Axel Csomany}
+\input{./sections/3_implementation/5_x_database.tex}
 
 \newpage
 \pagenumbering{Roman}
@@ -117,7 +152,6 @@
 \listoftables
 \lstlistoflistings
 \appendix
-\addchap{Anhang}
+\addchap{Appendix}
 \input{./sections/appendix}
 \end{document}
-

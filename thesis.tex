@@ -65,7 +65,6 @@
 	\renewcommand{\listfigurename}{List of Figures}
 	\renewcommand{\listtablename}{List of Tables}
 }
-
 \tableofcontents
 \newpage
 \setcounter{RPages}{\value{page}}
@@ -73,63 +72,68 @@
 \pagenumbering{arabic}
 \pagestyle{scrheadings}
 
-\begin{spacing}{1}
-\chapter{Introduction [X, F]}\label{chapter:introduction}
-\end{spacing}
+% ==========================================
+% PART I: INTRODUCTION
+% ==========================================
+\part{Introduction [X, F]}\label{part:introduction}
 
-\section{Background [X]}
+\chapter{Background [X]}\label{chap:background}
 \setauthor{Axel Csomany}
 \input{./sections/1_introduction/1_x_background.tex}
 
-\section{Initial Problem [X]}
+\chapter{Initial Problem [X]}\label{chap:problem}
 \setauthor{Axel Csomany}
 \input{./sections/1_introduction/2_x_problem.tex}
 
-\section{Used Technologies [F]}
+\chapter{Used Technologies [F]}\label{chap:technologies}
 \setauthor{Filip Schauer}
 \input{./sections/1_introduction/3_f_technologies.tex}
 
-\begin{spacing}{1}
-\chapter{EBNF [A, F]}\label{chapter:ebnf}
-\end{spacing}
 
-\section{Overview of EBNF [A]}
+% ==========================================
+% PART II: EBNF
+% ==========================================
+\part{EBNF [A, F]}\label{part:ebnf}
+
+\chapter{Overview of EBNF [A]}\label{chap:ebnf-overview}
 \setauthor{Adam Höllerl}
 \input{./sections/2_ebnf/1_a_ebnf-overview.tex}
 
-\section{Approaches to EBNF [A]}
+\chapter{Approaches to EBNF [A]}\label{chap:ebnf-approaches}
 \setauthor{Adam Höllerl}
 \input{./sections/2_ebnf/2_a_ebnf-approaches.tex}
 
-\section{A Problem with EBNF [F]}
+\chapter{A Problem with EBNF [F]}\label{chap:ebnf-problem}
 \setauthor{Filip Schauer}
 \input{./sections/2_ebnf/3_f_ebnf-problem.tex}
 
-\section{Our EBNF [F]}
+\chapter{Our EBNF [F]}\label{chap:our-ebnf}
 \setauthor{Filip Schauer}
 \input{./sections/2_ebnf/4_f_our-ebnf.tex}
 
-\begin{spacing}{1}
-\chapter{Implementation [A, F, X]}\label{chapter:implementation}
-\end{spacing}
 
-\section{Preprocessor [A]}
+% ==========================================
+% PART III: IMPLEMENTATION
+% ==========================================
+\part{Implementation [A, F, X]}\label{part:implementation}
+
+\chapter{Preprocessor [A]}\label{chap:preprocessor}
 \setauthor{Adam Höllerl}
 \input{./sections/3_implementation/1_a_preprocessor.tex}
 
-\section{Parser [F, A]}
+\chapter{Parser [F, A]}\label{chap:parser}
 \setauthor{Filip Schauer, Adam Höllerl}
 \input{./sections/3_implementation/2_fa_parser.tex}
 
-\section{Syntax Highlighting [A]}
+\chapter{Syntax Highlighting [A]}\label{chap:syntax-highlighting}
 \setauthor{Adam Höllerl}
 \input{./sections/3_implementation/3_a_syntax-highlighting.tex}
 
-\section{Extensibility [F]}
+\chapter{Extensibility [F]}\label{chap:extensibility}
 \setauthor{Filip Schauer}
 \input{./sections/3_implementation/4_f_extensibility.tex}
 
-\section{Database [X]}
+\chapter{Database [X]}\label{chap:database}
 \setauthor{Axel Csomany}
 \input{./sections/3_implementation/5_x_database.tex}
 

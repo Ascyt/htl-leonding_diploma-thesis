@@ -23,7 +23,7 @@ Based on these qualities, various databases types have been developed, each with
 
 \section{Relational Databases}
 
-For the purposes of this project, we will take a closer look at relational databases, as this is the type of database that TestRail uses. 
+For the purpose of this project, we will take a closer look at relational databases, as this is the type of database that TestRail uses. 
 
 \subsection{Structure of Relational Databases}
 
@@ -78,13 +78,35 @@ In order to achieve this, the most important entities and their relationships ha
 
 \subsection{Test Cases}
 
+Test cases can be seen as the most fundamental entity in the TestRail system, as they represent the individual tests that are to be executed. Test cases have a number of attributes, such as a title, description, type and the test steps that need to be executed. Test cases are furthermore linked to test suites and sections. 
+
+\subsection{Projects, Suites and Sections}
+
+Projects are the highest level of organization in TestRail, representing a specific testing effort or initiative. Each project can contain multiple test suites, which are collections of test cases. The test cases of Suites can further be organized into sections, allowing for more specific grouping and categorization. These relationships are an essential part of the database structure that needs to be replicated.
+
 \subsection{Test Runs}
+
+A test run represents a specific execution of test cases. Test runs are linked to test cases and contain information about the execution, such as the status of each case, the tester who executed the run and any relevant comments or other metadata. Test runs make the tracking and management of test executions possible. Importantly, a test run can only be created for test cases that are contained in one singular test suite.
+
+\subsection{Test Plans}
+
+Test plans are used to organize and manage test runs. TestRail allows the user to group multiple test runs into a test plan, which alleviates the need to manage each run individually.
 
 \subsection{Test Results}
 
-\subsection{Projects, Sections and Suites}
+Test results represent the outcome of a test case within a test run. Test results mainly consist of a status, which can contain, but is not limited to:
+
+\begin{itemize}
+    \item Passed
+    \item Failed
+    \item Untested
+    \item Retest
+    \item Blocked
+\end{itemize}
 
 \subsection{Users}
+
+Users represent the individuals who interact with the TestRail system. Users can have different roles and permissions within the system. They can be assigned to test runs, test plans or other entities as creators. With the user entity it is possible to track who is responsible for which run and plan.
 
 \section{The Mockup Database}
 

@@ -53,7 +53,27 @@ Databases that adhere to these properties are considered to be reliable and safe
 
 \subsection{Advantages and Disadvantages of Relational Databases}
 
+One of the main strengths of relational databases is their ability to handle long and complex queries across multiple linked entities with the usage of foreign keys and joins. The consistency and integrity of the data is guaranteed by the ACID properties. On top of that, relational databases are some of the most widely used and well-known types of databases, which means that there are a lot of resources and a large community available for support and development. 
+
+However, relational databases can struggle with scalability and performance when dealing with large volumes of data or high traffic. The fixed schema of relational databases can also be a disadvantage, as it can make it difficult to adapt to changing requirements or to handle unstructured data. Additionally, the execution of complex queries can lead to performance issues on larger datasets.
+
 \section{The TestRail Database}
+
+TestRail is a web-based test management tool that provides a wide range of features for managing and organizing test cases, test runs and test results. The relational database in the background of TestRail is used to store all of the data related to these features. The user can interact with the database directly by using the TestRail API, although the database itself is not directly accessible to the user. 
+
+Thus, for the creation of the mockup database, the structure and functionalities of the TestRail database have to be studied and analyzed based on the API documentation and the structure of its response data. While the mockup database doesn't have to be an exact replica of the TestRail database, the functionalities used by the Script Assembler need to deliver responses with identical structure to ensure the switch between databases can occur without any issues.
+
+In order to achieve this, the most important entities and their relationships have to be identified.
+
+\subsection{Test Cases}
+
+\subsection{Test Runs}
+
+\subsection{Test Results}
+
+\subsection{Projects, Sections and Suites}
+
+\subsection{Users}
 
 \section{The Mockup Database}
 

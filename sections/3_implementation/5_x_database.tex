@@ -23,6 +23,36 @@ Based on these qualities, various databases types have been developed, each with
 
 \section{Relational Databases}
 
+For the purposes of this project, we will take a closer look at relational databases, as this is the type of database that TestRail uses. 
+
+\subsection{Structure of Relational Databases}
+
+Relational databases are based on the relational model, which organizes its data into tables, consisting of rows and columns. Each table represents a specific entity and each row in the table represents an instance of that entity. The columns in the table represent the attributes of the entity. 
+
+Relationships between these entities can be established through the use of keys. A primary key is a unique identifier for each instance of an entity, while a foreign key is a reference to the primary key of another entity. Meaningful relationships between entities can be built with the usage of these keys, allowing complex queries to be executed across multiple linked entities.
+
+\subsection{ACID}
+
+ACID is an acronym that stands for the four key properties of a safe database transaction:
+
+\begin{itemize}
+    \item \textbf{Atomicity:} \\ 
+    Atomicity ensures that a transaction, which is often a sequence of multiple operations, is treated as a single unit. This means that either all operations within a given transaction are executed successfully, or none of them are. If any operation of the transaction fails due to an error, a power outage or any other issue, the entire transaction is rolled back to its previous state before the transaction began. This guarantees that the database remains consistent and prevents data corruption or loss that could occur if only part of the transaction were to be executed.
+    
+    \item \textbf{Consistency:} \\
+    Consistency ensures that the database can only be brought from one valid consistent state to another, while following all defined rules, constraints and triggers. Invalid transactions that violate any of the defined rules are rolled back accordingly, ensuring that the database remains consistent.
+    
+    \item \textbf{Isolation:} \\
+    Isolation ensures that concurrent transactions have no impact on each other. This means that the effects of a transaction in progress are not visible to other transactions until it completes successfully. This prevents a number of issues that would otherwise arise from concurrent transactions, like dirty reads, where one transaction reads data that has been modified by another transaction but not yet fully committed, potentially leading to incorrect results.
+    
+    \item \textbf{Durability:} \\ 
+    Durability ensures that once a transaction has been successfully completed and committed, the state of the database persists even in the case of a crash, power failure or any other issue. 
+\end{itemize}
+
+Databases that adhere to these properties are considered to be reliable and safe for use in critical environments, as they guarantee that the data not only remains consistent, but also that it is not lost or corrupted due to unforseen events. (cf.~\cite{WikipediaACID})
+
+\subsection{Advantages and Disadvantages of Relational Databases}
+
 \section{The TestRail Database}
 
 \section{The Mockup Database}

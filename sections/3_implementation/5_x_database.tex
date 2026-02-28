@@ -29,7 +29,18 @@ For the purposes of this project, we will take a closer look at relational datab
 
 Relational databases are based on the relational model, which organizes its data into tables, consisting of rows and columns. Each table represents a specific entity and each row in the table represents an instance of that entity. The columns in the table represent the attributes of the entity. 
 
-Relationships between these entities can be established through the use of keys. A primary key is a unique identifier for each instance of an entity, while a foreign key is a reference to the primary key of another entity. Meaningful relationships between entities can be built with the usage of these keys, allowing complex queries to be executed across multiple linked entities.
+Relationships between these entities can be established through the use of keys. A primary key is a unique identifier for each instance of an entity, while a foreign key is a reference to the primary key of another entity. Meaningful relationships between entities can be built with the usage of these keys, allowing complex queries to be executed across multiple linked entities. 
+
+Grouping in queries allows for the aggregation of data based on specific attributes, while joins allow for the combination of data from multiple tables based on the established relationships.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.8\textwidth]{pics/simple-erd.png}
+    \caption{Simple Diagram showcasing the relationship between three entities in a relational database.}
+    \label{fig:erd}
+\end{figure}
+
+In the figure \ref{fig:erd} above, we can see a simplified example of a relational database structure. The three entities "Artist", "Label" and "Album" are represented as tables, with their respective attributes as columns. The relationships between the entities are established through the usage of primary and foreign keys, allowing for queries to be executed across multiple linked entities. For example, we can query for all albums by a specific artist or a specific label.
 
 \subsection{ACID}
 

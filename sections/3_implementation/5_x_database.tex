@@ -110,6 +110,22 @@ Users represent the individuals who interact with the TestRail system. Users can
 
 \section{The Mockup Database}
 
+\subsection{PostgreSQL}
+
+For the implementation of the mockup database, PostgreSQL was chosen as the database management system, as it is an open-source database that is not only widely used but also well-known for its reliability and performance. 
+
+PostgreSQL is not only a database management system that the team is familiar with, but it also provides all the necessary features and capabilites needed for the implementation of this part of the project. It supports the relational data model, which is needed for replacing the TestRail database, and it guarantees the reliability and consistency of its data with the ACID properties.
+
+The open-source management tool "pgAdmin" is used for the administration of the PostgreSQL database, as it provides an easily navigable user interface for management, query execution and other administrative tasks.
+
+\subsection{First Approaches}
+
+Early into the development of the database, two main approaches were considered for how the database should interact with the backend of the main system. 
+
+One approach was to create an API that would allow the main system to interact with the database through API calls. This would have resulted in a clear separation between the database and the main system.
+
+The other approach was to work in the preexisting backend to connect to the database directly. This approach was ultimately chosen, as it not only makes the switch between the two databases simpler, but also integrates the functionality of the new database directly into the main system. This approach was further endorsed by the supervisor of the project, as it helps the system to eventually transition away from the TestRail database and towards the new mockup database, which allows for more independence and expandability in the future.
+
 \section{Switching Between Databases}
 
 The switch between the two databases is implemented in a way that allows the user to easily and definitively choose which database should be used at the execution of the python script. This is achieved by using a command line argument that can be passed when executing the script. The argument is then processed and the appropriate database instance is initialized based on if the argument is present or not. 

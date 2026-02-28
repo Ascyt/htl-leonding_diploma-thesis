@@ -78,3 +78,19 @@ In order to achieve this, the most important entities and their relationships ha
 \section{The Mockup Database}
 
 \section{Switching Between Databases}
+
+The switch between the two databases is implemented in a way that allows the user to easily and definitively choose which database should be used at the execution of the python script. This is achieved by using a command line argument that can be passed when executing the script. The argument is then processed and the appropriate database instance is initialized based on if the argument is present or not. 
+
+\begin{verbatim}
+    python ./broker.py
+\end{verbatim}
+
+Here, the standard TestRail database is used, as no argument is passed to the script.
+
+\begin{verbatim}
+    python ./broker.py -db
+    # OR
+    python ./broker.py --database
+\end{verbatim}
+
+Here, the PostgreSQL mockup database is used, as the argument is passed to the script. The argument can either be a short version, or a long verion, as both are processed in the same way and lead to the same result.

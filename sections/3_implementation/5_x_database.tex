@@ -108,9 +108,7 @@ Test results represent the outcome of a test case within a test run. Test result
 
 Users represent the individuals who interact with the TestRail system. Users can have different roles and permissions within the system. They can be assigned to test runs, test plans or other entities as creators. With the user entity it is possible to track who is responsible for which run and plan.
 
-\section{The Mockup Database}
-
-\subsection{PostgreSQL}
+\section{PostgreSQL}
 
 For the implementation of the mockup database, PostgreSQL was chosen as the database management system, as it is an open-source database that is not only widely used but also well-known for its reliability and performance. 
 
@@ -118,13 +116,21 @@ PostgreSQL is not only a database management system that the team is familiar wi
 
 The open-source management tool "pgAdmin" is used for the administration of the PostgreSQL database, as it provides an easily navigable user interface for management, query execution and other administrative tasks.
 
-\subsection{First Approaches}
+\section{First Approaches}
 
 Early into the development of the database, two main approaches were considered for how the database should interact with the backend of the main system. 
 
 One approach was to create an API that would allow the main system to interact with the database through API calls. This would have resulted in a clear separation between the database and the main system.
 
 The other approach was to work in the preexisting backend to connect to the database directly. This approach was ultimately chosen, as it not only makes the switch between the two databases simpler, but also integrates the functionality of the new database directly into the main system. This approach was further endorsed by the supervisor of the project, as it helps the system to eventually transition away from the TestRail database and towards the new mockup database, which allows for more independence and expandability in the future.
+
+The python library "psycopg" is used for the connection between the main system and the PostgreSQL database. This library provides a simple and efficient way to connect to the PostgreSQL database and execute various commands and queries. It also provides support for connection pooling, which can help to improve the performance of the database interactions.
+
+\section{The Mockup Database}
+
+\subsection{Existing TestRail Functionality}
+
+\subsection{DBSession}
 
 \section{Switching Between Databases}
 

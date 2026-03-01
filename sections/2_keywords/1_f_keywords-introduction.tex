@@ -1,0 +1,39 @@
+In programming, a ``keyword'' is a predefined word with a reserved meaning. Keywords can generally not be used for any other purpose, and they make up a programming language's syntax.\cite{keyword}
+
+In our Script Assembler, we use custom keywords in a similar way, although it may be difficult to define whether or not it is useful to refer to our parser's syntax as a ``programming language''. 
+
+In the \gls{trp} project, the Robot Framework provides the primary scripting language that makes up the tests to be run on KeTop devices. 
+
+A Robot file contains so-called ``test cases'', which are blocks commonly made up of a few lines of code.\cite{robot-framework} Despite most parts of the syntax being irrelevant to the Script Assembler's workings, in order to get a feel for the nature of this project it may still be useful to have a look at an example of a Robot script file:
+
+\begin{lstlisting}
+*** Settings ***
+Documentation     A test suite for valid login.
+...
+...               Keywords are imported from the resource file
+Resource          keywords.resource
+Default Tags      positive
+
+*** Test Cases ***
+Login User with Password
+    Connect to Server
+    Login User            ironman    1234567890
+    Verify Valid Login    Tony Stark
+    [Teardown]    Close Server Connection
+
+Denied Login with Wrong Password
+    [Tags]    negative
+    Connect to Server
+    Run Keyword And Expect Error    *Invalid Password    Login User    ironman    123
+    Verify Unauthorised Access
+    [Teardown]    Close Server Connection
+\end{lstlisting}
+\cite{robot-framework}
+
+As is made clear from the example above, some lines may be preceded by whitespace. Since the Robot Framework achieves nesting by having lines be preceded by an integer multiple of exactly four spaces certain lines of code may be syntactically erroneous or interpreted differently when that amount of whitespace is changed.\cite{robot-framework-style-guide} This is an example of a programming convention that in this thesis will be referred to as ``significant indentation''. Python, for instance, works in a similar way, requiring a predefined use of leading whitespace to achieve grouping of statements.\cite{py-indentation}
+
+Despite Robot Framework's general ease of use, proficient support for extensibility, and versatile testing capabilities, the control over the specific execution flow is limited.\cite{robot-framework-pros-cons} In the context of KEBA Group AG, a single KeTop may need to run multiple Robot script files, and a Robot script file may need to be reused for multiple KeTops. However, since it may be required for a test to be made of a single script file, it might be necessary to ``stitch together'', or in other words to concatenate, the contents of multiple Robot script files into one. 
+
+Without Script Assembler, a user may run into issues where they, for instance, would like a certain piece of code to only be included on KeTops satisfing a certain condition like being of a predefined operating system, or for certain pieces of code to be executed at a time that is either before or after the remaining parts, as the Robot Framework may not provide a useful away to achieve the required flow. 
+
+Our project allows for custom keywords, all of which being preceded by the \verb|@| character, to be defined to act as either ``options'' or ``modifiers''. In a provided file, these keywords must be defined at the start of the line, preceded by optional indentation for nesting purposes. 

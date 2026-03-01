@@ -1,5 +1,30 @@
-Just like the \gls{trp} project for which this project aims to provite an extension for, it was mainly written in the Python programming language. Aside from that, other tools have also been used or are otherwise important to be mentioned. The goal of this section is to give a broad overview of each of the technologies that we utilized or otherwise worked with when having written our project. 
+Just like the \gls{trp} project for which this project aims to provite an extension for, it was mainly written in the Python programming language. Aside from that, other tools have also been used or are otherwise important to be mentioned. The goal of this section is to give a broad overview of some of the most important technologies that make up an integral part of our final project. 
 
-\subsection{Python}
+\section{Python}
 
 Python is a high-level, interpreted, dynamically typed object oriented programming language with a focus on allowing programmers to create applications, scripts, or connections between existing programs, quickly.\cite{py-summary}
+
+\subsection{Modules}
+
+Importantly, Python allows for the import of ``modules'', which are essentially files containing Python code which allow for importing functions, classes, or similar, into other Python files.\cite{py-modules-summary} 
+
+While it is possible for modules to be local files, they are also commonly downloaded from the internet using ``package managers''. An commonly used example of a package manager for Python, which is also the only Python package manager used for this project, is known as \verb|pip|.\cite{py-modules-install}
+
+The external modules used in this project include, but are not limited to:
+\begin{itemize}
+    \item \verb|lark|, which allows for parsing of a given piece of text using a custom grammar language which is based on \gls{ebnf}. The core of our parser is built around this library.\cite{py-module-lark}
+    \item \verb|semantic-version|, which is a small library that provides tools to handle ``SemVer''.\cite{py-module-semantic-version} ``SemVer'' stands for ``Semantic Versioning'', and it refers to a scheme that intents to dictate how a software's version number is to be assigned and incremented.\cite{semver}. This library is used to for parsing version strings for our ``\verb|@VERSION| Keyword''.
+    \item \verb|psycopg|, which allows for communication with a ``PostgreSQL'' database.\cite{py-module-psycopg} This library is used for our ``Mockup Database'' system.
+\end{itemize}
+
+\section{Monaco Editor}
+
+The Monaco Editor is a code editor with support for features such as ``IntelliSense'' and ``Syntax Colorization'', which also makes up the core of the commonly used ``VS Code'' application.\cite{monaco-editor}
+
+Our project makes use of its ``Syntax Colorization'' feature, which we instead refer to as ``Syntax Highlighting'' in this thesis. 
+
+\section{PostgreSQL}
+
+PostgreSQL is an ``ACID''-compliant object relational database management system which uses an extended version of the ``SQL'' language.\cite{postgresql}
+
+PostgreSQL was our choice for our ``Mockup Database'' system, which is needed to allow for running our project independently from the proprietary ``TestRail'' test management software.

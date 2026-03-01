@@ -2,6 +2,8 @@ In programming, a ``keyword'' is a predefined word with a reserved meaning. Keyw
 
 In our Script Assembler, we use custom keywords in a similar way, although it may be difficult to define whether or not it is useful to refer to our parser's syntax as a ``programming language''. 
 
+In this chapter, the term ``whitespace'' is defined to refer to any amount of space or tab characters. Here, for convenience, line-breaks are chosen to specifically not fall under said definition.
+
 In the \gls{trp} project, the Robot Framework provides the primary scripting language that makes up the tests to be run on KeTop devices. 
 
 A Robot file contains so-called ``test cases'', which are blocks commonly made up of a few lines of code.\cite{robot-framework} Despite most parts of the syntax being irrelevant to the Script Assembler's workings, in order to get a feel for the nature of this project it may still be useful to have a look at an example of a Robot script file:
@@ -36,4 +38,26 @@ Despite Robot Framework's general ease of use, proficient support for extensibil
 
 Without Script Assembler, a user may run into issues where they, for instance, would like a certain piece of code to only be included on KeTops satisfing a certain condition like being of a predefined operating system, or for certain pieces of code to be executed at a time that is either before or after the remaining parts, as the Robot Framework may not provide a useful away to achieve the required flow. 
 
-Our project allows for custom keywords, all of which being preceded by the \verb|@| character, to be defined to act as either ``options'' or ``modifiers''. In a provided file, these keywords must be defined at the start of the line, preceded by optional indentation for nesting purposes. 
+Our project allows for custom keywords, all of which being preceded by the \verb|@| character, to be defined to act as either ``options'' or ``modifiers''. In a provided file, these keywords must be defined at the start of the line, optionally preceded by indentation for nesting purposes. Lines containing such valid keywords will not be included in the concatenated output file. 
+
+Each of the keywords, no matter if option or modifier, may be defined to either have no arguments, or have optional or required arguments. If set, these arguments may then consist of any sequence of characters without line-breaks that is prefixed by the keyword with at least one whitespace inbetween. 
+
+The difference between options and modifiers lies in that options do not include ``body text'', while modifiers do. ``Body text'' is defined to be made up of all lines of text that, when read from top to bottom, succeed the line of the keyword, up until and not including the first line that is found that does not include at least one additional level of indentation than that of the line of the keyword, or up until the end of the file, ignoring all lines that are either empty or are solely made of whitespace. A level of indentation is defined to be made up of either four spaces or one tab character. 
+
+To make up for the extra level of indentation used to define the span of the body text, the parsed body text will be stripped of that one line of indentation. 
+
+For instance, take the following code snippet, which includes the option \verb|@NO_KETOP|, which takes no argumetns:
+
+\begin{lstlisting}
+@NO_KETOP
+Install MS
+\end{lstlisting}
+
+When the line containing \verb|@NO_KETOP| is encountered, the \verb|no_ketop| flag, for which the concrete behaviour is explained in the following chapter, is enabled for the output script. Since that specific line will not be included in the output script, assuming the snippet above to be the only input to the parser, the output file may look like the following:
+
+\begin{lstlisting}
+Install MS
+\end{lstlisting}
+
+todo: example modifier
+todo: recursion example and explanation

@@ -1,4 +1,4 @@
-Just like the \gls{trp} project for which this project aims to provite an extension for, it was mainly written in the Python programming language. Aside from that, other tools have also been used or are otherwise important to be mentioned. The goal of this section is to give a broad overview of some of the most important technologies that make up an integral part of our final project. 
+Just like the \gls{trp} project for which this project aims to provite an extension for, it was mainly written in the Python programming language. Aside from that, other tools have also been used or are otherwise important to be mentioned. The goal of this section is to give a broad overview of some of the most important technologies that each make up an integral part of our final project. 
 
 \section{Python}
 
@@ -16,6 +16,12 @@ The external modules used in this project include, but are not limited to:
     \item \verb|semantic-version|, which is a small library that provides tools to handle ``SemVer''.\cite{py-module-semantic-version} ``SemVer'' stands for ``Semantic Versioning'', and it refers to a scheme that intents to dictate how a software's version number is to be assigned and incremented.\cite{semver}. This library is used to for parsing version strings for our ``\verb|@VERSION| Keyword''.
     \item \verb|psycopg|, which allows for communication with a ``PostgreSQL'' database.\cite{py-module-psycopg} This library is used for our ``Mockup Database'' system.
 \end{itemize}
+
+\section{Robot Framework}
+
+Robot Framework is a framework for test automation. It allows for defining so-called ``Test Suites'', which are files ending in \verb|.robot| and may contain any amount of test cases.\cite{robot-framework} 
+
+In the context of KEBA Group AG, Robot Framework is used to execute various test cases on KeTop devices. However, since our parser only acts as a preprocessor to robot script files, treating them as arbitrary text to be either included, excluded, and/or moved to different positions depending on the defined keywords and context, Robot Framework's actual syntax is, for the purposes of our project, irrelevant. Exceptions to this include the question of which characters of a standard ``ASCII'' format are syntactially relevant, and its use of ``significant indentation''. 
 
 \section{Monaco Editor}
 

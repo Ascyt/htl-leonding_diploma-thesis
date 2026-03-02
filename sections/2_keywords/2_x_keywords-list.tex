@@ -97,4 +97,27 @@ Where:
 
 When one or multiple test scripts containing a PREAMBLE modifier keyword is being run together with other test scripts, the body of the PREAMBLE keyword will be run before the content of all other test scripts, including lines in the body of a BRACKETSTART modifier. In the case of multiple PREAMBLE modifiers being present in the batch of test scripts, the bodies will be run in the order of their specified index.
 
-The PREAMBLE modifier can be used to write scripts that test certain installation processes and their successful completion before the rest of the test scripts are run. 
+The PREAMBLE modifier can be used to write scripts that test certain installation processes and their successful completion before the rest of the test scripts are run.
+
+\section{Visual Example}
+
+Consider the following diagram:
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.35\textwidth]{pics/script-order.png}
+    \caption{Simple Diagram depicting the order scripts with a certain modifier keyword are run in.}
+    \label{fig:script-order}
+\end{figure}
+
+Here, we can see how some specific test scripts are arranged in the final script.
+
+\begin{enumerate}
+    \item The bodies of the PREAMBLE modifiers are ordered first if present. In the case of multiple PREAMBLE scripts being present, the specified index is used to order them accordingly. As seen in the diagram, leaving out certain indices doesn't lead to any issues, the ordering occurs as intended.
+    
+    \item The bodies of the BRACKETSTART modifiers are ordered next if present. In the case of multiple BRACKETSTART scripts being present, the order they appear in the batch is maintained.
+    
+    \item At this point, the content of all test scripts not containing any order-modifying keywords are placed. Their order is determined by the order they appear in the batch.
+    
+    \item Lastly, the bodies of the BRACKETEND modifiers are ordered if present. In the case of multiple BRACKETEND scripts being present, they follow the same principle as the BRACKETSTART modifiers, meaning that the order they appear in the batch is maintained.
+\end{enumerate}

@@ -136,7 +136,12 @@ The existing funtionalities concerning the TestRail connection is contained with
 
 The communication with the TestRail database is achieved through the usage of the TestRail API, which provides all necessary reading and writing functionalities.
 
-XTODO: screenshot of one certain function
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.95\textwidth]{pics/trsession-get-case-title.png}
+    \caption{Code snippet of the get\_case\_title function within the TRSession class.}
+    \label{fig:tr-function}
+\end{figure}
 
 XTODO: explaination of said function
 
@@ -144,7 +149,12 @@ XTODO: explaination of said function
 
 The DBSession class is designed to replicate all used functionalities of the exisitng TRSession class, while replacing the communication with the TestRail API with a direct connection to the PostgreSQL database, using the "psycopg" python library. It is strictly necessary that the functions of the DBSession have the same name, parameters and return values as the functions of the TRSession class, in order to avoid major conflicts when switching between the two database connections.
 
-XTODO: screenshot of the DBSession version of the function shown before
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.95\textwidth]{pics/dbsession-get-case-title.png}
+    \caption{Code snippet of the get\_case\_title function within the DBSession class.}
+    \label{fig:db-function}
+\end{figure}
 
 XTODO: explaination of differences 
 

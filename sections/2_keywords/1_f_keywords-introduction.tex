@@ -4,6 +4,8 @@ In our Script Assembler, we use custom keywords in a similar way, although it ma
 
 In this chapter, the term ``whitespace'' is defined to refer to any amount of space or tab characters. Here, for convenience, line-breaks are chosen to specifically not fall under said definition.
 
+\section{Robot files}
+
 In the \gls{trp} project, the Robot Framework provides the primary scripting language that makes up the tests to be run on KeTop devices. 
 
 A Robot file contains so-called ``test cases'', which are blocks commonly made up of a few lines of code.\cite{robot-framework} Despite most parts of the syntax being irrelevant to the Script Assembler's workings, in order to get a feel for the nature of this project it may still be useful to have a look at an example of a Robot script file:
@@ -37,6 +39,8 @@ Despite Robot Framework's general ease of use, proficient support for extensibil
 
 Without Script Assembler, a user may run into issues where they, for instance, would like a certain piece of code to only be included on KeTops satisfing a certain condition like being of a predefined operating system, or for certain pieces of code to be executed at a time that is either before or after the remaining parts, as the Robot Framework may not provide a useful away to achieve the required flow. 
 
+\section{What Keywords Are}
+
 Our project allows for custom keywords, all of which being preceded by the \verb|@| character, to be defined to act as either ``options'' or ``modifiers''. In a provided file, these keywords must be defined at the start of the line, optionally preceded by indentation for nesting purposes. Lines containing such valid keywords will not be included in the concatenated output file. 
 
 Each of the keywords, no matter if option or modifier, may be defined to either have no arguments, or have optional or required arguments. If set, these arguments may then consist of any sequence of characters without line-breaks that is prefixed by the keyword with at least one whitespace inbetween. 
@@ -44,6 +48,10 @@ Each of the keywords, no matter if option or modifier, may be defined to either 
 The difference between options and modifiers lies in that options do not include ``body text'', while modifiers do. ``Body text'' is defined to be made up of all lines of text that, when read from top to bottom, succeed the line of the keyword, up until and not including the first line that is found that does not include at least one additional level of indentation than that of the line of the keyword, or up until the end of the file, ignoring all lines that are either empty or are solely made of whitespace. A level of indentation is defined to be made up of either four spaces or one tab character. 
 
 To make up for the extra level of indentation used to define the span of the body text, the parsed body text will be stripped of that one line of indentation. Non-keyword lines, and lines that do not belong to the block body of a modifier will simply be ignored by the Script Assembler and will thus be appended into the output Robot file as-is. This means that, if the provided file does not contain anything that may be matched as a keyword, which, in the case of a valid Robot file, may only be the case in rare exceptions, as the \verb|@| character is generally not utilized in Robot files that are to be executed on a KeTop.
+
+\section{Examples}
+
+\subsection{Options}
 
 For instance, take the following code snippet, which includes the option \verb|@NO_KETOP|, which takes no argumetns:
 
@@ -57,6 +65,8 @@ When the line containing \verb|@NO_KETOP| is encountered, the \verb|no_ketop| fl
 \begin{lstlisting}
 Install MS
 \end{lstlisting}
+
+\subsection{Modifiers}
 
 Another example is using the modifier \verb|@VERSION|:
 
@@ -88,6 +98,8 @@ Execute on Ketop    echo A
 Execute on Ketop    echo C
 \end{lstlisting}
 
+\section{Recursion}
+
 Keywords may also be defined recursively. Recursion is generally defined as being ``the process in which a function calls itself directly or indirectly''\cite{recursion}. In the case of Script Assembler, it refers to the fact that block bodies of modifiers may also include modifiers, of which the block bodies may then also include modifiers, and so forth. To show this possibility, consider the following example:
 
 \begin{lstlisting}
@@ -106,6 +118,8 @@ Upload Script To KeTop    E2Speed.ps1
 \end{lstlisting}
 
 in the case of both of the conditions from the respective specifications of the \verb|@OS| and \verb|@VERSION| keywords and with each of their respective arguments being met. Otherwise, the ``bracket start'' of the output file will be empty. 
+
+\section{Concatenation and Output}
 
 In general, the files get concatenated in the same order that they are given, unless keywords that change that predefined flow are used. Then, to assure the final output Robot file is valid and executable on a KeTop, the following template code will be appended before the output from the entire parsing and concatenation operations:
 

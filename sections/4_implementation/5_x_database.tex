@@ -126,7 +126,7 @@ The other approach was to work in the preexisting backend to connect to the data
 
 The python library "psycopg" is used for the connection between the main system and the PostgreSQL database. This library provides a simple and efficient way to connect to the PostgreSQL database and execute various commands and queries. It also provides support for connection pooling, which can help to improve the performance of the database interactions.
 
-\section{The Mockup Database}
+\section{Database Connections in the System}
 
 The following section aims to give a brief look into the structure and functionalities of not only the existing TestRail database connection, but also the new PostgreSQL mockup database. The goal is to show how the new database is designed to replicate the implementations of the TestRail connection, while also highlighting clear differences on a technical level.
 
@@ -141,6 +141,12 @@ XTODO: screenshot of one certain function
 XTODO: explaination of said function
 
 \subsection{DBSession}
+
+The DBSession class is designed to replicate all used functionalities of the exisitng TRSession class, while replacing the communication with the TestRail API with a direct connection to the PostgreSQL database, using the "psycopg" python library. It is strictly necessary that the functions of the DBSession have the same name, parameters and return values as the functions of the TRSession class, in order to avoid major conflicts when switching between the two database connections.
+
+XTODO: screenshot of the DBSession version of the function shown before
+
+XTODO: explaination of differences 
 
 \section{Integration of the DBSession Class}
 
@@ -167,3 +173,11 @@ Here, the standard TestRail database is used, as no argument is passed to the sc
 \end{verbatim}
 
 Here, the PostgreSQL mockup database is used, as the argument is passed to the script. The argument can either be a short version, or a long verion, as both are processed in the same way and lead to the same result.
+
+\section{The PostgreSQL Database}
+
+\section{Potential Future Steps}
+
+\subsection{Easier Creation of Test Cases}
+
+\subsection{Encryption}

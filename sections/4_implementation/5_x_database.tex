@@ -194,4 +194,14 @@ Here, the PostgreSQL mockup database is used, as the argument is passed to the s
 
 \subsection{Easier Creation of Test Cases}
 
+TestRail provides a functionality for the creation of test cases through the API, as well as through their user interface. This makes the creation of new test cases in the database an easy task, especially with the user interface, as the user can efficiently create new test cases and other entities without having to worry about the structure of the database itself.
+
+Currently, the creation of test cases in the PostgreSQL database is done manually by either executing SQL queries manually or by making use of the pgAdmin user interface. This is not only time-consuming, but also prone to errors, as the user has to ensure that all necessary attributes of the test case are filled in correctly and that the relationships between entities are established properly.
+
+A potential future step to fix this issue would be to create a user interface that allows for the easier creation of test cases and other entities in the database. This system could either be a separate application that interacts with the database on its own, or it could be integrated into the existing system. 
+
 \subsection{Encryption}
+
+For convenience and ease of use, the users of the PostgreSQL database currently have their credentials stored in plain text within their respective columns in the database. While this is not an issue for the mockup database, as it is only used for testing purposes, if the PostgreSQL database approach is to be used in the future as a replacement for the TestRail database, it would be necessary to implement a system for encrypting the credentials of all users, in order to ensure the security of the database and the data it contains. 
+
+This could be achieved by using a hashing algorithm to hash the passwords before storing them in the database, and then comparing the hashed password with the stored hash when a user attempts to log in. This would ensure that actual passwords cannot be retrieved from the database, even if the database is compromised.

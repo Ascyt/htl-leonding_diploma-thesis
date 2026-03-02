@@ -125,7 +125,7 @@ The open-source management tool "pgAdmin" is used for the administration of the 
     \label{fig:pgadmin-interface}
 \end{figure}
 
-The current version of pgAdmin, which is pgAdmin 4, provides a wide range of features for managing and administering PostgreSQL databases, some of which include but are not limited to the following:
+The current version of pgAdmin, which is pgAdmin 4, provides a wide range of features for managing and administering PostgreSQL databases, some of which include but are not limited to the following: (cf.~\cite{pgAdminInterface})
 
 \begin{itemize}
     \item \textbf{SQL query tool:} \\
@@ -190,6 +190,13 @@ Since the DBSession class replicates all essential functions of the TRSession cl
 
 Any occurrence of the TRSession class within the backend of the system is now denoted as a TRSession or DBSession, using a pipe symbol. This means that at system startup, the appropriate session class has to be identified and initialized accordingly. 
 
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.95\textwidth]{pics/trsession-or-dbsession.png}
+    \caption{Code snippet showcasing a function that takes a parameter that can be either a TRSession or a DBSession.}
+    \label{fig:tr-or-db}
+\end{figure}
+
 This way, the TRSession functionalities remain unaltered, while the possibility of using the DBSession is a new feature that can be easily switched on or off.
 
 \subsection{Switching Between Databases}
@@ -212,7 +219,11 @@ Here, the PostgreSQL mockup database is used, as the argument is passed to the s
 
 \section{The PostgreSQL Database}
 
-\section{Potential Future Steps}
+Since the structure of the TestRail database is not publicly available, the structure of the PostgreSQL mockup database is based on the structure of the response data the TestRail API provides. All entities contain their respective attributes, as well as keys that establish the relationships between the different entities.
+
+It is important to note that the relationships between entities are not made with the usage of foreign keys, as the logic for the relationships is implemented in the backend of the system, and the database is only used for storing data. While this is not the most efficient way to implement the relationships between entities, as a mockup database, it is sufficient for the purpose of this project. Despite that, in section \ref{sec:potential-future-steps}, potential future steps are discussed, one of which is the implementation of proper relationships between entities with the usage of foreign keys.
+
+\section{Potential Future Steps} \label{sec:potential-future-steps}
 
 \subsection{Easier Creation of Test Cases}
 
@@ -227,3 +238,9 @@ A potential future step to fix this issue would be to create a user interface th
 For convenience and ease of use, the users of the PostgreSQL database currently have their credentials stored in plain text within their respective columns in the database. While this is not an issue for the mockup database, as it is only used for testing purposes, if the PostgreSQL database approach is to be used in the future as a replacement for the TestRail database, it would be necessary to implement a system for encrypting the credentials of all users, in order to ensure the security of the database and the data it contains. 
 
 This could be achieved by using a hashing algorithm to hash the passwords before storing them in the database, and then comparing the hashed password with the stored hash when a user attempts to log in. This would ensure that actual passwords cannot be retrieved from the database, even if the database is compromised.
+
+\subsection{Implementation of Proper Relationships}
+
+As mentioned in the previous section, the relationships between entities in the PostgreSQL database are not implemented with the usage of foreign keys, but rather with the usage of keys that are processed in the backend of the system. This is not the most efficient way to implement relationships, as it can lead to issues with data integrity, as well as performance issues when executing queries that involve multiple linked tables.
+
+The logical next step to improve the implementation of the database would be to implement proper relationships between entities with the correct usage of foreign keys. 

@@ -1,0 +1,93 @@
+\section{Requirements}
+
+When creating new formal grammar, one quickly is confronted with a common problem in software development. On one side, you want a clean design, but on the other there is this old legacy system at the company that everyone is used to. For the development of the Script Assembler, this means that it must not only be able to process multi-line structures correctly, but also that the legacy system used at KEBA must continue to function with the new formal grammar, and unfortunately, backward compatibility is a must-have.
+
+The legacy system used before the Script Assembler is a simple preprocessing system, that was based on basic string matching. This solution uses markers that start with an \texttt{@} sign. Those were already existant:
+\begin{itemize}
+    \item \textbf{\texttt{@BRACKETSTART}, \texttt{@BRACKETEND}:} These strings marked sections of code. The system just checked if a line exactly matched these strings to know if the following Robot Framework code should be appended at the beginning or the end of the final script.
+    \item \textbf{\texttt{@NO\_KETOP}:} This was a global option that meant a KeTop device was not needed for the test. It could be written anywhere in the file, and the script just searched the whole document for it without looking at the context.
+\end{itemize}
+
+This solution checked if a specific string was present inside a file or a line and did not use a formal parser. This worked fine for isolated, simple use cases, but not with complex, context-sensitive multi-line structures or dynamic block delineations. Without a parser, the hardcoded logic simply becomes an unmaintainable mess over time.
+
+For this reason, designing the new formal grammar became hard to manage, because three major restrictions had to be taken into account, as clarified in the first meetings by KEBA:
+\begin{itemize}
+    \item \textbf{Deterministic Parsing:} The system needs strict, unambiguous rules to cleanly differentiate syntactic constructs and reliably deal with multi-line scopes. 
+    \item \textbf{Backward Compatibility:} It was a strict requirement that the old legacy scripts kept working exactly like before. The functionality had to be preserved. A disruption of the established workflow for the testing team was not an acceptable option.
+    \item \textbf{Future Extensibility:} The system must be very robust, because it was stated, that new custom annotations and hardware-specific conditions will definitely be added in the future. A complete rewrite of the parser for every new feature would simply not be an option.
+.
+\end{itemize}
+The testing team at KEBA was already deeply familiar with the \texttt{@} prefix. Early design discussions brought up the idea to introduce distinct prefixes to simplify the parsing. The suggestion was to introduce \texttt{\#} for global options, and \texttt{\&} for block statements. The idea was, that the tokenization process would become significantly easier and more accurate this way. The evaluation feedback then showed the problem that the distinct prefixes break all existing test suites. A complete disruption of the developers workflow would be the result.
+
+ This created a conflict. A new parser is strictly necessary, but the legacy \texttt{@} prefix and the overall backward compatibility must still remain intact. This exact conflict dominated the first design phase and brought following solution. Though the strictness of the ``Backward Compatibilty'' restriction was not as clear at that point.
+ To establish a good understanding of the available options and technical trade-offs, two contrasting EBNF approaches were modeled. The evaluation happened before the final syntax design was established.
+
+
+\section{Minimal EBNF Approach}
+
+One of the two strategies explored was the minimal EBNF approach. The idea behind this specific design was to capture the general script structure as broadly as possible. Theoretically, this offers maximum flexibility and makes future extensions very easy.
+
+Listing \ref{lst:minimal_ebnf} demonstrates this broad structural definition. The grammar does not strictly define every possible keyword. Instead, it simply distinguishes between standard Robot Framework lines, single-line operators, and multi-line operators. 
+
+
+\begin{lstlisting}[caption={The Minimal EBNF grammar}, label={lst:minimal_ebnf}]
+script = {line, nl}, [line].
+line = robot | operator | multiline_operator.
+robot = ? robot code line ?.
+operator = '@', word, { ws, argument }.
+multiline_operator = operator, [nl], '{' { robot, nl } '}'.
+nl = "\n".
+ws = " " | "\t".
+argument = ? some argument for example comparison operators or strings ?.
+\end{lstlisting}
+
+\subsection{Problems of the Minimal Approach}
+
+While the parser implementation stays lightweight and adaptable with this approach, there is a blind spot and it completely fails at validating the actual code structure:
+\begin{enumerate}
+    \item \textbf{Unresolved Ambiguities:} The grammar failed to strictly define and categorize specific keywords. It could not differentate between standalone options (e.g., \texttt{@NO\_KETOP}) and block-defining modifiers (e.g., \texttt{@VERSION}). The parser was basically blind to the meaning of the words and no correct validation was possible.
+    \item \textbf{Scope Definition Conflicts:} A critical issue emerged during the following design phases when indentation was chosen over explicit brackets (e.g., \texttt{\{} and \texttt{\}}) as the primary method for defining scopes. The minimal grammar was just defined too loosely for it to be able to differentiate between either an option that has a body despite it not being allowed to (e.g., developer misinterpreting functionality). The parser was not able to detect the syntax error and invalid code might pass through.
+\end{enumerate}
+
+
+\section{Detailed EBNF Approach}
+
+While the Minimal Approach explored maximum flexibility, a completely different and rather strict grammar was developed. This EBNF approach uses clear rules and a strict separation of all constructs. The main goal was a much better parsing clarity.
+
+As shown in Listing \ref{lst:detailed_ebnf},  this iteration uses distinct prefixes for different types of constructs. It also introduces explicit termination symbols to make the structure clear.
+
+\begin{lstlisting}[caption={The Detailed EBNF grammar}, label={lst:detailed_ebnf}]
+S = { ' ' | '\t' } ;
+robot_line = S , ?robot_script_line? , S ;
+option_line = S , '#' , S , option , S ;
+statement_line = S , '&' ,  S , statement , '\n' , { line , '\n' } , S , '&/' , S , '\n' ;
+line = robot_line | statement_line | S ;
+script = { option_line , '\n' } , ( ( { line , '\n' } , [line] ) | [option_line] ) ;
+
+statement = version ;
+option = "NO_KETOP" ;
+section = "BRACKETSTART" | "BRACKETEND" ;
+
+version = "VERSION" , S , ( '>' | '<' | '=' | '>=' | '<=' ) , S , ?version_number? ;
+\end{lstlisting}
+
+
+Looking closer at the code, on can see, that in this specific design, \texttt{\#} was introduced for global options, and \texttt{\&} was utilized for statements, which were explicitly terminated by \texttt{\&/}. Since this approach was never fully completed \texttt{@} was not used yet, but the idea was to use it only for sections. The grammar also checks the expected arguments very strictly. For instance, the \texttt{VERSION} statement forces the user to use mathematical comparison operators and a specific version number format (line 12).
+
+\subsection{Problems of the Detailed Approach}
+
+This approach was very precise and stable. Unfortunately, there were two severe drawbacks that made it unusable for the final product:
+\begin{enumerate}
+    \item \textbf{Loss of Backward Compatibility:} The introduction of \texttt{\#} and \texttt{\&} caused problems with the existing \texttt{@} prefix used by the existing option. Changing all the old code was not an option. Furthermore it seemed more intuitive to just have one prefix for all types.
+    \item \textbf{Excessive Rigidity:} The rules for how an argument must look are too strict. For example, the forced mathematical operators in the \texttt{version} rule make the grammar very rigid. This means every time a new modifier is added with new arguments, the EBNF has to be updated to match the arguments exactly. This made the Script Assembler harder to extend.
+\end{enumerate}
+
+\section{Conclusion}
+
+Testing these two different approaches provided important details for the final EBNF. The Minimal Approach showed the possible dangers of structural ambiguity. It is clear that the parser needs to ``understand'' the difference between a standalone option and a block-defining modifier. On the other hand, the Detailed Approach proved that excessive rigidity is also not completely perfect. Making the parsing process too easy for the machine just makes extending unneccessary hard.
+
+The conclusion from this evaluation phase was that the final grammar definitely needed a hybrid design to work. On the inside, it requires the precision of the Detailed Approach, which  means in detail that all keywords must be strictly defined and categorized internally so the parser can recognize valid scopes and modifiers correct. But at the same time, is still has to keep the same look and the backward compatibility of the old legacy approach by using the \texttt{@} prefix, everywhere, while also making the argument structure much more relaxed to make it easier to add extensions later on.
+
+The idea of explicit termination symbols like \texttt{\&/} was completely dropped in favor of indentation-based scoping, and the old ``sections'' were just changed into standard modifiers.
+
+The combination of all these different requirements finally leads to the final functional grammar used in Script Assembler.

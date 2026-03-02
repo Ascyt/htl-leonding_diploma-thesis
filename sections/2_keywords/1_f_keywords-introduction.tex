@@ -29,8 +29,7 @@ Denied Login with Wrong Password
     Run Keyword And Expect Error    *Invalid Password    Login User    ironman    123
     Verify Unauthorised Access
     [Teardown]    Close Server Connection
-\end{lstlisting}
-\cite{robot-framework}
+\end{lstlisting}~\cite{robot-framework}
 
 As is made clear from the example above, some lines may be preceded by whitespace. Since the Robot Framework achieves nesting by having lines be preceded by an integer multiple of exactly four spaces certain lines of code may be syntactically erroneous or interpreted differently when that amount of whitespace is changed.\cite{robot-framework-style-guide} This is an example of a programming convention that in this thesis will be referred to as ``significant indentation''. Python, for instance, works in a similar way, requiring a predefined use of leading whitespace to achieve grouping of statements.\cite{py-indentation}
 
@@ -44,7 +43,7 @@ Each of the keywords, no matter if option or modifier, may be defined to either 
 
 The difference between options and modifiers lies in that options do not include ``body text'', while modifiers do. ``Body text'' is defined to be made up of all lines of text that, when read from top to bottom, succeed the line of the keyword, up until and not including the first line that is found that does not include at least one additional level of indentation than that of the line of the keyword, or up until the end of the file, ignoring all lines that are either empty or are solely made of whitespace. A level of indentation is defined to be made up of either four spaces or one tab character. 
 
-To make up for the extra level of indentation used to define the span of the body text, the parsed body text will be stripped of that one line of indentation. 
+To make up for the extra level of indentation used to define the span of the body text, the parsed body text will be stripped of that one line of indentation. Non-keyword lines, and lines that do not belong to the block body of a modifier will simply be ignored by the Script Assembler and will thus be appended into the output Robot file as-is. This means that, if the provided file does not contain anything that may be matched as a keyword, which, in the case of a valid Robot file, may only be the case in rare exceptions, as the \verb|@| character is generally not utilized in Robot files that are to be executed on a KeTop.
 
 For instance, take the following code snippet, which includes the option \verb|@NO_KETOP|, which takes no argumetns:
 
@@ -59,5 +58,69 @@ When the line containing \verb|@NO_KETOP| is encountered, the \verb|no_ketop| fl
 Install MS
 \end{lstlisting}
 
-todo: example modifier
-todo: recursion example and explanation
+Another example is using the modifier \verb|@VERSION|:
+
+\begin{lstlisting}
+Execute on Ketop    echo A
+@VERSION BIOS > 1.0.1
+    IF    ${SINGLE_MODE} is $False
+        Execute on Ketop    echo B
+    END
+Execute on Ketop    echo C
+\end{lstlisting}
+
+Here, the line two, which is made up of \verb|@VERSION BIOS > 1.0.1|, represents a boolean condition relating to the version of the KeTop device. The block body of this condition is made up by the lines three to five. According to the specification of the \verb|@VERSION| keyword, that block body will be included only if the condition stated in its argument is satisfied. 
+
+This means that, again assuming the snippet above to be the only input to the parser, if the condition \verb|BIOS > 1.0.1| is satisfied, the output may look like the following:
+
+\begin{lstlisting}
+Execute on Ketop    echo A
+IF    ${SINGLE_MODE} is $False
+    Execute on Ketop    echo B
+END
+Execute on Ketop    echo C
+\end{lstlisting}
+
+Note the removal of one level of indentation of what used to be the block body. If, instead, the case of the condition is not satisfied, the output may instead be:
+
+\begin{lstlisting}
+Execute on Ketop    echo A
+Execute on Ketop    echo C
+\end{lstlisting}
+
+Keywords may also be defined recursively. Recursion is generally defined as being ``the process in which a function calls itself directly or indirectly''\cite{recursion}. In the case of Script Assembler, it refers to the fact that block bodies of modifiers may also include modifiers, of which the block bodies may then also include modifiers, and so forth. To show this possibility, consider the following example:
+
+\begin{lstlisting}
+@BRACKETSTART
+    @OS WIN10
+        @VERSION BIOS >= 1.7.0
+            Upload Script To KeTop    E2Speed.ps1
+\end{lstlisting}
+
+Here, the block body of \verb|@BRACKETSTART| is made up of lines two to four, of which the block body of \verb|@OS| is made up of lines three and four, of which the block body of \verb|@VERSION| is made up of line four. Despite the order of ``which blocks are nested inside which'' not making a difference with how all existing modifiers are specified, in general, the parser will interpret this from the outside to the innermost level of nesting, similar to how nesting is handled by most ordinary programming languages. 
+
+This means that, if the above snippet is the only input file that contains the \verb|@bRACKETSTART| keyword, given how that keyword is specified, the part of the output script that is the so-called ``bracket start'' will be:
+
+\begin{lstlisting}
+Upload Script To KeTop    E2Speed.ps1
+\end{lstlisting}
+
+in the case of both of the conditions from the respective specifications of the \verb|@OS| and \verb|@VERSION| keywords and with each of their respective arguments being met. Otherwise, the ``bracket start'' of the output file will be empty. 
+
+In general, the files get concatenated in the same order that they are given, unless keywords that change that predefined flow are used. Then, to assure the final output Robot file is valid and executable on a KeTop, the following template code will be appended before the output from the entire parsing and concatenation operations:
+
+\begin{lstlisting}
+# Template file for HMI Automation
+*** Settings ***
+Resource          ../../../Robot/Resources/keywords.resource
+Resource          ../../../Robot/Resources/variables.resource
+Suite Setup       KeTop Suite Setup
+Suite Teardown    KeTop Suite Teardown
+Test Setup        KeTop Test Setup
+Test Teardown     KeTop Test Teardown
+
+*** Test Cases ***
+# Here the test cases are inserted
+\end{lstlisting}
+
+Finally, the resulting code will be written to a file which will then be further handled to be run either locally or on a KeTop. 

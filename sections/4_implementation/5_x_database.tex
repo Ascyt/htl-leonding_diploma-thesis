@@ -40,7 +40,7 @@ Grouping in queries allows for the aggregation of data based on specific attribu
     \label{fig:erd}
 \end{figure}
 
-In the figure \ref{fig:erd} above, we can see a simplified example of a relational database structure. The three entities "Artist", "Label" and "Album" are represented as tables, with their respective attributes as columns. The relationships between the entities are established through the usage of primary and foreign keys, allowing for queries to be executed across multiple linked entities. For example, we can query for all albums by a specific artist or a specific label.
+In figure \ref{fig:erd}, we can see a simplified example of a relational database structure. The three entities "Artist", "Label" and "Album" are represented as tables, with their respective attributes as columns. The relationships between the entities are established through the usage of primary and foreign keys, allowing for queries to be executed across multiple linked entities. For example, we can query for all albums by a specific artist or a specific label.
 
 \subsection{ACID}
 
@@ -128,11 +128,29 @@ The python library "psycopg" is used for the connection between the main system 
 
 \section{The Mockup Database}
 
+The following section aims to give a brief look into the structure and functionalities of not only the existing TestRail database connection, but also the new PostgreSQL mockup database. The goal is to show how the new database is designed to replicate the implementations of the TestRail connection, while also highlighting clear differences on a technical level.
+
 \subsection{Existing TestRail Functionality}
+
+The existing funtionalities concerning the TestRail connection is contained within the TRSession class, which is responsible for all interactions with the database. This class contains functions for retrieving and creating test cases, runs, plans and results, as well as other relevant data. 
+
+The communication with the TestRail database is achieved through the usage of the TestRail API, which provides all necessary reading and writing functionalities.
+
+XTODO: screenshot of one certain function
+
+XTODO: explaination of said function
 
 \subsection{DBSession}
 
-\section{Switching Between Databases}
+\section{Integration of the DBSession Class}
+
+Since the DBSession class replicates all essential functions of the TRSession class, the switch between database usages can be achieved easily.
+
+Any occurrence of the TRSession class within the backend of the system is now denoted as a TRSession or DBSession, using a pipe symbol. This means that at system startup, the appropriate session class has to be identified and initialized accordingly. 
+
+This way, the TRSession functionalities remain unaltered, while the possibility of using the DBSession is a new feature that can be easily switched on or off.
+
+\subsection{Switching Between Databases}
 
 The switch between the two databases is implemented in a way that allows the user to easily and definitively choose which database should be used at the execution of the python script. This is achieved by using a command line argument that can be passed when executing the script. The argument is then processed and the appropriate database instance is initialized based on if the argument is present or not. 
 

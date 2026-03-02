@@ -143,7 +143,9 @@ The communication with the TestRail database is achieved through the usage of th
     \label{fig:tr-function}
 \end{figure}
 
-XTODO: explaination of said function
+In figure \ref{fig:tr-function}, one of the functions of the TRSession class can be seen. This function is responsible for retrieving the title of a test case based on its ID. Using the ID of the wanted test case, a GET request is sent to the TestRail API, which then returns the relevant data. The function then processes the response data and returns the title. 
+
+All functions of the TRSession class follow a similar structure, with the type of interaction with the API being the main difference. For example, functions that create new entities in the database use POST requests and send the relevant data in the body of the request.
 
 \subsection{DBSession}
 
@@ -156,7 +158,9 @@ The DBSession class is designed to replicate all used functionalities of the exi
     \label{fig:db-function}
 \end{figure}
 
-XTODO: explaination of differences 
+In figure \ref{fig:db-function}, the same function as in figure \ref{fig:tr-function} can be seen, but this time within the DBSession class. Thus, while the parameters and return value of the function are identical to the one in the TRSession class, the implementation is different.
+
+Instead of interacting with an API, this function uses a connection to the PostgreSQL database to execute a SQL query that retrieves the title of the specified test case. 
 
 \section{Integration of the DBSession Class}
 

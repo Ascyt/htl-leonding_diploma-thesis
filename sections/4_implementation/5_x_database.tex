@@ -114,7 +114,29 @@ For the implementation of the mockup database, PostgreSQL was chosen as the data
 
 PostgreSQL is not only a database management system that the team is familiar with, but it also provides all the necessary features and capabilites needed for the implementation of this part of the project. It supports the relational data model, which is needed for replacing the TestRail database, and it guarantees the reliability and consistency of its data with the ACID properties.
 
+\subsection{pgAdmin}
+
 The open-source management tool "pgAdmin" is used for the administration of the PostgreSQL database, as it provides an easily navigable user interface for management, query execution and other administrative tasks.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.95\textwidth]{pics/pgadmin-interface.png}
+    \caption{Screenshot of the pgAdmin interface. (cf.~\cite{pgAdminInterface})}
+    \label{fig:pgadmin-interface}
+\end{figure}
+
+The current version of pgAdmin, which is pgAdmin 4, provides a wide range of features for managing and administering PostgreSQL databases, some of which include but are not limited to the following:
+
+\begin{itemize}
+    \item \textbf{SQL query tool:} \\
+    Inside pgAdmin, there is a built-in SQL editor that allows users to write and execute SQL queries directly against the database. This tool provides syntax highlighting, further aiding the user in writing correct queries.
+
+    \item \textbf{Direct data editing:} \\
+    The tables in a database can be directly edited through the interface, allowing for quick and easy modifications of single points of data without the need to write and execute SQL queries. Caution should be taken when using this feature however, as the quick and easy nature of this feature can lead to unintended consequences.
+
+    \item \textbf{Management of multiple databases:} \\
+    The pgAdmin interface allows the management of multiple databases within the same interface, allowing for intuitive switching between independent databases. 
+\end{itemize}
 
 \section{First Approaches}
 

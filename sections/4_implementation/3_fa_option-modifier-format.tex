@@ -1,10 +1,44 @@
+This chapter highlights the implementiation of how options and modifiers are handled by the parser. 
 
 The \verb|OptionModifierFormat| class is used to handle specific keywords. It includes two main functions, which are \verb|handle_option| and \verb|handle_modifier|. Each of these functions matches for its respective name. 
 
-\subsection{Option NO\_KETOP}
+\section{Option @NO\_KETOP [F]}
 
 When encountered, the \verb|no_ketop| variable gets enabled in the \verb|current| \\(\verb|FormattedResponse|).
 
 If that variable has already been set to true (i.e.\ if \verb|@NO_KETOP| was used twice in the file) a warning will be logged.
 
-\subsection{Modifier VERSION}
+The \verb|@NO_KETOP| option expects no argument. 
+
+\section{Modifier @VERSION [A]}
+
+TODO
+
+\section{Modifier @OS [F]}
+
+The \verb|@OS| modifier represents a conditional statement and requires an argument. 
+
+The argument represents the operating system to check; it is compared against the \verb|os| variable provided in \verb|FormatterArgs|. This comparison is case-insensitive ignores any leading whitespace. 
+
+If the provided \verb|os| variable is \verb|None|, a warning will be logged and the body gets discarded. 
+
+If the comparison is satisfied, the body will be further recursively parsed; otherwise, the body will be discarded.
+
+\section{Modifier @PREAMBLE [F]} 
+
+The \verb|@PREAMBLE| modifier continues to recursively parse the body text, however the parsed text will be appended to the respective index of \verb|preamble_dict|, as opposed to \verb|script|. This index is given by the required argument.
+
+This is done by returning a \verb|ChildArgs| instance with the \verb|preamble_index| variable set to that given by the argument. 
+
+A syntax exception will be thrown if it defined inside \verb|@BRACKETSTART|, \verb|@BRACKETEND| or another instance of \verb|PREAMBLE|.
+
+\section{Modifiers @BRACKETSTART and @BRACKETEND [F]}
+
+The \verb|@BRACKETSTART| or \verb|@BRACKETEND| modifier continue to recursively parse the body text, however the parsed text will be appended to \verb|bracketstart| or \verb|bracketend| respectively, as opposed to \verb|script|. 
+
+
+This is done by returning a \verb|ChildArgs| instance with \verb|in_bracketstart| or \\\verb|in_bracketend| respectively set to \verb|True|.
+
+A syntax exception will be thrown if it is defined \verb|@BRACKETSTART|, \verb|@BRACKETEND| or \verb|@PREAMBLE|.
+
+The \verb|@BRACKETSTART| and \verb|@BRACKETEND| modifiers expect no argument.

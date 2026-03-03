@@ -113,7 +113,7 @@ The \verb|Formatter| class recursively parses the \verb|tree|'s children to even
 
 \subsection{FormatterInternal}
 
-The formatter keeps track of the current state of the parsing using an internal property that is of type \verb|FormatterInternal| which is defined as the following:
+The formatter keeps track of the current state of the parsing using an internal property named \verb|current| that is of type \verb|FormatterInternal| which is defined as the following:
 
 \begin{lstlisting}
 @dataclass
@@ -171,7 +171,7 @@ This function differentiates whether the \verb|line| matches \verb|"robot_line"|
 
 \verb|OptionModifierFormat.handle_modifier| is part of a separate class to handle the specific modifier. Unlike \verb|OptionModifierFormat.handle_option|, this function has return values: firstly, its children (which, as stated above, represent the block body) and the new instance of \verb|ChildArgs| to be used as context information for the lines in its block body. 
 
-\verb|_format_children| sets the formatter's current \verb|ChildArgs| to the instance given as parameter, runs \verb|_handle_line| on each element of the provided list of \verb|Tree|s, and then changes the formatter's current \verb|ChildArgs| value back to what it was at the beginning of this function call. This way, a modifier's \verb|ChildArgs| only gets used for its children (block body). 
+\verb|_format_children| sets the formatter's current \verb|ChildArgs| to the instance given as parameter, runs \verb|_handle_line| on each element of the provided list of \verb|Tree|s, and then changes the formatter's current \verb|ChildArgs| value back to what it was at the beginning of this function call. This way, a modifier's \verb|ChildArgs| only gets used for its children (block body). If a modifier does not need to pass custom \verb|ChildArgs| to its children, it may return the \verb|ChildArgs| of \verb|current| (\verb|FormatterInternal|), as opposed to a new instance. 
 
 TODO: flowchart of formatter
 

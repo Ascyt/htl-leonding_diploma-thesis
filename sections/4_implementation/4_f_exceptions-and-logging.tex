@@ -14,6 +14,64 @@ This module accepts multiple allows for logging on multiple ``levels''.\cite{py-
     \item \verb|warning|: We use this level to notify the user about situations that, despite not being exceptions, might not be intentional or entirely logical, and could therefore have unforseen consequences. It is used, for instance, when an option that merely sets a single flag to a value, like \verb|@NO_KETOP|, is used multiple times in the same script. 
 \end{itemize}
 
+In this section, the only log level we will be taking an in-depth look at in this thesis is \verb|warning|, as it may provide insight into certain edge cases. 
+
+\subsection{Warnings}
+
+The following is a list of all warnings of \verb|OptionModifierFormat| a user may run into when using the parser:
+
+\begin{itemize}
+    \item ``\verb|NO_KETOP| flag has already been set for this file'': This warning is raised when the \verb|@NO_KETOP| option is used and the \verb|no_ketop| variable is already set to true from a previous use of the option in the same file. In this case, the flag remains enabled. 
+    \item ``Version for \verb|{...}| is not provided. Discarding block'': This warning is raised when the \verb|@VERSION| modifier is called and the module given in the argument has not been provided in the \verb|versions| dictionary of \verb|FormatterArgs|. That modifier's body gets discarded.
+    \item ``Provided OS is \verb|None|. Discarding block'': This warning is raised when the \verb|@OS| modifier is used and the \verb|os| variable of \verb|FormatterArgs| is \verb|None|. That modifier's block gets discarded.
+    \item ``Provided actual version (\verb|{...}|) is not in a valid semantic version format (https://semver.org/); trying to force parse\ldots'': This warning is raised when the \verb|@VERSION| modifier is called with an argument with a version that is not a valid semantic version format. When this happens, \verb|semantic_version|'s \verb|Version.coerce| function is used, which attempts to correct the version string. If this fails, a \verb|ParserSyntaxError| is raised.
+\end{itemize}
+
+Many of the warnings above were requirements given by our project partner.
+
 \section{Exceptions}
 
+In programming, when the normal flow of a program is disrupted, an exception often gets thrown. Aside from built-in exceptions like after attempting to divide a number by zero, Python also allows for defining custom exceptions. This can be useful to, for instance, improve the clarity of error messages, make it easier to diagnose issues, and to avoid code duplication.\cite{py-exceptions} 
 
+In this chapter, the terms ``exception'' and ``error'' are used interchangeably. 
+
+The exceptions \verb|ParserSyntaxError| and \verb|ParserInternalError| have been created for use in the parser and the preprocessor, and they are defined as the following:
+
+\begin{lstlisting}[language=Python]
+class ParserSyntaxError(Exception):
+    message:str
+    def __init__(self, message)->None:
+        super().__init__(message)
+        self.message = message
+
+class ParserInternalError(Exception):
+    message:str
+    def __init__(self, message)->None:
+        super().__init__(message)
+        self.message = message
+\end{lstlisting}
+
+These exceptions are specified to be used for the following purposes:
+
+\begin{itemize}
+    \item When the use of a keyword or its related option/modifier syntax does not match specification, or when there is an attempt to use a keyword that is not recognized by the parser, a \verb|ParserSyntaxError| should be thrown. 
+    \item When an internal problem prevents the parser or preprocessor from being able to continue in an intended way, a \verb|ParserInternalError| should be thrown. However, it is important to note that, ideally, the code should instead be written in a way that makes getting such exception impossible, as any unusual part of the input text should be handled by specified \verb|ParserSyntaxError|s. 
+\end{itemize}
+
+While neither of these exceptions have been used rigorously, many different scenarios have been considered and tested to prevent falsified or otherwise unhelpful results from Script Assembler. 
+
+For a user of our project, it might be important to be aware of the possible exceptions that are intended for them to run into if something is found to be syntactially incorrect. For this reason, what follows is a list of occasions that would raise a \verb|ParserSyntaxError|:
+
+\begin{itemize}
+    \item Usage of the \verb|@END| keyword which is reserved for internal purposes.
+    \item Defining a modifier with no body.
+    \item Usage of a keyword that the parser does not recognize. 
+    \item Omitting the argument for a keyword that requires one. This includes \verb|@VERSION|, \verb|@OS|, and \verb|@PREAMBLE|.
+    \item Including an argument for a keyword that does not allow for one. This includes \verb|@NO_KETOP|, \verb|@BRACKETSTART|, and \verb|@BRACKETEND|.
+    \item Defining a \verb|@PREAMBLE|, \verb|@BRACKETSTART|, or \verb|@BRACKETEND| inside of the body of a \verb|@PREAMBLE|, \verb|@BRACKETSTART|, or \verb|@BRACKETEND|.
+    \item The argument of the \verb|@VERSION| modifier not being made up of three parts each seperated by a space.
+    \item The comparator given in the \verb|@VERSION| modifier is not valid.
+    \item If \verb|semantic_versioning| fails to parse a version number to semantic version format after trying to force parse with \verb|Version.coerce|.
+    \item When Lark runs into ``unexpected characters'' and is therefore not able to match the following string of characters to a terminal.\cite{py-module-lark-api}
+    \item When Lark runs into an ``unexpected end of file'' when it would still expect a token.\cite{py-module-lark-api}
+\end{itemize}

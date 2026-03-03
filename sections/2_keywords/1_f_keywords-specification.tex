@@ -45,7 +45,7 @@ Our project allows for custom keywords, all of which being preceded by the \verb
 
 Each of the keywords, no matter if option or modifier, may be defined to either have no arguments, or have optional or required arguments. If set, these arguments may then consist of any sequence of characters without line-breaks that is prefixed by the keyword with at least one whitespace inbetween. 
 
-The difference between options and modifiers lies in that options do not include ``body text'', while modifiers do. ``Body text'' is defined to be made up of all lines of text that, when read from top to bottom, succeed the line of the keyword, up until and not including the first line that is found that does not include at least one additional level of indentation than that of the line of the keyword, or up until the end of the file, ignoring all lines that are either empty or are solely made of whitespace. A level of indentation is defined to be made up of either four spaces or one tab character. 
+The difference between options and modifiers lies in that options do not include a ``block body'', while modifiers do. A ``block body'' is defined to be made up of all lines of text that, when read from top to bottom, succeed the line of the keyword, up until and not including the first line that is found that does not include at least one additional level of indentation than that of the line of the keyword, or up until the end of the file, ignoring all lines that are either empty or are solely made of whitespace. The ``scope'' of the block body refers to the parts of the code that belong to it, as opposed to the parts of the code that do not. A level of indentation is defined to be made up of either four spaces or one tab character. 
 
 To make up for the extra level of indentation used to define the span of the body text, the parsed body text will be stripped of that one line of indentation. Non-keyword lines, and lines that do not belong to the block body of a modifier will simply be ignored by the Script Assembler and will thus be appended into the output Robot file as-is. This means that, if the provided file does not contain anything that may be matched as a keyword, which, in the case of a valid Robot file, may only be the case in rare exceptions, as the \verb|@| character is generally not utilized in Robot files that are to be executed on a KeTop.
 
@@ -79,7 +79,7 @@ Execute on Ketop    echo A
 Execute on Ketop    echo C
 \end{lstlisting}
 
-Here, the line two, which is made up of \verb|@VERSION BIOS > 1.0.1|, represents a boolean condition relating to the version of the KeTop device. The block body of this condition is made up by the lines three to five. According to the specification of the \verb|@VERSION| keyword, that block body will be included only if the condition stated in its argument is satisfied. 
+Here, the line two, which is made up of \verb|@VERSION BIOS > 1.0.1|, represents a boolean condition relating to the version of the KeTop device. The block body of this condition is made up by the lines three to five. According to the specification of the \verb|@VERSION| keyword, that block body will be included only if the condition stated in its argument is satisfied.
 
 This means that, again assuming the snippet above to be the only input to the parser, if the condition \verb|BIOS > 1.0.1| is satisfied, the output may look like the following:
 

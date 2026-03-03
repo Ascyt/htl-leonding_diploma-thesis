@@ -1,0 +1,45 @@
+From the requirements above, the following code block is the final \gls{ebnf} that was settled on. In this chapter, we will go into detail about its syntax and meaning. 
+
+\begin{lstlisting}
+start = { N } , { line , { N } } ;
+
+robot line = ? regex: /[^(@|\n)].+?(?=\n)/ ? ;
+
+option line = "@" , option ;
+
+modifier line = "@" , modifier , block body , "@END" ;
+
+block body = { N } , { line , { N } } ;
+
+line = modifier line | option line | robot line ;
+
+modifier = allowed modifiers , [arg] ;
+option = allowed options , [arg] ;
+
+arg = ? regex: /[ \t]+[^\n]*/ ? ;
+
+N = "\n" ;
+
+allowed options = "NO_KETOP" ;
+allowed modifiers = "VERSION" | "OS" | "PREAMBLE" | "BRACKETSTART" | "BRACKETEND" ;
+\end{lstlisting}
+
+It is important to note that ``inline whitespace'', i.e.\ sequences made up of only spaces or tabs, are ignored here. This is useful, as it significantly reduces the size and complexity of the \gls{ebnf}, since there is no need for our syntax to take whitespace into account, with the exception of ``robot lines'' and ``args'', and the library used for parsing an input defined in a grammer that resembles \gls{ebnf}, which is specified in detail in the next chapter, also allowing for the option to ignore inline whitespace. 
+
+Additionally, it is necessary to define the specific ``allowed options'' and ``allowed modifiers'' in the \gls{ebnf}, as otherwise there would not be a easy and general way to differentiate between options and modifiers. 
+
+\section{Its Components}
+
+\verb|start| refers to the entire script. This name was chosen because it matches the name that our library has reserved for this purpose. It is made up of any amount of \verb|line|s and empty lines. 
+
+A \verb|line| may either be a \verb|modifier line|, \verb|option line|, or \verb|robot line|
+
+A \verb|robot line| is defined as being any line of text that is not empty, does not start with an \verb|@| character, and that ends with a line break character. Here, a \gls{regex} is used for this matching.
+
+Both \verb|option| and \verb|modifier| refer to their respective allowed keywords, followed by an optional \verb|arg| (``argument''), which is defined as being a string which begins with an inline whitespace character and ends with the end of the line.
+
+An \verb|option line| is a line starting with \verb|@| and a valid \verb|option|.
+
+A \verb|modifier line| starts with an \verb|@| character, is followed by a modifier, then by a \verb|block body|, then by the sequence ``\verb|@END|'', which, as explained in the chapter above, is to be provided by the preprocessor. A \verb|block body| is refers to any amount of \verb|line|s, including or not including empty lines. 
+
+\verb|N| is simply used for convenience and is defined to be a single line break character. 

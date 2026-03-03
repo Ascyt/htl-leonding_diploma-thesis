@@ -1,0 +1,40 @@
+\section{Final EBNF Requirements}
+
+To get to our final \gls{ebnf}, we have to represent all of the following:
+
+\begin{itemize}
+    \item The entire script is made of ``lines'', seperated by line breaks, each of which can be a ``robot line'', an ``option line'', or a ``modifier line''. 
+    \item There are two different types of keywords: ``options'' and ``modifiers''. Valid ``options'' include \verb|@NO_KETOP| and valid ``modifiers'' include \verb|@VERSION|, \verb|@OS|, \verb|@PREAMBLE| \verb|@BRACKETSTART|, and \verb|@BRACKETEND|.
+    \item It should be possible for both ``modifiers'' and ``options'' to have optional arguments until the end of the line. The nature of the argument itself or whether or not a specific keyword should require or allow for an argument should be, for simplicity and ease of extensibility, handled by the parser and therefore do not lie within the scope of the \verb|ebnf|. 
+    \item ``Modifier lines'' include a ``block body'', which is also made up of additional ``lines'' which may be a ``robot line'', ``option line'', or, recursively, a ``modifier line''. 
+    \item A block body is marked by each line of text being preceded by an indentation character, which may either be a tab character or four spaces. 
+    \item All other lines are handled as ``robot lines''.
+\end{itemize}
+
+Note that in the listing above, there is a differentiation between the \gls{ebnf} object ``lines'' and the term ``line of text'', which stands for a literal string terminated by a new line charecter or the end of the file. 
+
+However, what follows is a non-rigorous proof by contradiction that it is impossible to fully define a language that meets all the above requirements in \gls{ebnf}.
+
+\section{Impossibility of Indentation}
+
+What follows are three statements that, for the purposes of this non-rigorous proof, are each assumed to be true. 
+
+Firstly, it is possible to specify the ``modifier line'' as a single, re-usable component, because it must be possible for a ``modifier line'' including its ``block body'' to refer back to itself to allow for recursion. 
+
+Secondly, as stated in the requirements above, a ``block body'' of a ``modifier line'' may be made up of any number of lines of text, each of which should be preceded by an indentation. 
+
+Thirdly, when a ``modifier line'' B is defined inside the ``block body'' of another ``modifier line'' A, it is possible to specify that each ``line'' of the ``block body'' of ``modifier line'' B should be preceded by indentation.
+
+However, the third statement would require ``modifier line'' B to be defined differently to ``modifier line'' A, as each of its line of text of its ``block body'' must be predeced by an indentation as stated in the second statement. This means that, in order to require indentation as prefix for every inner ``line'', a ``modifier line'' may not allow for the same kind of ``modifier line'' as would be used in other parts of the script to be used in its ``block body'', which violates the first statement which requires ``modifier lines'' to be defined as single and re-usable components. Therefore, it is not possible for all three statements to be true at once. 
+
+\section{A Solution}
+
+A simple solution to this problem is to not define the entire language in \gls{ebnf}, but rather, to require a ``preprocessor'' to sanitize the input script in a way that makes it suitable for \gls{ebnf}. 
+
+In our project, the task of the preprocessor is to transpile the indentations required for defining the scope of a block body to a more \gls{ebnf}-friendly way. 
+
+Instead, the preprocessor uses indentation to determine the scope of a block body. Then, that indentation is stripped from all lines of the block body, and a ``special sequence of text'' is appended below the block body to specify its end. This way, the \gls{ebnf} does not have to take into account the fact that an inner block body would otherwise require every line to have a prefix. Instead, a ``modifier line'' is able to ``sandwich'' any lines in between a clear beginning (which is the line that the ``modifier'' is defined) and a clear end (which is the mentioned ``special sequence of text'').
+
+The choice of that ``special sequence of text'' should be one that is not expected to be in the input script. For Script Assembler, we chose \verb|@END|, as we have already reserved the \verb|@| character for our purposes, there is no keyword with that name, and it still leaves for human-readable code if a user were to look at the code after the preprocessor but before parsing.
+
+A side effect of this is that a user may be able to specify the scope of a block body using \verb|@END| as opposed to how it is defined in the specification. However, this can easily be mitigated by requiring the preprocessor to simply not allow the use of \verb|@END|. 

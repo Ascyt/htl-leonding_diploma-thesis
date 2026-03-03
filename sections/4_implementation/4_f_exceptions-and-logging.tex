@@ -1,0 +1,19 @@
+This chapter will explain how the preprocessor and parser handle exceptions and logging. 
+
+\section{Logging}
+
+In programming, logging is the process of recording information from during the execution of a program. Is commonly considered to be an important part of an application, because it allows for the diagnosing and debugging of issues, monitoring performance and application health, analyzing usage patterns and more.\cite{logging}
+
+In Script Assembler, most things are logged using Python's \verb|logging| module, which had already been set up to work in the \gls{trp} project before the Script Assembler project was started on. 
+
+This module accepts multiple allows for logging on multiple ``levels''.\cite{py-logging} The levels that we utilized in Script Assembler are the following:
+
+\begin{itemize}
+    \item \verb|debug|: We use this level to log nearly every step that the parser takes. As the name suggests, it is useful for debugging purposes, when it might be crucial to consider the exact steps that were taken.
+    \item \verb|info|: We use this level for anything that might be ``useful to know'' regarding the overall flow of the program, that is not critical or necessarily important to consider. It is used, for instance, when a the body from a conditional modifier, such as \verb|@VERSION|, is discarded.
+    \item \verb|warning|: We use this level to notify the user about situations that, despite not being exceptions, might not be intentional or entirely logical, and could therefore have unforseen consequences. It is used, for instance, when an option that merely sets a single flag to a value, like \verb|@NO_KETOP|, is used multiple times in the same script. 
+\end{itemize}
+
+\section{Exceptions}
+
+

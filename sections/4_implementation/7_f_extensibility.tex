@@ -1,0 +1,44 @@
+One of the most important requirements given by our project partner is that extending the project, by for example adding new keywords to the parser, should be as easy as possible. 
+
+This chapter will go over the necessary steps required to define a new keyword or to write a seperate implementation of the parser. 
+
+\section{Possibilities}
+
+The parser is designed to make it particularly easy to define new keywords.
+
+An option or a modifier may be defined to use, require, or optionally allow for an argument. Other keywords or parts of the parser may also be changed to react to the parser's current internal values, to the context of the scope that the keyword is used in, or to new or existing input data. 
+
+If needed, it is possible to define keywords to allow for complex logic, for instance by adding an option that sets a variable to a chosen value and adding a modifier to compare it to a different variable.
+
+What follows are a few of examples of keywords that we, for one reason or another, consider to be potentially useful within the context of the \gls{trp} project. 
+
+\subsection{@LOADTEMPLATE}
+
+In this example, \verb|@LOADTEMPLATE| is an option that takes a ``template name'' as argument. ``Templates'' could be passed as a dictionary, where each template name maps to a snippet of Robot Framework code that is commonly re-used across seperate test files. 
+
+When this option is encountered, the parser could append the code snippet that belongs to the respective template to the current script or active bracket. 
+
+This might allow for the reduction of code duplication, which could increase efficiency and maintainability. 
+
+TODO: more examples
+
+\section{Limitations}
+
+Unfortunately, there are also some use cases where the core foundation that the parser is built on may not be sufficient. There are examples of features that, while they might be desirable for certain uses, are however thought to be particularly challenging to implement without rethinking the project from the ground up.
+
+\subsection{Context of a lower part of the file}
+
+Aside from the preprocessor, the parser traverses the file from the top to bottom. This means that, at any point of the file, it is currenty unaware of all keywords that are defined below, as the parser has not reached that point of the file yet.
+
+Modifiers can't have same names
+
+\section{Adding a Keyword}
+
+In general, there are three steps required to add a custom option or modifier to the parser:
+\begin{enumerate}
+    \item The keyword should be added to the \gls{ebnf}, which, from the root of the project, can be found in \verb|./TRP/config/script_assembler_ebnf.txt|.
+    \item The keyword with its implementation should be added as a case to the parser. From the root of the project, the parser is found in \\\verb|./TRP/broker/managers/case/script_assembler|, and, within that folder, the core implementation of the keyword in \verb|option_modifier_format.py|. 
+    \item The syntax highlighting for the keyword should be added. The definition for keywords used in syntax highlighting can be found in \\\verb|Angular/src/app/app.module.ts|. 
+\end{enumerate}
+
+TODO: example of exending with \verb|@LOADTEMPLATES|?

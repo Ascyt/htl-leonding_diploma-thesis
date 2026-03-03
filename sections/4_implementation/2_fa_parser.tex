@@ -1,0 +1,88 @@
+In this chapter, we will focus on the ``parser'', which is the part of our project that reads the input sequence given by the preprocessor alongside context information and outputs a so-called \verb|FormattedResponse|. It is written in Python and relies heavily on the \verb|lark| library.
+
+\section{High-Level Overview}
+
+In a nutshell, the parser takes an input in the form of a script as a string, a few contextual arguments as \verb|FormatterArgs|, and a \verb|lark| grammar, which resembles an \gls{ebnf} grammar, as a string, and outputs a \verb|FormattedResponse|, as is evident by its method header:
+
+\begin{lstlisting}[language=Python]
+    def parse_script(script:str, args:FormatterArgs, ebnf_grammar:str)->FormattedResponse:
+\end{lstlisting}
+
+\subsection{Input: Script}
+
+The script is the the raw Robot script that is to be parsed. Importantly, this input should not already have gone through the preprocessor step mentioned in the chapter above, as it is done in the function.
+
+\subsection{Input: Arguments}
+
+In the method header, \verb|formatter_args| refers to an instance of the \verb|FormatterArgs| class, which is defined to be the following:
+
+\begin{lstlisting}[language=Python]
+@dataclass
+class FormatterArgs:
+    versions:dict[str, str] # label -> version
+    os:str|None
+\end{lstlisting}
+
+This is used for providing the contextual input, which, in our case, is needed to evaluate the conditions specified in the \verb|@VERSION| and \verb|@OS| modifiers. 
+
+Here, \verb|versions| should be a dictionary object that maps the label of a module to its actual version on the KeTop. In the actual implementation of \verb|@VERSION|, the operation specified in the argument will be checked against the version provided here for the respective module. 
+
+\verb|os| refers to the operating system of the KeTop as a string, or \verb|None| if one is not provided or present (as is generally the case when, for instance, the \verb|no_ketop| flag is set). In the actual implementation of \verb|@OS|, the block body will only be included if the operating system specified in the argument equals the operating system provided here. If no operating system is provided, \verb|@OS| will always discard its block body.
+
+\subsection{Input: Lark grammar}
+
+The \verb|lark| grammar, in the method header labeled as \verb|ebnf_grammar|, represents ``a list of rules and terminals that together define a language'' as a string. While the \verb|lark| library uses its own syntax, it is based on \gls{ebnf}.\cite{py-module-lark-grammar}
+
+In our project, the following string, which is a modified form of the ``final \gls{ebnf}'' which shown in the previous part to abide by \verb|lark|'s expected syntax, gets used:
+
+\begin{lstlisting}
+start: N* (line N*)*
+
+robot_line: /[^(@|\n)].+?(?=\n)/
+
+option_line: "@" option 
+
+modifier_line: "@" modifier ( N )* ( line N* )* "@" "END"
+
+line: modifier_line | option_line | robot_line
+
+modifier: ALLOWED_MODIFIERS arg?
+option: ALLOWED_OPTIONS arg?
+
+arg: /[ \t]+[^\n]*/
+
+N: "\n"
+
+%import common.WS_INLINE
+%import common.CNAME
+%ignore WS_INLINE
+
+ALLOWED_OPTIONS: "NO_KETOP" 
+ALLOWED_MODIFIERS: "VERSION" | "BRACKETSTART" | "BRACKETEND" | "OS" | "PREAMBLE"
+\end{lstlisting}
+
+It is important to mention that, while it might be possible to provide a different grammar, it is very likely to cause issues given the strict adherence of our parser to the above grammar. 
+
+\subsection{Output: FormattedResponse}
+
+As long as no exceptions occur, the output of the \verb|parse_script| function will be an instance of the \verb|FormattedResponse| class, which is defined to be the following:
+
+\begin{lstlisting}
+@dataclass
+class FormattedResponse:
+    script:str
+    preamble_dict:dict[int, str]
+    bracketstart:str
+    bracketend:str
+    no_ketop:bool 
+\end{lstlisting}
+
+Here, \verb|script| refers to the general part of the script that is not part of a ``bracket'' (i.e. any included part of the script that is not defined in \verb|@PREAMBLE|, \verb|@BRACKETSTART|, or \verb|@BRACKETEND|). If a Robot script with no Script Assembler keywords is provided as input, aside from possible minor whitespace changes, it will be returned without edit in \verb|script|. 
+
+\verb|preamble_dict| is a dictionary that maps the block bodies of \verb|@PREAMBLE| modifiers to the number given by their respective arguments. 
+
+\verb|bracketstart| and \verb|bracketend| contain the block bodies of \verb|@BRACKETSTART| and \verb|@BRACKETEND| respectively. 
+
+\verb|no_ketop| represents whether or not the \verb|no_ketop| flag is enabled; i.e.\ whether or not the input script contains the \verb|@NO_KETOP| modifier.
+
+\section{Parser Exceptions}

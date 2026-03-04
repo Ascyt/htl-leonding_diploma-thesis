@@ -26,11 +26,19 @@ TODO: more examples
 
 Unfortunately, there are also some use cases where the core foundation that the parser is built on may not be sufficient. There are examples of features that, while they might be desirable for certain uses, are however thought to be particularly challenging to implement without rethinking the project from the ground up.
 
-\subsection{Context of a lower part of the file}
+\subsection{Top-to-bottom processing}
 
 Aside from the preprocessor, the parser traverses the file from the top to bottom. This means that, at any point of the file, it is currenty unaware of all keywords that are defined below, as the parser has not reached that point of the file yet.
 
-Modifiers can't have same names
+\subsection{Naming}
+
+The names of keywords must not include spaces and must be preceded by an \verb|@| character. Additionally, modifiers cannot have the same name as options, as they are differentiated by name only. 
+
+\subsection{Multi-line}
+
+Since arguments are defined to end when there a line break is encountered, it is not possible to have arguments that span across multiple lines.
+
+Additionally, a keyword is only considered if, aside from inline whitespace, it is at the beginning of a line. 
 
 \section{Adding a Keyword}
 
@@ -42,3 +50,11 @@ In general, there are three steps required to add a custom option or modifier to
 \end{enumerate}
 
 TODO: example of exending with \verb|@LOADTEMPLATES|?
+
+\section{Other purposes}
+
+Since the parser treats Robot script lines as arbitrary pieces of text, and lines that do not start with an \verb|@| symbol generally pass through unchanged, the Script Assembler project may be used for purposes that transcend the domain of the \gls{trp} project that it was initially made for. 
+
+In general, any project where simple, custom keywords may be needed to extend the capabilities of any text-based file might be a good use for Script Assembler. 
+
+For instance, consider something that has nothing to do with \gls{trp}, like a product specification. Critical pieces of information that should not be given away to third parties could, for instance, be defined in a custom modifier named \verb|@SECRET|. Then, a boolean may be added as an input to the parser which decides whether the output should be a version of the specification that intended for internal use, or one that is fit to be sent to a third party. 

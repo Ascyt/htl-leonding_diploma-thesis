@@ -6,7 +6,7 @@ The parser recursively works its way through the \verb|Tree| object given by Lar
 
 \section{High-Level Overview}
 
-In a nutshell, the parser takes an input in the form of a script as a string, a few contextual arguments as \verb|FormatterArgs|, and a Lark grammar, which resembles an \gls{ebnf} grammar, as a string, and outputs a \verb|FormattedResponse|, as is evident by its method header:
+In a nutshell, the parser takes an input in the form of a script as a string, a few contextual arguments as \verb|FormatterArgs|, and a Lark grammar, which resembles an EBNF grammar, as a string, and outputs a \verb|FormattedResponse|, as is evident by its method header:
 
 \begin{lstlisting}[language=Python, caption={Method header of \texttt{parse\_script}.}, label={lst:method_header_parser_parse_script}]
 def parse_script(script:str, args:FormatterArgs, ebnf_grammar:str)->FormattedResponse:
@@ -20,7 +20,7 @@ The script is the the raw Robot script that is to be parsed. Importantly, this i
 
 In the method header, \verb|formatter_args| refers to an instance of the \verb|FormatterArgs| class, which is defined to be the following:
 
-\begin{lstlisting}[language=Python]
+\begin{lstlisting}[language=Python, caption={Class definition of \texttt{FormatterArgs}.}, label={lst:class_definition_parser_formatter_args}]
 @dataclass
 class FormatterArgs:
     versions:dict[str, str] # label -> version
@@ -35,11 +35,11 @@ Here, \verb|versions| should be a dictionary object that maps the label of a mod
 
 \subsection{Input: Lark grammar}
 
-The Lark grammar, in the method header labeled as \verb|ebnf_grammar|, represents \textit{a list of rules and terminals that together define a language} as a string. While the Lark library uses its own syntax, it is based on \gls{ebnf}.\cite{py-module-lark-grammar}
+The Lark grammar, in the method header labeled as \verb|ebnf_grammar|, represents ``a list of rules and terminals that together define a language''\cite{py-module-lark-grammar} as a string. While the Lark library uses its own syntax, it is based on EBNF~\cite{py-module-lark-grammar}.
 
-In our project, the following string, which is a modified form of the \textit{final \gls{ebnf}} which shown in the previous part to abide by Lark's expected syntax, gets used:
+In our project, the following string, which is a modified form of the our EBNF to abide by Lark's expected syntax, gets used:
 
-\begin{lstlisting}
+\begin{lstlisting}[caption={Our EBNF defined using Lark's syntax.}, label={lst:our_ebnf_lark}]
 start: N* (line N*)*
 
 robot_line: /[^(@|\n)].+?(?=\n)/
@@ -58,12 +58,22 @@ arg: /[ \t]+[^\n]*/
 N: "\n"
 
 %import common.WS_INLINE
-%import common.CNAME
 %ignore WS_INLINE
 
 ALLOWED_OPTIONS: "NO_KETOP" 
 ALLOWED_MODIFIERS: "VERSION" | "BRACKETSTART" | "BRACKETEND" | "OS" | "PREAMBLE"
 \end{lstlisting}
+
+The following is changed in listing \ref{lst:our_ebnf_lark} compared to listing \ref{lst:our_ebnf}:
+\begin{itemize}
+    \item Grammar definition syntax is changed from \verb|=| to \verb|:| and the seperator character between terminals (\verb|,|) and the end-of-rule character (\verb|;|) are omitted.
+    \item Repetition is changed from using curly braces (\verb|{...}|) to an asterisk (\verb|...*|). It is important to note that, while it is not needed for our EBNF, Lark also allows for the definition of \textit{one or more} using a plus sign (\verb|...+|) instead.
+    \item Optionals are changed from using square brackets (\verb|[...]|) to \verb|...?|.
+    \item \gls{regex} tokens are written using slashes (\verb|/.../|).
+    \item Terminals (here \verb|N|, \verb|ALLOWED_OPTIONS|, and \verb|ALLOWED_MODIFIERS|) are defined using uppercase.
+    \item The verbose definition of the \verb|block body| rule is omitted, and it is instead defined directly within a \verb|modifier_line|.
+    \item Inline whitespace is being explicitely ignored using \verb|%import common.WS_INLINE| and \verb|%ignore common.WS_INLINE|. % it says there's an error here because of the percent sign, but it seems to work fine
+\end{itemize}
 
 It is important to mention that, while it might be possible to provide a different grammar, it is very likely to cause issues given the strict adherence of our parser to the above grammar. 
 
@@ -71,7 +81,7 @@ It is important to mention that, while it might be possible to provide a differe
 
 As long as no exceptions occur, the output of the \verb|parse_script| function will be an instance of the \verb|FormattedResponse| class, which is defined to be the following:
 
-\begin{lstlisting}
+\begin{lstlisting}[language=Python, caption={Class definition of \texttt{FormattedResponse}.}, label={lst:class_definition_parser_formatted_response}]
 @dataclass
 class FormattedResponse:
     script:str
@@ -85,19 +95,20 @@ Here, \verb|script| refers to the general part of the script that is not part of
 
 \verb|preamble_dict| is a dictionary that maps the block bodies of \verb|@PREAMBLE| modifiers to the number given by their respective arguments. 
 
-\verb|bracketstart| and \verb|bracketend| contain the block bodies of \verb|@BRACKETSTART| and \verb|@BRACKETEND| respectively. 
+\verb|bracketstart| and \verb|bracketend| contain the block bodies of \verb|@BRACKETSTART| and\\
+\verb|@BRACKETEND| respectively. 
 
 \verb|no_ketop| represents whether or not the \verb|no_ketop| flag is enabled; i.e.\ whether or not the input script contains the \verb|@NO_KETOP| modifier.
 
 \section{Lark}
 
-Lark is a parsing library for Python which can parse any context-free grammar to an object known as a \textit{tree}.\cite{py-module-lark}
+Lark is a parsing library for Python which can parse any context-free grammar to an object known as a \textit{tree}~\cite{py-module-lark}.
 
 Script Assembler uses the input script on Lark's \verb|parse| method to get a \verb|Tree| object which, amongst others, includes two important properties: \verb|data| and \verb|children|.
 
 A \verb|Tree| object represents a rule with a name, for example, the outermost rule of a parsed script being \verb|"start"|, alongside, if present, its children, which, in the example of \verb|"start"| are \verb|"line"|s. A \textit{child} is commonly a \verb|Tree| as well, however it may also be a \verb|Token|. 
 
-A \verb|Token| is a \textit{string with meta-information}, which are chunks of the input text that \textit{haven't been discarded}. The \verb|Token| class inherits from Python's \verb|str|, which allows it to be treated as string.\cite{py-module-lark-api}
+A \verb|Token| is a \textit{string with meta-information}, which are chunks of the input text that \textit{haven't been discarded}. The \verb|Token| class inherits from Python's \verb|str|, which allows it to be treated as string~\cite{py-module-lark-api}.
 
 In our parser, we mainly work with \verb|Tree|s to differentiate between lines and keywords, and \verb|Token|s for the contents of robot lines and keyword arguments. 
 

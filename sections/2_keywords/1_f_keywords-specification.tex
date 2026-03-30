@@ -37,7 +37,7 @@ As is made clear from the example above, some lines may be preceded by whitespac
 
 Despite Robot Framework's general ease of use, proficient support for extensibility, and versatile testing capabilities, the control over the specific execution flow is limited~\cite{robot-framework-pros-cons}. In the context of KEBA Group AG, a single KeTop may need to run multiple Robot script files, and a Robot script file may need to be reused for multiple KeTops. However, since it may be required for a test to be made of a single script file, it might be necessary to \textit{stitch together}, or in other words to concatenate, the contents of multiple Robot script files into one. 
 
-Without Script Assembler, a user may run into issues where they, for instance, would like a certain piece of code to only be included on KeTops satisfing a certain condition like being of a predefined operating system, or for certain pieces of code to be executed at a time that is either before or after the remaining parts, as the Robot Framework may not provide a useful way to achieve the required flow. 
+Without the Script Assembler, a user may run into issues where they, for instance, would like a certain piece of code to only be included on KeTops satisfing a certain condition like being of a predefined operating system, or for certain pieces of code to be executed at a time that is either before or after the remaining parts, as the Robot Framework may not provide a useful way to achieve the required flow. 
 
 \section{What Keywords Are}
 
@@ -100,7 +100,7 @@ Execute on Ketop    echo C
 
 \section{Recursion}
 
-Keywords may also be defined recursively. Recursion is generally defined as being \textit{the process in which a function calls itself directly or indirectly}~\cite{recursion}. In the case of Script Assembler, it refers to the fact that block bodies of modifiers may also include modifiers, of which the block bodies may then also include modifiers, and so forth. To show this possibility, consider the following example:
+Keywords may also be defined recursively. Recursion is generally defined as being \textit{the process in which a function calls itself directly or indirectly}~\cite{recursion}. In the case of the Script Assembler, it refers to the fact that block bodies of modifiers may also include modifiers, of which the block bodies may then also include modifiers, and so forth. To show this possibility, consider the following example:
 
 \begin{lstlisting}[caption={Example of modifiers being defined recursively.}, label={lst:recursive_modifier_example}]
 @BRACKETSTART

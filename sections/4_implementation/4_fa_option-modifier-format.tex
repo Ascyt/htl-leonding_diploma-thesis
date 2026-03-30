@@ -30,7 +30,7 @@ The \verb|@PREAMBLE| modifier continues to recursively parse the body text, howe
 
 This is done by returning a \verb|ChildArgs| instance with the \verb|preamble_index| variable set to that given by the argument. 
 
-A syntax exception will be thrown if it defined inside \verb|@BRACKETSTART|, \verb|@BRACKETEND| or another instance of \verb|PREAMBLE|.
+A syntax exception will be thrown if it is defined inside \verb|@BRACKETSTART|, \verb|@BRACKETEND| or another instance of \verb|PREAMBLE|.
 
 \section{Modifiers @BRACKETSTART and @BRACKETEND [F]}
 
@@ -39,6 +39,6 @@ The \verb|@BRACKETSTART| or \verb|@BRACKETEND| modifier continue to recursively 
 
 This is done by returning a \verb|ChildArgs| instance with \verb|in_bracketstart| or \\\verb|in_bracketend| respectively set to \verb|True|.
 
-A syntax exception will be thrown if it is defined \verb|@BRACKETSTART|, \verb|@BRACKETEND| or \verb|@PREAMBLE|.
+A syntax exception will be thrown if it is defined inside \verb|@BRACKETSTART|, \verb|@BRACKETEND| or \verb|@PREAMBLE|.
 
 The \verb|@BRACKETSTART| and \verb|@BRACKETEND| modifiers expect no argument.

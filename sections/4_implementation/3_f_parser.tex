@@ -104,7 +104,7 @@ Here, \verb|script| refers to the general part of the script that is not part of
 
 Lark is a parsing library for Python which can parse any context-free grammar to an object known as a \textit{tree}~\cite{py-module-lark}.
 
-Script Assembler uses the input script on Lark's \verb|parse| method to get a \verb|Tree| object which, amongst others, includes two important properties: \verb|data| and \verb|children|.
+The Script Assembler uses the input script on Lark's \verb|parse| method to get a \verb|Tree| object which, amongst others, includes two important properties: \verb|data| and \verb|children|.
 
 A \verb|Tree| object represents a rule with a name, for example, the outermost rule of a parsed script being \verb|"start"|, alongside, if present, its children, which, in the example of \verb|"start"| are \verb|"line"|s. A \textit{child} is commonly a \verb|Tree| as well, however it may also be a \verb|Token|. 
 
@@ -116,7 +116,7 @@ In our parser, we mainly work with \verb|Tree|s to differentiate between lines a
 
 After a script has been preprocessed and parsed by Lark, the \verb|Tree| object is given to the method from the \verb|Formatter| class with the following header:
 
-\begin{lstlisting}[language=Python]
+\begin{lstlisting}[language=Python, caption={Method header of \texttt{format_lark}.}, label={lst:method_header_parser_format_lark}]
 def format_lark(self, tree:Tree, args:FormatterArgs)->FormattedResponse:
 \end{lstlisting}
 
@@ -126,7 +126,7 @@ The \verb|Formatter| class recursively parses the \verb|tree|'s children to even
 
 The formatter keeps track of the current state of the parsing using an internal property named \verb|current| that is of type \verb|FormatterInternal| which is defined as the following:
 
-\begin{lstlisting}
+\begin{lstlisting}[language=Python, caption={Class definition of \texttt{FormatterInternal}.}, label={lst:class_definition_parser_formatter_internal}]
 @dataclass
 class FormatterInternal:
     current:FormattedResponse
@@ -146,7 +146,7 @@ When a \verb|modifier_line| is hit, the function handling that modifier may retu
 
 The \verb|ChildArgs| class is defined to be the following:
 
-\begin{lstlisting}
+\begin{lstlisting}[language=Python, caption={Class definition of \texttt{ChildArgs}.}, label={lst:class_definition_parser_child_args}]
 @dataclass
 class ChildArgs:
     preamble_index:int = 0
@@ -164,7 +164,7 @@ Here, \verb|preamble_index|, \verb|in_bracketstart|, and \verb|in_bracketend| ar
 
 After the formatter is past the \verb|"start"| entry point of the initial \verb|Tree|, it will run \verb|dle_line| on each line element, which is a function with the following header:
 
-\begin{lstlisting}[language=Python]
+\begin{lstlisting}[language=Python, caption={Method header of \texttt{_handle_line}.}, label={lst:method_definition_parser_handle_line`'}]
 def _handle_line(self, line:Tree)->None:
 \end{lstlisting}
 
@@ -172,8 +172,8 @@ This function differentiates whether the \verb|line| matches \verb|"robot_line"|
 
 \begin{itemize}
     \item For \verb|"robot_line"|: Since Robot lines are made of, for the purposes of the parser, arbitrary text, they can be added to the output as-is using the \verb|_add_script| function.
-    \item For \verb|"option_line"|: The function \verb|OptionModifierFormat.handle_option| is called with the current \verb|FormatterInternal|, the option's name (i.e.\ \verb|"NO_KETOP"|), and, if present, the argument string.
-    \item For \verb|"modifier_line"|: The function \verb|OptionModifierFormat.handle_modifier| is called with the current \verb|FormatterInternal|, the modifier's name (i.e.\ \verb|"VERSION"|), if present, the argument string (i.e.\ \verb|BIOS > 1.0.0|), and its children. The children represent the modifier line's block body. Then, the output of this function is given to the \verb|_format_children| function for further processing.
+    \item For \verb|"option_line"|: The function \verb|OptionModifierFormat.handle_option| is called with the current \verb|FormatterInternal|, the option's name (e.g.\ \verb|"NO_KETOP"|), and, if present, the argument string.
+    \item For \verb|"modifier_line"|: The function \verb|OptionModifierFormat.handle_modifier| is called with the current \verb|FormatterInternal|, the modifier's name (e.g.\ \verb|"VERSION"|), if present, the argument string (i.e.\ \verb|BIOS > 1.0.0|), and its children. The children represent the modifier line's block body. Then, the output of this function is given to the \verb|_format_children| function for further processing.
 \end{itemize}
 
 \verb|_add_script| adds an input string to the output script or respective bracket. This is the function that appends text (Robot lines) to the final \verb|FormattedResponse|. Where exactly the text gets appended to depends on the state of the current \verb|child_args|. If \verb|child_args| specifies that the formatter is currently within a bracket, it will be appended to \verb|bracketstart|, \verb|bracketend|, or the given index of \verb|preamble_dict|, respectively; otherwise, it will be appended to \verb|script|.
@@ -188,7 +188,7 @@ TODO: flowchart of formatter
 
 \section{Extracting name, arg, children}
 
-An keyword's name, its argument if present, and its children (block body) get extracted from the \verb|_extract_name_arg_children| function. In the case of an option, the expected amount of children is zero. 
+A keyword's name, its argument if present, and its children (block body) get extracted from the \verb|_extract_name_arg_children| function. In the case of an option, the expected amount of children is zero. 
 
 In both cases however, the \verb|children| of the line get passed to this function. Assuming the input to be in the correct general format, the following can be said about the values of the elements of this list, which will be referred to as \verb|elements|:
 

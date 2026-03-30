@@ -2,15 +2,15 @@ This chapter will explain how the preprocessor and parser handle exceptions and 
 
 \section{Logging}
 
-In programming, logging is the process of recording information from during the execution of a program. Is commonly considered to be an important part of an application, because it allows for the diagnosing and debugging of issues, monitoring performance and application health, analyzing usage patterns and more~\cite{logging}.
+In programming, logging is the process of recording information during the execution of a program. It is commonly considered to be an important part of an application, because it allows for issues to be diagnosed and debugged, monitoring performance and application health, analyzing usage patterns and more~\cite{logging}.
 
 In Script Assembler, most things are logged using Python's \verb|logging| module, which had already been set up to work in the \gls{trp} project before the Script Assembler project was started on. 
 
-This module accepts multiple allows for logging on multiple \textit{levels}~\cite{py-logging}. The levels that we utilized in Script Assembler are the following:
+This module allows for logging on multiple \textit{levels}~\cite{py-logging}. The levels that we utilized in Script Assembler are the following:
 
 \begin{itemize}
     \item \verb|debug|: We use this level to log nearly every step that the parser takes. As the name suggests, it is useful for debugging purposes, when it might be crucial to consider the exact steps that were taken.
-    \item \verb|info|: We use this level for anything that might be \textit{useful to know} regarding the overall flow of the program, that is not critical or necessarily important to consider. It is used, for instance, when a the body from a conditional modifier, such as \verb|@VERSION|, is discarded.
+    \item \verb|info|: We use this level for anything that might be \textit{useful to know} regarding the overall flow of the program, that is not critical or necessarily important to consider. It is used, for instance, when the body from a conditional modifier, such as \verb|@VERSION|, is discarded.
     \item \verb|warning|: We use this level to notify the user about situations that, despite not being exceptions, might not be intentional or entirely logical, and could therefore have unforseen consequences. It is used, for instance, when an option that merely sets a single flag to a value, like \verb|@NO_KETOP|, is used multiple times in the same script. 
 \end{itemize}
 
@@ -37,7 +37,7 @@ In this chapter, the terms \textit{exception} and \textit{error} are used interc
 
 The exceptions \verb|ParserSyntaxError| and \verb|ParserInternalError| have been created for use in the parser and the preprocessor, and they are defined as the following:
 
-\begin{lstlisting}[language=Python]
+\begin{lstlisting}[language=Python, caption={Class definitions of \texttt{ParserSyntaxError} and \texttt{ParserInternalError}.}, label={lst:class_definition_parser_syntax_internal_error}]
 class ParserSyntaxError(Exception):
     message:str
     def __init__(self, message)->None:
@@ -58,9 +58,9 @@ These exceptions are specified to be used for the following purposes:
     \item When an internal problem prevents the parser or preprocessor from being able to continue in an intended way, a \verb|ParserInternalError| should be thrown. However, it is important to note that, ideally, the code should instead be written in a way that makes getting such exception impossible, as any unusual part of the input text should be handled by specified \verb|ParserSyntaxError|s. 
 \end{itemize}
 
-While neither of these exceptions have been used rigorously, many different scenarios have been considered and tested to prevent falsified or otherwise unhelpful results from Script Assembler. 
+While neither of these exceptions have been used rigorously, many different scenarios have been considered and tested to prevent falsified or otherwise unhelpful results from the Script Assembler. 
 
-For a user of our project, it might be important to be aware of the possible exceptions that are intended for them to run into if something is found to be syntactially incorrect. For this reason, what follows is a list of occasions that would raise a \verb|ParserSyntaxError|:
+For a user of our project, it might be important to be aware of the possible exceptions that are intended for them to run into if something is found to be syntactically incorrect. For this reason, what follows is a list of occasions that would raise a \verb|ParserSyntaxError|:
 
 \begin{itemize}
     \item Usage of the \verb|@END| keyword which is reserved for internal purposes.
@@ -72,6 +72,6 @@ For a user of our project, it might be important to be aware of the possible exc
     \item The argument of the \verb|@VERSION| modifier not being made up of three parts each seperated by a space.
     \item The comparator given in the \verb|@VERSION| modifier is not valid.
     \item If \verb|semantic_versioning| fails to parse a version number to semantic version format after trying to force parse with \verb|Version.coerce|.
-    \item When Lark runs into \textit{unexpected characters} and is therefore not able to match the following string of characters to a terminal~\cite{py-module-lark-api}.
+    \item When Lark runs into \textit{unexpected characters} and is therefore not able to match the remaining characters to a terminal~\cite{py-module-lark-api}.
     \item When Lark runs into an \textit{unexpected end of file} when it would still expect a token~\cite{py-module-lark-api}.
 \end{itemize}

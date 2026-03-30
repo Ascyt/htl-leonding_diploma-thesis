@@ -1,15 +1,15 @@
-In this chapter, we will focus on the ``parser'', which is the part of our project that reads the input sequence given by the preprocessor alongside context information and outputs a so-called \verb|FormattedResponse|. 
+In this chapter, we will focus on the \textit{parser}, which is the part of our project that reads the input sequence given by the preprocessor alongside context information and outputs a so-called \verb|FormattedResponse|. 
 
 It is written in Python and relies heavily on the Lark library.
 
-The parser recursively works its way through the ``\verb|Tree|'' object given by Lark, and iteratively builds up the script, brackets, and options for its output.
+The parser recursively works its way through the \verb|Tree| object given by Lark, and iteratively builds up the script, brackets, and options for its output.
 
 \section{High-Level Overview}
 
 In a nutshell, the parser takes an input in the form of a script as a string, a few contextual arguments as \verb|FormatterArgs|, and a Lark grammar, which resembles an \gls{ebnf} grammar, as a string, and outputs a \verb|FormattedResponse|, as is evident by its method header:
 
-\begin{lstlisting}[language=Python]
-    def parse_script(script:str, args:FormatterArgs, ebnf_grammar:str)->FormattedResponse:
+\begin{lstlisting}[language=Python, caption={Method header of \texttt{parse\_script}.}, label={lst:method_header_parser_parse_script}]
+def parse_script(script:str, args:FormatterArgs, ebnf_grammar:str)->FormattedResponse:
 \end{lstlisting}
 
 \subsection{Input: Script}
@@ -35,9 +35,9 @@ Here, \verb|versions| should be a dictionary object that maps the label of a mod
 
 \subsection{Input: Lark grammar}
 
-The Lark grammar, in the method header labeled as \verb|ebnf_grammar|, represents ``a list of rules and terminals that together define a language'' as a string. While the Lark library uses its own syntax, it is based on \gls{ebnf}.\cite{py-module-lark-grammar}
+The Lark grammar, in the method header labeled as \verb|ebnf_grammar|, represents \textit{a list of rules and terminals that together define a language} as a string. While the Lark library uses its own syntax, it is based on \gls{ebnf}.\cite{py-module-lark-grammar}
 
-In our project, the following string, which is a modified form of the ``final \gls{ebnf}'' which shown in the previous part to abide by Lark's expected syntax, gets used:
+In our project, the following string, which is a modified form of the \textit{final \gls{ebnf}} which shown in the previous part to abide by Lark's expected syntax, gets used:
 
 \begin{lstlisting}
 start: N* (line N*)*
@@ -81,7 +81,7 @@ class FormattedResponse:
     no_ketop:bool 
 \end{lstlisting}
 
-Here, \verb|script| refers to the general part of the script that is not part of a ``bracket''. The term ``bracket'' refers to a block body of either \verb|@PREAMBLE|, \verb|@BRACKETSTART|, or \verb|@BRACKETEND|. If a Robot script with no Script Assembler keywords is provided as input, aside from possible minor whitespace changes, it will be returned without edit in \verb|script|. 
+Here, \verb|script| refers to the general part of the script that is not part of a \textit{bracket}. The term \textit{bracket} refers to a block body of either \verb|@PREAMBLE|, \verb|@BRACKETSTART|, or \verb|@BRACKETEND|. If a Robot script with no Script Assembler keywords is provided as input, aside from possible minor whitespace changes, it will be returned without edit in \verb|script|. 
 
 \verb|preamble_dict| is a dictionary that maps the block bodies of \verb|@PREAMBLE| modifiers to the number given by their respective arguments. 
 
@@ -91,19 +91,17 @@ Here, \verb|script| refers to the general part of the script that is not part of
 
 \section{Lark}
 
-Lark is a parsing library for Python which can parse any context-free grammar to an object known as a ``tree''.\cite{py-module-lark}
+Lark is a parsing library for Python which can parse any context-free grammar to an object known as a \textit{tree}.\cite{py-module-lark}
 
 Script Assembler uses the input script on Lark's \verb|parse| method to get a \verb|Tree| object which, amongst others, includes two important properties: \verb|data| and \verb|children|.
 
-A \verb|Tree| object represents a rule with a name, for example, the outermost rule of a parsed script being \verb|"start"|, alongside, if present, its children, which, in the example of \verb|"start"| are \verb|"line"|s. A ``child'' is commonly a \verb|Tree| as well, however it may also be a \verb|Token|. 
+A \verb|Tree| object represents a rule with a name, for example, the outermost rule of a parsed script being \verb|"start"|, alongside, if present, its children, which, in the example of \verb|"start"| are \verb|"line"|s. A \textit{child} is commonly a \verb|Tree| as well, however it may also be a \verb|Token|. 
 
-A \verb|Token| is a ``string with meta-information'', which are chunks of the input text that ``haven't been discarded''. The \verb|Token| class inherits from Python's \verb|str|, which allows it to be treated as string.\cite{py-module-lark-api}
+A \verb|Token| is a \textit{string with meta-information}, which are chunks of the input text that \textit{haven't been discarded}. The \verb|Token| class inherits from Python's \verb|str|, which allows it to be treated as string.\cite{py-module-lark-api}
 
 In our parser, we mainly work with \verb|Tree|s to differentiate between lines and keywords, and \verb|Token|s for the contents of robot lines and keyword arguments. 
 
 \section{Formatter}
-
-TODO: Explain parsing styles (top/bottom?)
 
 After a script has been preprocessed and parsed by Lark, the \verb|Tree| object is given to the method from the \verb|Formatter| class with the following header:
 
@@ -149,7 +147,7 @@ Here, \verb|preamble_index| represents the index of the preamble bracket that ne
 
 \verb|in_bracketstart| and \verb|in_bracketend| represent whether or not the formatter is currently within a respective \verb|@BRACKETSTART| or \verb|@BRACKETEND| modifier. If either of this is the case, new lines will be appended to the respective \verb|bracketstart| or \verb|bracketend| brackets, respectively.
 
-Here, \verb|preamble_index|, \verb|in_bracketstart|, and \verb|in_bracketend| are mutually exclusive to one another, i.e.\ at most only one of them can be ``active'' at a time.
+Here, \verb|preamble_index|, \verb|in_bracketstart|, and \verb|in_bracketend| are mutually exclusive to one another, i.e.\ at most only one of them can be \textit{active} at a time.
 
 \subsection{Line handling}
 
@@ -181,7 +179,7 @@ TODO: flowchart of formatter
 
 An keyword's name, its argument if present, and its children (block body) get extracted from the \verb|_extract_name_arg_children| function. In the case of an option, the expected amount of children is zero. 
 
-In both cases however, the ``\verb|children|'' of the line get passed to this function. Assuming the input to be in the correct general format, the following can be said about the values of the elements of this list, which will be referred to as \verb|elements|:
+In both cases however, the \verb|children| of the line get passed to this function. Assuming the input to be in the correct general format, the following can be said about the values of the elements of this list, which will be referred to as \verb|elements|:
 
 \begin{itemize}
     \item \verb|elements[0]|: This represents the keyword as option or modifier.\\ 

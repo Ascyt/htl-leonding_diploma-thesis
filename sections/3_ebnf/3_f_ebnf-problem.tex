@@ -1,40 +1,67 @@
-\section{Final EBNF Requirements}
+\section{EBNF's Indentation Problem}
 
-To get to our final \gls{ebnf}, we have to represent all of the following:
+To get to our final EBNF, we have to represent all of the following:
 
 \begin{itemize}
-    \item The entire script is made of ``lines'', seperated by line breaks, each of which can be a ``robot line'', an ``option line'', or a ``modifier line''. 
-    \item There are two different types of keywords: ``options'' and ``modifiers''. Valid ``options'' include \verb|@NO_KETOP| and valid ``modifiers'' include \verb|@VERSION|, \verb|@OS|, \verb|@PREAMBLE| \verb|@BRACKETSTART|, and \verb|@BRACKETEND|.
-    \item It should be possible for both ``modifiers'' and ``options'' to have optional arguments until the end of the line. The nature of the argument itself or whether or not a specific keyword should require or allow for an argument should be, for simplicity and ease of extensibility, handled by the parser and therefore do not lie within the scope of the \verb|ebnf|. 
-    \item ``Modifier lines'' include a ``block body'', which is also made up of additional ``lines'' which may be a ``robot line'', ``option line'', or, recursively, a ``modifier line''. 
+    \item The entire script is made of \textit{lines}, seperated by line breaks, each of which can be a \textit{robot line}, an \textit{option line}, or a \textit{modifier line}. 
+    \item There are two different types of keywords: \textit{options} and \textit{modifiers}. Valid \textit{options} include \verb|@NO_KETOP| and valid \textit{modifiers} include \verb|@VERSION|, \verb|@OS|, \verb|@PREAMBLE| \verb|@BRACKETSTART|, and \verb|@BRACKETEND|.
+    \item It should be possible for both \textit{modifiers} and \textit{options} to have optional arguments until the end of the line. The nature of the argument itself or whether or not a specific keyword should require or allow for an argument should be, for simplicity and ease of extensibility, handled by the parser and therefore do not lie within the scope of the \verb|ebnf|. 
+    \item \textit{Modifier lines} include a \textit{block body}, which is also made up of additional \textit{lines} which may be a \textit{robot line}, \textit{option line}, or, recursively, a \textit{modifier line}. 
     \item A block body is marked by each line of text being preceded by an indentation character, which may either be a tab character or four spaces. 
-    \item All other lines are handled as ``robot lines''.
+    \item All other lines are handled as \textit{robot lines}.
 \end{itemize}
 
-Note that in the listing above, there is a differentiation between the \gls{ebnf} object ``lines'' and the term ``line of text'', which stands for a literal string terminated by a new line charecter or the end of the file. 
+Note that in the list above, there is a differentiation between the EBNF object \textit{lines} and the term \textit{line of text}, which stands for a literal string terminated by a new line character or the end of the file. 
 
-However, what follows is a non-rigorous proof by contradiction that it is impossible to fully define a language that meets all the above requirements in \gls{ebnf}.
+However, what follows is a non-rigorous proof by contradiction that it is impossible to fully define a language that meets all the above requirements in EBNF.
 
 \section{Impossibility of Indentation}
 
 What follows are three statements that, for the purposes of this non-rigorous proof, are each assumed to be true. 
 
-Firstly, it is possible to specify the ``modifier line'' as a single, re-usable component, because it must be possible for a ``modifier line'' including its ``block body'' to refer back to itself to allow for recursion. 
+Firstly, it is possible to specify the \textit{modifier line} as a single, re-usable component, because it must be possible for a \textit{modifier line} including its \textit{block body} to refer back to itself to allow for recursion. 
 
-Secondly, as stated in the requirements above, a ``block body'' of a ``modifier line'' may be made up of any number of lines of text, each of which should be preceded by an indentation. 
+Secondly, as stated in the requirements above, a \textit{block body} of a \textit{modifier line} may be made up of any number of lines of text, each of which should be preceded by an indentation. 
 
-Thirdly, when a ``modifier line'' B is defined inside the ``block body'' of another ``modifier line'' A, it is possible to specify that each ``line'' of the ``block body'' of ``modifier line'' B should be preceded by indentation.
+Thirdly, when a \textit{modifier line} B is defined inside the \textit{block body} of another \textit{modifier line} A, it is possible to specify that each \textit{line} of the \textit{block body} of \textit{modifier line} B should be preceded by indentation.
 
-However, the third statement would require ``modifier line'' B to be defined differently to ``modifier line'' A, as each of its line of text of its ``block body'' must be predeced by an indentation as stated in the second statement. This means that, in order to require indentation as prefix for every inner ``line'', a ``modifier line'' may not allow for the same kind of ``modifier line'' as would be used in other parts of the script to be used in its ``block body'', which violates the first statement which requires ``modifier lines'' to be defined as single and re-usable components. Therefore, it is not possible for all three statements to be true at once. 
+However, the third statement would require \textit{modifier line} B to be defined differently to \textit{modifier line} A, as each of its line of text of its \textit{block body} must be preceded by an indentation as stated in the second statement. This means that, in order to require indentation as prefix for every inner \textit{line}, a \textit{modifier line} may not allow for the same kind of \textit{modifier line} as would be used in other parts of the script to be used in its \textit{block body}, which violates the first statement which requires \textit{modifier lines} to be defined as single and re-usable components. Therefore, it is not possible for all three statements to be true at once. 
 
-\section{A Solution}
+\section{Our Solution}
 
-A simple solution to this problem is to not define the entire language in \gls{ebnf}, but rather, to require a ``preprocessor'' to sanitize the input script in a way that makes it suitable for \gls{ebnf}. 
+A simple solution to this problem is to not define the entire language in EBNF, but rather, to require a \textit{preprocessor} to sanitize the input script in a way that makes it suitable for EBNF. 
 
-In our project, the task of the preprocessor is to transpile the indentations required for defining the scope of a block body to a more \gls{ebnf}-friendly way. 
+In our project, the task of the preprocessor is to transpile the indentations required for defining the scope of a block body to a more EBNF-friendly way. 
 
-Instead, the preprocessor uses indentation to determine the scope of a block body. Then, that indentation is stripped from all lines of the block body, and a ``special sequence of text'' is appended below the block body to specify its end. This way, the \gls{ebnf} does not have to take into account the fact that an inner block body would otherwise require every line to have a prefix. Instead, a ``modifier line'' is able to ``sandwich'' any lines in between a clear beginning (which is the line that the ``modifier'' is defined) and a clear end (which is the mentioned ``special sequence of text'').
+Instead, the preprocessor uses indentation to determine the scope of a block body. Then, that indentation is stripped from all lines of the block body, and a \textit{special sequence of text} is appended below the block body to specify its end. 
 
-The choice of that ``special sequence of text'' should be one that is not expected to be in the input script. For Script Assembler, we chose \verb|@END|, as we have already reserved the \verb|@| character for our purposes, there is no keyword with that name, and it still leaves for human-readable code if a user were to look at the code after the preprocessor but before parsing.
+For instance, consider the following code snippet:
+\begin{lstlisting}[caption={Example of modifiers being used with indentation.}, label={lst:ebnf_special_sequence_example_before_preprocessor}]
+Execute on Ketop    echo A
+@VERSION BIOS > 1.0.1
+    Execute on Ketop    echo B
+    @OS WIN10
+        Execute on Ketop    echo C
+Execute on Ketop    echo D
+\end{lstlisting}
 
-A side effect of this is that a user may be able to specify the scope of a block body using \verb|@END| as opposed to how it is defined in the specification. However, this can easily be mitigated by requiring the preprocessor to simply not allow the use of \verb|@END|. 
+After the preprocessor step, assuming all conditions to be met and the string \verb|[placeholder]| to be used as the \textit{special sequence of text}, it may be turned into the following:
+
+\begin{lstlisting}[caption={A possible preprocessor output from listing \ref{lst:ebnf_special_sequence_example_before_preprocessor}.}, label={lst:ebnf_special_sequence_example_after_preprocessor}]
+Execute on Ketop    echo A
+@VERSION BIOS > 1.0.1
+Execute on Ketop    echo B
+@OS WIN10
+Execute on Ketop    echo C
+[placeholder]
+[placeholder]
+Execute on Ketop    echo D
+\end{lstlisting}
+
+Here, the preprocessor removes a single indentation from lines 3 to 4 and two indendations from line 5. To avoid losing information on which lines define the \textit{block body} of the \textit{modifier}, two lines are appended after line 5, both of which are made up of solely our \textit{special sequence of text}.
+
+With this method, the EBNF does not have to take into account the fact that an inner block body would otherwise require every line to have a prefix. Instead, a \textit{modifier line} is able to \textit{sandwich} any lines in between a clear beginning (which is the line that the \textit{modifier} is defined) and a clear end (which is the mentioned \textit{special sequence of text}).
+
+The choice of that \textit{special sequence of text} should be one that is not expected to be in the input script. For Script Assembler, we chose \verb|@END|, as we have already reserved the \verb|@| character for our purposes, there is no keyword with that name, and it still leaves for human-readable code if a user were to look at the code after the preprocessor but before parsing.
+
+A side effect of this is that a user may be able to specify the scope of a block body using \verb|@END| as opposed to how it is defined in the specification. However, this may be mitigated: If the preprocessor does not allow for the use of \verb|@END|, i.e.\ if it, for instance, throws an error upon encountering the symbol, it will not be possible for the user to use or reserve this internal string. A different solution may be to allow \verb|@END| to be used as an alternative to the indentation style. However, as we believed this method to be prone to human error, we decided to go with the former solution instead.

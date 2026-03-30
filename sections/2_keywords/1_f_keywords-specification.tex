@@ -41,7 +41,7 @@ Without Script Assembler, a user may run into issues where they, for instance, w
 
 \section{What Keywords Are}
 
-Our project allows for custom keywords, all of which being preceded by the \verb|@| character, to be defined to act as either ``options'' or ``modifiers''. In a provided file, these keywords must be defined at the start of the line, optionally preceded by indentation for nesting purposes. Lines containing such valid keywords will not be included in the concatenated output file. 
+Our project allows for custom keywords, all of which being preceded by the \verb|@| character, to be defined to act as either \textit{options} or \textit{modifiers}. In a provided file, these keywords must be defined at the start of the line, optionally preceded by indentation for nesting purposes. Lines containing such valid keywords will not be included in the concatenated output file. 
 
 A keyword may be defined to have either no or any number of optional or required arguments. If set, these arguments may then consist of any sequence of characters without line-breaks that is prefixed by the keyword with at least one whitespace inbetween. 
 
@@ -100,7 +100,7 @@ Execute on Ketop    echo C
 
 \section{Recursion}
 
-Keywords may also be defined recursively. Recursion is generally defined as being ``the process in which a function calls itself directly or indirectly''\cite{recursion}. In the case of Script Assembler, it refers to the fact that block bodies of modifiers may also include modifiers, of which the block bodies may then also include modifiers, and so forth. To show this possibility, consider the following example:
+Keywords may also be defined recursively. Recursion is generally defined as being \textit{the process in which a function calls itself directly or indirectly}~\cite{recursion}. In the case of Script Assembler, it refers to the fact that block bodies of modifiers may also include modifiers, of which the block bodies may then also include modifiers, and so forth. To show this possibility, consider the following example:
 
 \begin{lstlisting}[caption={Example of modifiers being defined recursively.}, label={lst:recursive_modifier_example}]
 @BRACKETSTART
@@ -109,19 +109,19 @@ Keywords may also be defined recursively. Recursion is generally defined as bein
             Upload Script To KeTop    E2Speed.ps1
 \end{lstlisting}
 
-Here, the block body of \verb|@BRACKETSTART| is made up of lines two to four, of which the block body of \verb|@OS| is made up of lines three and four, of which the block body of \verb|@VERSION| is made up of line four. Despite the order of ``which blocks are nested inside which'' not making a difference with how all existing modifiers are specified, in general, the parser will interpret this from the outside to the innermost level of nesting, similar to how nesting is handled by most ordinary programming languages. 
+Here, the block body of \verb|@BRACKETSTART| is made up of lines two to four, of which the block body of \verb|@OS| is made up of lines three and four, of which the block body of \verb|@VERSION| is made up of line four. Despite the order of \textit{which blocks are nested inside which} not making a difference with how all existing modifiers are specified, in general, the parser will interpret this from the outside to the innermost level of nesting, similar to how nesting is handled by most ordinary programming languages. 
 
-This means that, if the above snippet is the only input file that contains the \verb|@bRACKETSTART| keyword, given how that keyword is specified, the part of the output script that is the so-called \textit{bracket start} will be: 
+This means that, if the above snippet is the only input file that contains the \verb|@BRACKETSTART| keyword, given how that keyword is specified, the part of the output script that is the so-called \textit{bracket start} will be: 
 
 \begin{lstlisting}[caption={Bracket-start parser result for listing \ref{lst:recursive_modifier_example} for satisfied conditions.}, label={lst:bracket_start_output_example}]
 Upload Script To KeTop    E2Speed.ps1
 \end{lstlisting}
 
-in the case of both of the conditions from the respective specifications of the \verb|@OS| and \verb|@VERSION| keywords and with each of their respective arguments being met. Otherwise, the ``bracket start'' of the output file will be empty. 
+In the case of both of the conditions from the respective specifications of the \verb|@OS| and \verb|@VERSION| keywords and with each of their respective arguments being met. Otherwise, the \textit{bracket start} of the output file will be empty. 
 
 \section{Concatenation and Output}
 
-In general, the files get concatenated in the same order that they are given, unless keywords that change that predefined flow are used. Then, to assure the final output Robot file is valid and executable on a KeTop, the following template code will be appended before the output from the entire parsing and concatenation operations:
+In general, the files get concatenated in the same order that they are given, unless keywords that change that predefined flow are used. Then, to assure the final output Robot file is valid and executable on a KeTop, the following template code will be appended before the output of the entire parsing and concatenation operations:
 
 \begin{lstlisting}[caption={Output file template appended before inserted test cases.}, label={lst:output_template_example}]
 # Template file for HMI Automation

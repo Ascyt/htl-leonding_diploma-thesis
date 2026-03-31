@@ -1,0 +1,27 @@
+In this part, explain own implementation for the Script Assembler in detail. Aside from \textit{Syntax Highlighting}, everything was written in the \textit{Python} programming language.
+
+The following chapters belong to this part:
+\begin{itemize}
+    \item Chapter~\ref{chap:preprocessor}: \textit{Preprocessor}. This chapter goes over the \textit{Preprocessor}, which converts significant indentation of a \textit{modifier}'s \textit{block body} into a reserved keyword that is understood by the \textit{Parser}. In Chapter~\ref{chap:ebnf-problem}, the need for this preprocessor is explained in detail.
+    \item Chapter~\ref{chap:parser}: \textit{Parser}. This chapter goes over the \textit{Parser}, which uses the \textit{Lark} library in combination with a modified form of our EBNF from Chapter~\ref{lst:our_ebnf} to recursively parse an input script to an output script and brackets. 
+    \item Chapter~\ref{chap:option-modifier-format}: \textit{Option/Modifier Format}. Here, our implementation for handling the respective keywords within the parser is explained. 
+    \item Chapter~\ref{chap:trp-integration}: \textit{TRP-Integration}. Since our project is used within the \gls{trp} project, we explain the changes we made to the existing project to integrate our Script Assembler.
+    \item Chapter~\ref{chap:syntax-highlighting}: \textit{Syntax Highlighting}. Since the existing \gls{trp} project's \textit{Angular} frontend uses a code editor known as \textit{Monaco Editor}, we implemented \textit{Syntax Highlighting}, in other words text colorization based on keyword syntax, which we go over in this chapter.
+    \item Chapter~\ref{chap:extensibility}: \textit{Extensibility}. In this chapter, we explain how the Script Assembler may be extended with additional keywords, give examples to keywords that may be useful in the future, and discuss the limits of our parser. 
+    \item Chapter~\ref{chap:database}: \textit{Database}. Here, we explain the \textit{Mockup Database}, which we built to allow the project to run independently to the proprietary \textit{TestRail} system and to aid with testing.
+\end{itemize}
+
+In the \gls{trp} project, the following files and directories make up the core of the Script Assembler and its components, where the \verb|.| directory refers to the project's root:
+\begin{itemize}
+    \item \verb|./TRP/broker/managers/case/script_assembler|: The core logic of the Script Assembler's preprocessor and parser is defined in this directory. It includes the following files:
+    \begin{itemize}
+        \item \verb|preprocessor.py|: Here, the \verb|Preprocessor| class is found alongside its logic. This file is shown and explained in Chapter~\ref{chap:preprocessor}.
+        \item \verb|parser.py|: This file defines the \verb|parse_script| function, which serves as an entry point to the preprocessor and parser. This is explained in Chapter~\ref{chap:parser}. 
+        \item \verb|formatter.py|: This file includes the \verb|Formatter| class, which includes the core logic of the recursive parsing mechanism of the given script in the form of a \textit{Lark} \verb|Tree| object. We explain this mechanism in detail in Chapter~\ref{chap:parser}.
+        \item \verb|datatypes.py|: Data classes (i.e.\ classes with the \verb|@dataclass| annotation) that are used by the parser are found in this file and also explained in Chapter~\ref{chap:parser}.
+        \item \verb|option_modifier_format.py|: This file is used by the \verb|Formatter| and specifies how each respective keyword should be handled. In Chapter~\ref{chap:option-modifier-format}, we explain the inner workings of this, and Chapter~\ref{chap:extensibility} explains how one might use this file to define keywords that may be needed in the future.
+        \item \verb|parser_exception.py|: Here, two custom exceptions related to the parser can be found: \verb|ParserSyntaxError| and \verb|ParserInternalError|. They are explained in Chapter~\ref{chap:exceptions-and-warnigs}.
+    \end{itemize}
+    \item \verb|./TRP/common/dbfunc.py|: This file includes the \verb|DBSession| class, which implements the same functions as \verb|TRSession| of \verb|testrailfunc.py| (which is found in the same directory) in order to connect to and interact with our \textit{PostgreSQL} mockup database. Chapter~\ref{chap:database} explains this in detail.
+    \item TODO: syntax highlighting
+\end{itemize}

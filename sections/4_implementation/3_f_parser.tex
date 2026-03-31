@@ -196,7 +196,7 @@ In both cases however, the \verb|children| of the line get passed to this functi
     \item \verb|elements[0]|: This represents the keyword as option or modifier.\\ 
     Its \verb|$.data| is either \verb|"option"| or \verb|"modifier"|.
     \item \verb|elements[0].children|: This list either contains one or two elements.
-    \item \verb|elements[0].children[0]|: This element is a \verb|Token| and its \verb|$.value| represents the name of the keyword (i.e.\ \verb|"VERSION"|). 
+    \item \verb|elements[0].children[0]|: This element is a \verb|Token| and its \verb|$.value| represents the name of the keyword (e.g.\ \verb|"VERSION"|). 
     \item \verb|elements[0].children[1]|: If present (i.e.\ if \verb|elements[0].children| contains two elements), its \verb|$.children[0].value| represents the argument. Otherwise, there is no argument. 
     \item \verb|elements[1:]|: The rest of the \verb|elements| list, i.e.\ everything but the first element, is considered the children (block body) of the modifier.
 \end{itemize}

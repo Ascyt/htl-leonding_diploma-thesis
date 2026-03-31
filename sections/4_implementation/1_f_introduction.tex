@@ -11,7 +11,7 @@ The following chapters belong to this part:
     \item Chapter~\ref{chap:database}: \textit{Database}. Here, we explain the \textit{Mockup Database}, which we built to allow the project to run independently to the proprietary \textit{TestRail} system and to aid with testing.
 \end{itemize}
 
-In the \gls{trp} project, the following files and directories make up the core of the Script Assembler and its components, where the \verb|.| directory refers to the project's root:
+In the \gls{trp} project, the following files and directories make up nearly the entirety of the Script Assembler and its components, where the \verb|.| directory refers to the project's root:
 \begin{itemize}
     \item \verb|./TRP/broker/managers/case/script_assembler|: The core logic of the Script Assembler's preprocessor and parser is defined in this directory. It includes the following files:
     \begin{itemize}
@@ -23,5 +23,6 @@ In the \gls{trp} project, the following files and directories make up the core o
         \item \verb|parser_exception.py|: Here, two custom exceptions related to the parser can be found: \verb|ParserSyntaxError| and \verb|ParserInternalError|. They are explained in Chapter~\ref{chap:exceptions-and-warnigs}.
     \end{itemize}
     \item \verb|./TRP/common/dbfunc.py|: This file includes the \verb|DBSession| class, which implements the same functions as \verb|TRSession| of \verb|testrailfunc.py| (which is found in the same directory) in order to connect to and interact with our \textit{PostgreSQL} mockup database. Chapter~\ref{chap:database} explains this in detail.
-    \item TODO: syntax highlighting
+    \item \verb|./Angular/src/app/app.module.ts|: This represents the primary configuration file for the \textit{Angular} project, which has been provided by our project partner, Martin Wieser from KEBA Group AG.\@ It includes the configuration for \textit{Monaco Editor}.\@ Chapter~\ref{chap:syntax-highlighting} explains how we expanded it to allow for \textit{Syntax Highlighting} for our keywords.
+    \item \verb|./TRP/broker/managers/case/casemanager.py|: This file has been provided by our project partner, Martin Wieser from KEBA Group AG.\@ For our project, the\\ \verb|assemble_robot_script| method is important, as it was modified by us to integrate our Script Assembler into the existing \gls{trp} project, which is explained in Chapter~\ref{chap:trp-integration}.
 \end{itemize}

@@ -106,9 +106,11 @@ Lark is a parsing library for Python which can parse any context-free grammar to
 
 The Script Assembler uses the input script on Lark's \verb|parse| method to get a \verb|Tree| object which, amongst others, includes two important properties: \verb|data| and \verb|children|.
 
-A \verb|Tree| object represents a rule with a name, for example, the outermost rule of a parsed script being \verb|"start"|, alongside, if present, its children, which, in the example of \verb|"start"| are \verb|"line"|s. A \textit{child} is commonly a \verb|Tree| as well, however it may also be a \verb|Token|. 
+A \verb|Tree| object represents a rule with a name, for example, the outermost rule of a parsed script being \verb|"start"|, alongside, if present, its children, which, in the example of \verb|"start"| are \verb|"line"|s. A \textit{child} is commonly a \verb|Tree| as well, however it may also be a \verb|Token|~\cite{py-module-lark-api}.
 
-A \verb|Token| is a \textit{string with meta-information}, which are chunks of the input text that \textit{haven't been discarded}. The \verb|Token| class inherits from Python's \verb|str|, which allows it to be treated as string~\cite{py-module-lark-api}.
+According to Lark's official API reference, a \verb|Token| is described as the following:
+
+``A string with meta-information, that is produced by the lexer. When parsing text, the resulting chunks of the input that haven't been discarded, will end up in the tree as Token instances. The Token class inherits from Python's \verb|str|, so normal string comparisons and operations will work as expected''\cite{py-module-lark-api}
 
 In our parser, we mainly work with \verb|Tree|s to differentiate between lines and keywords, and \verb|Token|s for the contents of robot lines and keyword arguments. 
 

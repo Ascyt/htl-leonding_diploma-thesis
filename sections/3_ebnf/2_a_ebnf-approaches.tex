@@ -19,7 +19,7 @@ For this reason, designing the new formal grammar became hard to manage, because
 \end{itemize}
 The testing team at KEBA was already deeply familiar with the \texttt{@} prefix. Early design discussions brought up the idea to introduce distinct prefixes to simplify the parsing. The suggestion was to introduce \texttt{\#} for global options, and \texttt{\&} for block statements. The idea was, that the tokenization process would become significantly easier and more accurate this way. The evaluation feedback then showed the problem that the distinct prefixes break all existing test suites. A complete disruption of the developers workflow would be the result.
 
- This created a conflict. A new parser is strictly necessary, but the legacy \texttt{@} prefix and the overall backward compatibility must still remain intact. This exact conflict dominated the first design phase and brought following solution. Though the strictness of the ``Backward Compatibilty'' restriction was not as clear at that point.
+ This created a conflict. A new parser is strictly necessary, but the legacy \texttt{@} prefix and the overall backward compatibility must still remain intact. This conflict dominated the first design phase and led to the following solution. Though the strictness of the ``Backward Compatibilty'' restriction was not as clear at that point.
  To establish a good understanding of the available options and technical trade-offs, two contrasting EBNF approaches were modeled. The evaluation happened before the final syntax design was established.
 
 
@@ -86,7 +86,7 @@ This approach was very precise and stable. Unfortunately, there were two severe 
 
 Testing these two different approaches provided important details for the final EBNF. The Minimal Approach showed the possible dangers of structural ambiguity. It is clear that the parser needs to ``understand'' the difference between a standalone option and a block-defining modifier. On the other hand, the Detailed Approach proved that excessive rigidity is also not completely perfect. Making the parsing process too easy for the machine just makes extending unneccessary hard.
 
-The conclusion from this evaluation phase was that the final grammar definitely needed a hybrid design to work. On the inside, it requires the precision of the Detailed Approach, which  means in detail that all keywords must be strictly defined and categorized internally so the parser can recognize valid scopes and modifiers correct. But at the same time, is still has to keep the same look and the backward compatibility of the old legacy approach by using the \texttt{@} prefix, everywhere, while also making the argument structure much more relaxed to make it easier to add extensions later on.
+The conclusion from this evaluation phase was that the final grammar definitely needed a hybrid design to work. On the inside, it requires the precision of the Detailed Approach, which  means in detail that all keywords must be strictly defined and categorized internally so the parser can recognize valid scopes and modifiers correctly. But at the same time, it still has to keep the same look and the backward compatibility of the old legacy approach by using the \texttt{@} prefix, everywhere, while also making the argument structure much more relaxed to make it easier to add extensions later on.
 
 The idea of explicit termination symbols like \texttt{\&/} was completely dropped in favor of indentation-based scoping, and the old ``sections'' were just changed into standard modifiers.
 

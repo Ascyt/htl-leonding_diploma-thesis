@@ -1,8 +1,32 @@
+\section{Introduction}
+
 In this chapter, we will focus on the \textit{parser}, which is the part of our project that reads the input sequence given by the preprocessor alongside context information and outputs a so-called \verb|FormattedResponse|. 
 
 It is written in Python and relies heavily on the Lark library.
 
 The parser recursively works its way through the \verb|Tree| object given by Lark, and iteratively builds up the script, brackets, and options for its output.
+
+Figure~\ref{fig:parser-flowchart_full_combined} shows a flowchart diagram of the entire parser, where the parts that are discussed in this section are depicted in detail. 
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[b]{\linewidth}
+        \centering
+        \includegraphics[width=0.35\linewidth]{pics/parser-flowchart/full.png}
+        \caption{Downsized flowchart diagram of the parser.}
+        \label{fig:parser-flowchart_full}
+    \end{subfigure}\hfill
+    \begin{subfigure}[b]{\linewidth}
+        \centering
+        \includegraphics[width=0.6\linewidth]{pics/parser-flowchart/legend.png}
+        \caption{Legend of the parser flowchart diagram.}
+        \label{fig:parser-flowchart_legend}
+    \end{subfigure}
+    \caption{Full flowchart diagram of the parser with its legend.}
+    \label{fig:parser-flowchart_full_combined}
+\end{figure}
+
+It is important to note that while Figure~\ref{fig:parser-flowchart_full} is at a size where it may not be possible to make out details, subsequent sections of this chapter include enlarged variants, as seen in Figures~\ref{fig:parser-flowchart_general_combined},~\ref{fig:parser-flowchart_line-formatting_combined},~\ref{fig:parser-flowchart_line-formatting_location}, and~\ref{fig:parser-flowchart_extract-name-arg-children_combined}.
 
 \section{High-Level Overview}
 
@@ -14,7 +38,7 @@ def parse_script(script:str, args:FormatterArgs, ebnf_grammar:str)->FormattedRes
 
 \subsection{Input: Script}
 
-The script is the the raw Robot script that is to be parsed. Importantly, this input should not already have gone through the preprocessor step mentioned in the chapter above, as it is done in the function.
+The script is the the raw Robot script that is to be parsed. Importantly, this input should not already have gone through the preprocessor step mentioned in Chapter~\ref{chap:preprocessor}, as it is done in the function.
 
 \subsection{Input: Arguments}
 
@@ -104,13 +128,46 @@ Here, \verb|script| refers to the general part of the script that is not part of
 
 Lark is a parsing library for Python which can parse any context-free grammar to an object known as a \textit{tree}~\cite{py-module-lark}.
 
-The Script Assembler uses the input script on Lark's \verb|parse| method to get a \verb|Tree| object which, amongst others, includes two important properties: \verb|data| and \verb|children|.
+After preprocessing, the Script Assembler uses the input script on Lark's \verb|parse| method to get a \verb|Tree| object which, amongst others, includes two important properties: \verb|data| and \verb|children|.
 
-A \verb|Tree| object represents a rule with a name, for example, the outermost rule of a parsed script being \verb|"start"|, alongside, if present, its children, which, in the example of \verb|"start"| are \verb|"line"|s. A \textit{child} is commonly a \verb|Tree| as well, however it may also be a \verb|Token|. 
+A \verb|Tree| object represents a rule with a name, for example, the outermost rule of a parsed script being \verb|"start"|, alongside, if present, its children, which, in the example of \verb|"start"| are \verb|"line"|s. A \textit{child} is commonly a \verb|Tree| as well, however it may also be a \verb|Token|~\cite{py-module-lark-api}.
 
-A \verb|Token| is a \textit{string with meta-information}, which are chunks of the input text that \textit{haven't been discarded}. The \verb|Token| class inherits from Python's \verb|str|, which allows it to be treated as string~\cite{py-module-lark-api}.
+According to Lark's official API reference, a \verb|Token| is described as the following:
+
+``A string with meta-information, that is produced by the lexer. When parsing text, the resulting chunks of the input that haven't been discarded, will end up in the tree as Token instances. The Token class inherits from Python's \verb|str|, so normal string comparisons and operations will work as expected.''\cite{py-module-lark-api}
 
 In our parser, we mainly work with \verb|Tree|s to differentiate between lines and keywords, and \verb|Token|s for the contents of robot lines and keyword arguments. 
+
+\section{General Procedure}
+
+The \verb|parse_script| starts by creating an instance of the \verb|Lark| class using the provided grammar. Using Lark's \verb|get_terminal| function, the allowed modifiers and options as specified in the grammar are fetched and, together with the input script, passed to the preprocessor. 
+
+Afterwards, using Lark's \verb|parse| method, the preprocessed script is then converted to a \verb|Tree| object. This is passed to the \verb|format_lark| function, which utilizes the provided \verb|FormatterArgs| to turn it into a \verb|FormattedResponse|, which is then returned. 
+
+Figure~\ref{fig:parser-flowchart_general_combined} highlights this procedure.
+
+\begin{figure}[H]
+    \centering
+    
+    \begin{subfigure}[b]{\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{pics/parser-flowchart/general.png}
+        \caption{The detailed part of the parser's flowchart diagram which illustrates the general procedure.}
+        \label{fig:parser-flowchart_general}
+    \end{subfigure}
+
+    \vspace{6pt}
+
+    \begin{subfigure}[b]{\linewidth}
+        \centering
+        \includegraphics[width=0.35\linewidth]{pics/parser-flowchart/general_location.png}
+        \caption{The location of the detailed inset within the full flowchart as seen in Figure~\ref{fig:parser-flowchart_full}.}
+        \label{fig:parser-flowchart_general_location}
+    \end{subfigure}
+
+    \caption{The part of the flowchart diagram from Figure~\ref{fig:parser-flowchart_full_combined} that details the general procedure of the parser.}
+    \label{fig:parser-flowchart_general_combined}
+\end{figure}
 
 \section{Formatter}
 
@@ -184,7 +241,41 @@ This function differentiates whether the \verb|line| matches \verb|"robot_line"|
 
 \verb|_format_children| sets the formatter's current \verb|ChildArgs| to the instance given as parameter, runs \verb|_handle_line| on each element of the provided list of \verb|Tree|s, and then changes the formatter's current \verb|ChildArgs| value back to what it was at the beginning of this function call. This way, a modifier's \verb|ChildArgs| only gets used for its children (block body). If a modifier does not need to pass custom \verb|ChildArgs| to its children, it may return the \verb|ChildArgs| of \verb|current| (\verb|FormatterInternal|), as opposed to a new instance. 
 
-TODO: flowchart of formatter
+Figures~\ref{fig:parser-flowchart_line-formatting_combined} and~\ref{fig:parser-flowchart_line-formatting_location} highlight the precise procedure to recursively handle each line.
+
+% Ensure floats before are flushed, then place figures at the top
+\FloatBarrier
+% Combine the two detailed images into one figure and put the location image separately
+\begin{figure}[t!]
+    \centering
+    \begin{subfigure}[b]{\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{pics/parser-flowchart/line-formatting-1.png}
+        \caption{The detailed part of the parser's flowchart diagram which illustrates how the main part of the formatter recursively handles lines.}
+        \label{fig:parser-flowchart_line-formatting-1}
+    \end{subfigure}
+
+    \vspace{6pt}
+
+    \begin{subfigure}[b]{\linewidth}
+        \centering
+        \includegraphics[width=0.7\linewidth]{pics/parser-flowchart/line-formatting-2.png}
+        \caption{The detailed part of the parser's flowchart diagram which shows how arguments are passed to Option/Modifier Format.}
+        \label{fig:parser-flowchart_line-formatting-2}
+    \end{subfigure}
+
+    \caption{Detailed insets for the parser flowchart shown in Figure~\ref{fig:parser-flowchart_full_combined}.}
+    \label{fig:parser-flowchart_line-formatting_combined}
+\end{figure}
+
+\begin{figure}[t!]
+    \centering
+    \includegraphics[width=0.45\linewidth]{pics/parser-flowchart/line-formatting_location.png}
+    \caption{Location of the detailed insets from Figure~\ref{fig:parser-flowchart_line-formatting_combined} within the full flowchart (Figure~\ref{fig:parser-flowchart_full}).}
+    \label{fig:parser-flowchart_line-formatting_location}
+\end{figure}
+
+\clearpage
 
 \section{Extracting name, arg, children}
 
@@ -202,3 +293,29 @@ In both cases however, the \verb|children| of the line get passed to this functi
 \end{itemize}
 
 Here, \verb|$| is used as a placeholder for the respective variable from before the colon of each bullet point.
+
+Figure~\ref{fig:parser-flowchart_extract-name-arg-children_combined} highlights this procedure.
+
+\begin{figure}[H]
+    \centering
+    
+    \begin{subfigure}[b]{\linewidth}
+        \centering
+        \includegraphics[width=0.8\linewidth]{pics/parser-flowchart/extract-name-arg-children.png}
+        \caption{The detailed part of the parser's flowchart diagram which illustrates the extract-name-arg-children procedure.}
+        \label{fig:parser-flowchart_extract-name-arg-children}
+    \end{subfigure}
+
+    \vspace{6pt}
+
+    \begin{subfigure}[b]{\linewidth}
+        \centering
+        \includegraphics[width=0.35\linewidth]{pics/parser-flowchart/extract-name-arg-children_location.png}
+        \caption{The location of the detailed inset within the full flowchart as seen in Figure~\ref{fig:parser-flowchart_full}.}
+        \label{fig:parser-flowchart_extract-name-arg-children_location}
+    \end{subfigure}
+
+    \caption{The part of the flowchart diagram from Figure~\ref{fig:parser-flowchart_full_combined} that details the extract-name-arg-children procedure of the parser.}
+    \label{fig:parser-flowchart_extract-name-arg-children_combined}
+\end{figure}
+

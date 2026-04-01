@@ -1,18 +1,26 @@
 \section{Introduction}
 
-As already established earlier on, the Script Assembler introduces a custom syntax added on top of the Robot Framework. It uses annotations such as \texttt{@VERSION} to control the test suit setup. To process this grammar the implementation uses the Lark parsing library (cf.~\cite{LarkGithub}). However while the chosen indentation-based syntax is very intuitive for the developers, it introduces technical difficulties for the parser.
+As already established earlier on, the Script Assembler introduces a custom syntax added on top of the Robot Framework. It uses annotations such as \texttt{@VERSION} to control the test suit setup. To process this grammar the implementation uses the Lark parsing library \cite{LarkGithub}. However while the chosen indentation-based syntax is very intuitive for the developers, it introduces technical difficulties for the parser.
 
-Indentation-based scoping is context-sensitive. To find out if a line belongs to a block, the parser needs to know the indentation level of the previous annotation. That requires it that the current indentation depth is saved. While the Lark library provides its own indenter utility for parsing whitespace-scoped languages, it processes indentation globally (cf.~\cite{LarkDocsIndent}).
+Indentation-based scoping is context-sensitive. To find out if a line belongs to a block, the parser needs to know the indentation level of the previous annotation. That requires it that the current indentation depth is saved. While the Lark library provides its own indenter utility for parsing whitespace-scoped languages, it processes indentation globally \cite{LarkDocsIndent}.
 Because the Script Assembler has to differentate between its own language and the contained Robot Framework code, Lark's indenter would generate tokens for Robot Framework code indents which might lead to blocks that close too early.
 
 
-That is why an additional preprocessing step is required before the Lark parser can evaluate the script. This step is handled by a Preprocessor. It's goal is to isolate the meta-language indentation from the content-language indentation before the script is parsed. 
+That is why an additional preprocessing step is required before the Lark parser can evaluate the script. This step is handled by a preprocessor, whose goal is to isolate the meta-language indentation from the content-language indentation before parsing the script.
+
 
 \section{Design and Transformation Rules}
 
 \subsection{Content vs. Meta-Language Conflict}
 
-The fundamental problem is that both languages use spaces and indentation to define logic and structure. In the Robot Framework, spaces and tabs separate keywords from arguments, and indentation marks the contents of blocks like \texttt{FOR} loops and \texttt{IF} statements. At the same time, the Script Assembler uses indentation to determine which lines belong to a specific modifier. This leads to the problem of having to somehow seperate those two kind of indents and thus the need for our own Preprocessor instead of the Lark Indenter.
+The fundamental problem is that both languages use spaces and indentation to define logic and structure. In the Robot Framework, spaces and tabs separate keywords from arguments, and indentation marks the contents of blocks like \texttt{FOR} loops and \texttt{IF} statements. At the same time, the Script Assembler uses indentation to determine which lines belong to a specific modifier. This leads to the problem of having to somehow seperate those two kind of indents (see Figure \ref{fig:indents_highlights}) and thus the need for our own Preprocessor instead of the Lark Indenter.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.75\textwidth]{pics/IndentsHighlights.png}
+    \caption{Difference between meta-language and content-language indents. }
+    \label{fig:indents_highlights}
+\end{figure}
 
 \subsection{Explicit Block Scoping}
 
@@ -249,7 +257,7 @@ Second, the \texttt{remove\_indents} method removes the tabs of the meta-languag
 The \texttt{preprocess} method handles the line-by-line transformation. Listing \ref{lst:impl_loop} shows the initialization of the state tracking variables: the \texttt{result} string buffer, the \texttt{layer\_tabs} stack, and the \texttt{is\_modifier\_empty} flag.
 
 
-\begin{lstlisting}[language=Python, caption={Initialization of the main preprocessing loop}, label={lst:impl_loop}]
+\begin{lstlisting}[language=Python, caption={Initialization of the main preprocessing loop}, label={lst:impl_loop}, firstnumber=46]
 
     def preprocess(self, script: str) -> str:
 
@@ -286,7 +294,7 @@ Before using the slower \texttt{re.fullmatch} operation, the algorithm checks is
 After reading a line, the Preprocessor decides whether the line belongs to the current scope, opens a new scope, or closes existing scopes. Listing \ref{lst:impl_stack} illustrates this stack management logic.
 
 
-\begin{lstlisting}[language=Python, caption={The stack implementation for resolving indentation scopes}, label={lst:impl_stack}]
+\begin{lstlisting}[language=Python, caption={The stack implementation for resolving indentation scopes}, label={lst:impl_stack}, firstnumber=69]
 
             # [...]
             if len(layer_tabs) > 0:
@@ -337,7 +345,7 @@ That is why the Preprocessor assumes that it is most likely either not correctly
 At the end of the loop, new scopes are initialized, and the output is verified before being passed to the Parser.
 
 
-\begin{lstlisting}[language=Python, caption={Handling the root scope and finalizing the output stream at the end of the file.}, label={lst:impl_final}]
+\begin{lstlisting}[language=Python, caption={Handling the root scope and finalizing the output stream at the end of the file.}, label={lst:impl_final}, firstnumber=97]
 
             # [...]
 

@@ -30,7 +30,7 @@ One of the two strategies explored was the minimal EBNF approach. The idea behin
 Listing \ref{lst:minimal_ebnf} demonstrates this broad structural definition. The grammar does not strictly define every possible keyword. Instead, it simply distinguishes between standard Robot Framework lines, single-line operators, and multi-line operators. 
 
 
-\begin{lstlisting}[caption={The Minimal EBNF grammar}, label={lst:minimal_ebnf}]
+\begin{lstlisting}[caption={The Minimal EBNF grammar}, label={lst:minimal_ebnf}, float=htbp]
 script = {line, nl}, [line].
 line = robot | operator | multiline_operator.
 robot = ? robot code line ?.
@@ -56,7 +56,7 @@ While the Minimal Approach explored maximum flexibility, a completely different 
 
 As shown in Listing \ref{lst:detailed_ebnf},  this iteration uses distinct prefixes for different types of constructs. It also introduces explicit termination symbols to make the structure clear.
 
-\begin{lstlisting}[caption={The Detailed EBNF grammar}, label={lst:detailed_ebnf}]
+\begin{lstlisting}[caption={The Detailed EBNF grammar}, label={lst:detailed_ebnf}, float=htbp]
 S = { ' ' | '\t' } ;
 robot_line = S , ?robot_script_line? , S ;
 option_line = S , '#' , S , option , S ;

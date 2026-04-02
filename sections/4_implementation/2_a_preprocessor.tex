@@ -13,7 +13,9 @@ That is why an additional preprocessing step is required before the Lark parser 
 
 \subsection{Content vs. Meta-Language Conflict}
 
-The fundamental problem is that both languages use spaces and indentation to define logic and structure. In the Robot Framework, spaces and tabs separate keywords from arguments, and indentation marks the contents of blocks like \texttt{FOR} loops and \texttt{IF} statements. At the same time, the Script Assembler uses indentation to determine which lines belong to a specific modifier. This leads to the problem of having to somehow seperate those two kind of indents (see Figure \ref{fig:indents_highlights}) and thus the need for our own Preprocessor instead of the Lark Indenter.
+The fundamental problem is that both languages use spaces and indentation to define logic and structure. In the Robot Framework, spaces and tabs separate keywords from arguments, and indentation marks the contents of blocks like \texttt{FOR} loops and \texttt{IF} statements, as shown with green highlights in Figure \ref{fig:indents_highlights}.
+
+At the same time, the Script Assembler uses indentation to determine which lines belong to a specific modifier, as shown with orange highlights in Figure \ref{fig:indents_highlights}. This leads to the problem of having to somehow seperate those two kind of indents and thus the need for our own Preprocessor instead of the Lark Indenter.
 
 \begin{figure}[h]
     \centering
@@ -40,7 +42,7 @@ With these clear boundaries, the EBNF grammar in Lark is simplified. It only nee
 The following example uses several annotations nested within standard Robot Framework control structures. Listing \ref{lst:raw_script} shows a typical raw Preprocessor input script written by a test developer.
 
 
-\begin{lstlisting}[caption={Raw input script with nested modifiers}, label={lst:raw_script}]
+\begin{lstlisting}[caption={Raw input script with nested modifiers}, label={lst:raw_script}, float=htbp]
 Setup Test Environment
     @VERSION BIOS == 1.6.1
         Log    Checking BIOS Version
@@ -56,7 +58,7 @@ In Listing \ref{lst:raw_script}, a Robot Framework keyword (\texttt{Setup Test E
 The Preprocessor should calculate the active layers of modifiers and remove only the leading indents belonging to these specific layers. Listing \ref{lst:preprocessed_script} shows the expected output.
 
 
-\begin{lstlisting}[caption={Expected Preprocesssor output}, label={lst:preprocessed_script}]
+\begin{lstlisting}[caption={Expected Preprocesssor output}, label={lst:preprocessed_script}, float=htbp]
 
 Setup Test Environment
 @VERSION BIOS == 1.6.1
@@ -104,7 +106,7 @@ The linear depth counting approach unfortunately failed when Script Assembler an
 Listing \ref{lst:problem_script} demonstrates the specific edge case that exposed the flaw in the naive algorithm.
 
 
-\begin{lstlisting}[caption={Problematic edge case}, label={lst:problem_script}]
+\begin{lstlisting}[caption={Problematic edge case}, label={lst:problem_script}, float=htbp]
 @VERSION BIOS == 1.2.3
     FOR    ${item}    IN    @{ITEMS}
         @VERSION KBDRIVER != 0.2.5
@@ -130,7 +132,7 @@ The algorithm compares the \texttt{Sleep} line's tab count (2) to the \texttt{cu
 
 That is why the algorithm unfortunately fails, as seen in Listing \ref{lst:problem_script_output}. It is counting tabs in \texttt{current\_layer} integer for the indentation and completely ignores how many of these tabs were actually introduced by the contained language.
 
-\begin{lstlisting}[caption={Wrong output of the problematic script with the first approach}, label={lst:problem_script_output}]
+\begin{lstlisting}[caption={Wrong output of the problematic script with the first approach}, label={lst:problem_script_output}, float=htbp]
 @VERSION BIOS == 1.2.3
 FOR    ${item}    IN    @{ITEMS}
 @VERSION KBDRIVER != 0.2.5
@@ -166,7 +168,7 @@ Re-evaluating Listing \ref{lst:problem_script} using this stack-based approach y
 
 \end{itemize}
 
-\begin{lstlisting}[caption={Correct output of the problematic script with the final approach}, label={lst:problem_script_correct}]
+\begin{lstlisting}[caption={Correct output of the problematic script with the final approach}, label={lst:problem_script_correct}, float=htbp]
 @VERSION BIOS == 1.2.3
 FOR    ${item}    IN    @{ITEMS}
 @VERSION KBDRIVER != 0.2.5
@@ -194,7 +196,7 @@ The Preprocessor is initialized with specific regular expressions. These express
 Listing \ref{lst:impl_utils} shows this class initialization alongside these core utility functions.
 
 
-\begin{lstlisting}[language=Python, caption={Class initialization and indentation utility functions}, label={lst:impl_utils}]
+\begin{lstlisting}[language=Python, caption={Class initialization and indentation utility functions}, label={lst:impl_utils}, float=htbp]
 import re
 from broker.managers.case.script_assembler.parser_exception import ParserSyntaxError
 from logging import Logger
@@ -257,7 +259,7 @@ Second, the \texttt{remove\_indents} method removes the tabs of the meta-languag
 The \texttt{preprocess} method handles the line-by-line transformation. Listing \ref{lst:impl_loop} shows the initialization of the state tracking variables: the \texttt{result} string buffer, the \texttt{layer\_tabs} stack, and the \texttt{is\_modifier\_empty} flag.
 
 
-\begin{lstlisting}[language=Python, caption={Initialization of the main preprocessing loop}, label={lst:impl_loop}, firstnumber=46]
+\begin{lstlisting}[language=Python, caption={Initialization of the main preprocessing loop}, label={lst:impl_loop}, float=htbp, firstnumber=46]
 
     def preprocess(self, script: str) -> str:
 
@@ -286,7 +288,11 @@ The \texttt{preprocess} method handles the line-by-line transformation. Listing 
 
 
 First, the loop skips any empty lines.
-Before using the slower \texttt{re.fullmatch} operation, the algorithm checks is the line starts with an \texttt{@} symbol and thus is a modifier. This filters out the majority of lines. If the line begins with that symbol, we check if the modifier is \texttt{@END}. Since this is an internal token only used for terminating the blocks, users are not allowed to use it in raw scripts. That means if it exists in the code, we raise a \texttt{ParserSyntaxError}.
+Before using the slower \texttt{re.fullmatch} operation, the algorithm checks is the line starts with an \texttt{@} symbol and thus is a modifier. This filters out the majority of lines. 
+
+If the line begins with that symbol, we check if the modifier is \texttt{@END}. Since this is an internal token only used for terminating the blocks, users are not allowed to use it in raw scripts. That means if it exists in the code, we raise a \texttt{ParserSyntaxError}. This should basically never happen, since the intermediate code is never exposed to the user and \texttt{@END} tags are not highlighted by the later described syntax highlighting (see Chapter \ref{chap:syntax-highlighting} or Figure \ref{fig:syntax_highlighting}).
+
+Finally, the algorithm checks if the modifier is valid by matching it against the \texttt{modifier\_regex} passed by the Parser. If it is valid, the \texttt{mod} flag is set to \texttt{True} for later use.
 
 \subsection{Scope Handling}
 
@@ -294,7 +300,7 @@ Before using the slower \texttt{re.fullmatch} operation, the algorithm checks is
 After reading a line, the Preprocessor decides whether the line belongs to the current scope, opens a new scope, or closes existing scopes. Listing \ref{lst:impl_stack} illustrates this stack management logic.
 
 
-\begin{lstlisting}[language=Python, caption={The stack implementation for resolving indentation scopes}, label={lst:impl_stack}, firstnumber=69]
+\begin{lstlisting}[language=Python, caption={The stack implementation for resolving indentation scopes}, label={lst:impl_stack}, float=htbp, firstnumber=69]
 
             # [...]
             if len(layer_tabs) > 0:
@@ -302,7 +308,7 @@ After reading a line, the Preprocessor decides whether the line belongs to the c
                 cnt: int = self.count_indents(line)
 
                 if mod:
-                    line = stripped # dont want any indents on modifier lines
+                    line = stripped # don't want any indents on modifier lines
 
                 if cnt <= tabs:
                     while len(layer_tabs) > 0 and cnt <= layer_tabs[-1]:
@@ -342,10 +348,10 @@ That is why the Preprocessor assumes that it is most likely either not correctly
 \subsection{Finalization}
 
 
-At the end of the loop, new scopes are initialized, and the output is verified before being passed to the Parser.
+At the end of the loop, new scopes are initialized, and the output is verified before being passed to the Parser, as seen in Listing \ref{lst:impl_final}.
 
 
-\begin{lstlisting}[language=Python, caption={Handling the root scope and finalizing the output stream at the end of the file.}, label={lst:impl_final}, firstnumber=97]
+\begin{lstlisting}[language=Python, caption={Handling the root scope and finalizing the output stream at the end of the file.}, label={lst:impl_final}, float=htbp, firstnumber=97]
 
             # [...]
 

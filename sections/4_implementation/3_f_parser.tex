@@ -132,9 +132,11 @@ After preprocessing, the Script Assembler uses the input script on Lark's \verb|
 
 A \verb|Tree| object represents a rule with a name, for example, the outermost rule of a parsed script being \verb|"start"|, alongside, if present, its children, which, in the example of \verb|"start"| are \verb|"line"|s. A \textit{child} is commonly a \verb|Tree| as well, however it may also be a \verb|Token|~\cite{py-module-lark-api}.
 
-According to Lark's official API reference, a \verb|Token| is described as the following:
+According to Lark's official \gls{api} reference, a \verb|Token| is described as the following:
 
+\begin{quote}
 ``A string with meta-information, that is produced by the lexer. When parsing text, the resulting chunks of the input that haven't been discarded, will end up in the tree as Token instances. The Token class inherits from Python's \verb|str|, so normal string comparisons and operations will work as expected.''\cite{py-module-lark-api}
+\end{quote}
 
 In our parser, we mainly work with \verb|Tree|s to differentiate between lines and keywords, and \verb|Token|s for the contents of robot lines and keyword arguments. 
 

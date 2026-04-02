@@ -5,7 +5,8 @@ One part of this project presented in this theis, was the development of Syntax 
 There is a fundamental problem though. Because standard text-editors and native Robot Framework syntax highlighters do not recognize this new grammar, custom annotations would be displayed as plain text, or worse, marked as syntax errors.
 
 For KEBA, the frontend editor needs a way to visually mark these custom elements, because if they are not able to do so, it can lead to worse developer experience and more errors that go unnoticed until execution. Without visual validation, developers make more syntax mistakes. 
-eFor example, writing \texttt{@VERISON} instead of \texttt{@VERSION} or using an invalid argument type, like passing a plain string where a semantic version number is expected, would not be recognized while typing. These mistakes remain unnoticed. The errors are only found during the backend transpilation phase much later, when an error log is generated. This breaks the entire programming workflow and wastes precious time.
+
+For example, writing \texttt{@VERISON} instead of \texttt{@VERSION} or using an invalid argument type, like passing a plain string where a semantic version number is expected, would not be recognized while typing. These mistakes remain unnoticed. The errors are only found during the backend transpilation phase much later, when an error log is generated. This breaks the entire programming workflow and wastes precious time.
 
 To fix this, custom syntax highlighting should be integrated into the web-based pre-existing code editor. The main objective simply was to get immediate visual feedback and validation. Correct keywords, different types of arguments and errors should all be highlighted in unique colors. This should reduce the time needed for test development, with our Script Assembler annotations/modifiers in use, by a lot. Figure \ref{fig:syntax_highlighting} shows how the editor is supposed to handle valid and invalid inputs.
 
@@ -182,7 +183,9 @@ endOfLine: [
 ],
 \end{lstlisting}
 
-For example for the case, when a developer accidentally types a  \texttt{@BRACKETSTART argument}, the lexer first recognizes the annotation, jumps to the \texttt{endOfLine} state. There, it expects the end of the line. Instead, it encounters a space, and the word ``argument''. Because these characters do not match the \texttt{/\textbackslash n/} Regex, they fall through to the \texttt{/./} rule. As a result, the string ``argument'' turns red, gets underlined and italic, and by doing so, shows the developer a syntax error. The user sees a clear syntax error right away without backend validation. Real-time error feedback is a useful feature, and even better, everything remains strictly within the boundaries of the Monarch lexer architecture.
+For example for the case, when a developer accidentally types a  \texttt{@BRACKETSTART argument}, the lexer first recognizes the annotation, jumps to the \texttt{endOfLine} state. There, it expects the end of the line. Instead, it encounters a space, and the word ``argument''. Because these characters do not match the \texttt{/\textbackslash n/} Regex, they fall through to the \texttt{/./} rule.
+
+As a result, the string ``argument'' turns red, gets underlined and italic, and by doing so, shows the developer a syntax error. The user sees a clear syntax error right away without backend validation. Real-time error feedback is a useful feature, and even better, everything remains strictly within the boundaries of the Monarch lexer architecture.
 
 \section{Limitations}
 

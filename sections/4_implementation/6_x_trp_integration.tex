@@ -1,0 +1,81 @@
+The following section will focus on two aspects, namely the usage of the testing environment and the assembling of the final script, which occurs in the background.
+
+\section{Using The Testing Environment}
+
+The user interface of the testing environment has initially been designed to give the user the ability to easily monitor which test cases are present in the system and to quickly run a custom selection of these test cases. 
+
+The test cases are displayed in a makeshift file explorer, which organizes the test cases in a hierarchical structure based on their respective test suites and sections. Checkboxes are provided next to each test case, as well as next to each test suite and section, allowing the user to easily select or deselect entire groups of test cases. Once the user selected a batch of test cases, they can give the test run a name and click to start the test run. 
+
+Once the test run is started, the Script Assembler is responsible for which test cases should actually be included in the final script and in which order they should be placed. These decisions are based on the presence of the keywords in the test cases, as well as the order in which they are selected by the user. Once the final script is assembled, it is ready to be executed in the testing environment, and the results can be analyzed by the user upon completion. 
+
+\section{Assembling The Script}
+
+The \textit{casemanager.py} module is responsible for the handling and management of test cases within the system. Considering the new features and improvements that have been implemented, this module has undergone significant changes. The following subsections will provide a detailed overview of the modifications made to the \textit{casemanager.py} module, in form of code snippets and explanations.
+
+The function that is responsible for assembling the final script has undergone the most significant changes, considering that it is not only one of the most important functions in the module, but also because our work targets the functionality of this function directly. This is because the new features include keywords such as PREAMBLE, BRACKETSTART and BRACKETEND, which explicitly alter the way the script is assembled. Furthermore, other functionalities have been modified to fit the new features.
+
+\subsection{Detecting Keywords}
+
+\begin{lstlisting}[language=Python, caption={Old: Checking for NO\_KETOP keyword in script}, label={lst:old_no_ketop}]
+    if "@NO_KETOP" in script:
+        log.warning("found NO_KETOP in test case.")
+        script = script.replace("@NO_KETOP", "")
+        variables["NO_KETOP"] = True
+
+\end{lstlisting}
+
+In listing \ref{lst:old_no_ketop}, the old code checks for the presence of the NO\_KETOP keyword in the script directly, and if it is foung, it is removed from the script and a corresponding variable is set to True. This approach is straightforward and works well enough for the old functionality, but it does not take into account any new features that may be added in the future. Since the expandability of the system is a key aspect of our work, this approach has been modified.
+
+\begin{lstlisting}[language=Python, caption={New: Checking for NO\_KETOP keyword in script}, label={lst:new_no_ketop}]
+    if formatted.no_ketop:
+        if variables['NO_KETOP']:
+            log.warning('NO_KETOP flag has already been set for this test case')
+        variables['NO_KETOP'] = True
+\end{lstlisting}
+
+In listing \ref{lst:new_no_ketop}, the new code checks for the presence of the NO\_KETOP keyword in a more structured way, by using a formatted object that contains all the relevant information about the given script. This includes the presence of a BRACKETSTART or BRACKETEND keyword. This approach allows the functionality of the test script format to be more extendable, as data pertaining to a new keyword can easily be added to the formatted object without having to modify the core logic of the script assembly process.
+
+Additionally, the new code also includes a check to ensure that the NO\_KETOP flag has not already been set for the given test case, since that unintended behavior would indicate a potential issue in the system.
+
+\begin{lstlisting}[language=Python, caption={Old: Checking for BRACKETSTART and BRACKETEND keyword in script}, label={lst:old_bracket_keywords}]
+    script_lines = script.splitlines()          
+        if script and "@BRACKETSTART" in script_lines[0]:
+
+            brackets = script.replace("@BRACKETSTART", "").split("@BRACKETEND")
+
+            start += f"\nT{tc.tr_test_id} - {tc.tr_case.title} [BRACKET START]\n"
+            start += brackets[0]
+
+            end += f"\nT{tc.tr_test_id} - {tc.tr_case.title} [BRACKET END]\n"
+            end += brackets[1]
+\end{lstlisting}
+
+The check for the BRACKETSTART and BRACKETEND keywords worked similarly to the NO\_KETOP keyword, as shown in listing \ref{lst:old_bracket_keywords}. The script was split into lines. If the first line contained the BRACKETSTART keyword, the script was split into two parts using the BRACKETEND keyword as a delimiter. The first part was added to the start variable, while the second part was added to the end variable. The identical problems that were present in the NO\_KETOP keyword check arise here as well.
+
+\begin{lstlisting}[language=Python, caption={New: Checking for BRACKETSTART and BRACKETEND keyword in script}, label={lst:new_bracket_keywords}]
+    if formatted.bracketstart != '':
+        start += f"\nT{tc.tr_test_id} - {tc.tr_case.title} [BRACKET START]\n"
+        start += self._add_tab(formatted.bracketstart) + '\n'
+    if formatted.bracketend != '':
+        end += f"\nT{tc.tr_test_id} - {tc.tr_case.title} [BRACKET END]\n"
+        end += self._add_tab(formatted.bracketend) + '\n'
+\end{lstlisting}
+
+As shown in listing \ref{lst:new_bracket_keywords}, the bodies of the BRACKETSTART and BRACKETEND keywords are now stored in the formatted object as separate variables after the script has been parsed. The contents of these variables are then added to the start or end variable respectively, if they are not empty.
+
+\subsection{Ordering of Scripts}
+
+The initial implementation of the script assembly consisted of three variables that were used to store the different parts of the script, namely:
+
+\begin{itemize}
+    \item \textit{start}: \\
+    This variable was used to store the scripts that contained the BRACKETSTART keyword.
+
+    \item \textit{regular}: \\
+    This variable was used to store the scripts that did not contain any of the special ordering keywords.
+
+    \item \textit{end}: \\
+    This variable was used to store the scripts that contained the BRACKETEND keyword.
+\end{itemize}
+
+This approach worked well enough and has been extended in the new implementation, now featuring an additional variable called \textit{preamble}, which contains all scripts that contain the PREAMBLE keyword in the correct order. This variable is placed first in the final assembly of the script. 

@@ -49,6 +49,16 @@ Where:
 
 If the version modifier keyword is present, the body of the modifier will only be included in the final script if the condition concerning the component version is met. This allows for the creation of test scripts that behave differently based on the component version of the device. 
 
+The format of the version is intended to be functional for the rules of semantic versioning, where the three integers represent the major, minor and patch version of the component respectively:
+
+\begin{itemize}
+    \item The major version is incremented when there are incompatible API changes.
+    \item The minor version is incremented when functionality is added in a backwards-compatible manner.
+    \item The patch version is incremented when there are backwards-compatible bug fixes.
+\end{itemize}
+
+The comparison operators regarding the version numbers examine the recency of the version in question, meaning that a version "1.2.5" would be considered higher and therefore more recent than "1.2.2". Major version changes are considered more significant than minor version changes, which in turn are considered more significant than patch version changes \cite{SemanticVersioning}.
+
 \subsection{Modifier: OS}
 
 The OS modifier keyword can be used following the syntax:
@@ -101,14 +111,33 @@ The PREAMBLE modifier can be used to write scripts that test certain installatio
 
 \section{Visual Example}
 
-Consider the following diagram:
+Consider listing \ref{lst:script-order}:
 
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.35\textwidth]{pics/script-order.png}
-    \caption{Simple Diagram depicting the order scripts with a certain modifier keyword are run in.}
-    \label{fig:script-order}
-\end{figure}
+\begin{lstlisting}[caption={Simple example depicting how test scripts with certain keywords would be ordered}, label={lst:script-order}]
+
+Script 1:
+    @PREAMBLE 2
+    # Body of script 1
+
+Script 2: 
+    @PREAMBLE 8
+    # Body of script 2
+
+Script 3:
+    @BRACKETSTART
+    # Body of script 3
+
+Script 4:
+    # Body of script 4
+
+Script 5:
+    # Body of script 5
+
+Script 6:
+    @BRACKETEND
+    # Body of script 6
+
+\end{lstlisting}
 
 Here, it can be seen how some specific test scripts are arranged in the final script.
 

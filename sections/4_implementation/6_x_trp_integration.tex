@@ -79,3 +79,31 @@ The initial implementation of the script assembly consisted of three variables t
 \end{itemize}
 
 This approach worked well enough and has been extended in the new implementation, now featuring an additional variable called \textit{preamble}, which contains all scripts that contain the PREAMBLE keyword in the correct order. This variable is placed first in the final assembly of the script. 
+
+\begin{lstlisting}[language=Python, caption={Old: Finding and inserting regular scripts}, label={lst:old_regular_script}]
+    elif script != "":
+        regular += f"\nT{tc.tr_test_id} - {tc.tr_case.title}\n"
+        regular += script
+\end{lstlisting}
+
+If the script did not contain any of the special ordering keywords, it arrives at the code shown in listing \ref{lst:old_regular_script} and is added to the regular variable. 
+
+\begin{lstlisting}[language=Python, caption={New: Finding and inserting regular scripts}, label={lst:new_regular_script}]
+    if formatted.script != '':
+                regular += f"\nT{tc.tr_test_id} - {tc.tr_case.title}\n"
+                regular += self._add_tab(formatted.script) + '\n'
+\end{lstlisting}
+
+In the new implementation, the code simply checks if the script variable in the formatted object is not empty. Scripts that do not contain any of the special ordering keywords are stored in this variable, and if it exists, it is added to the regular variable. 
+
+\begin{lstlisting}[language=Python, caption={New preamble variable and final assembly of the script}, label={lst:final_assembly}]
+    preamble: str = ""
+    for preamble_key in sorted(robot_preamble_dict.keys()):
+        preamble += f"\nT{preamble_test_metadata[preamble_key][0]} - {preamble_test_metadata[preamble_key][1]} [PREAMBLE]\n"
+        preamble += self._add_tab(robot_preamble_dict[preamble_key]) + '\n'
+
+    combined_script = preamble + start + regular + end
+\end{lstlisting}
+
+In listing \ref{lst:final_assembly}, the new preamble variable is created by iterating through the \textit{robot\_preamble\_dict}, which is a dictionary containing the bodies of all the PREAMBLE keywords, and adding the contents of these keywords to the preamble variable. This dictionary is already ordered by the index of each PREAMBLE keyword, making sure that the preamble variable is assembled correctly. This step happens after the start, regular and end variables have been completely assembled, leading into the final assembly of the script, which is a combination of all four variables.
+

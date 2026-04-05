@@ -22,7 +22,17 @@ When this option is encountered, the parser could append the code snippet that b
 
 This might allow for the reduction of code duplication, which could increase efficiency and maintainability. 
 
-TODO: more examples
+\subsection{@RETRYAMOUNT}
+
+In this example, \verb|@RETRYAMOUNT| is an option that takes an integer as argument. 
+
+This argument specifies, how often a test case should be retried in case of error. This could be useful for test cases that are not deterministic, such as ones that include randomizers or fetch an external \gls{url}.
+
+\subsection{@BETWEENCASES}
+
+In this example, \verb|@BETWEENCASES| is a modifier that takes no argument. 
+
+Its block body would get inserted between every test case that is to be run. This could be useful, for instance, logging current timestamps of every test case to a KeTop, or for checking if a signal, that is supposed to terminate the entire execution flow when set, has been received. 
 
 \section{Limitations}
 
@@ -50,8 +60,6 @@ In general, there are three steps required to add a custom option or modifier to
     \item The keyword with its implementation should be added as a case to the parser. From the root of the project, the parser is found in \\\verb|./TRP/broker/managers/case/script_assembler|, and, within that folder, the core implementation of the keyword in \verb|option_modifier_format.py|. 
     \item The syntax highlighting for the keyword should be added. The definition for keywords used in syntax highlighting can be found in \\\verb|Angular/src/app/app.module.ts|. 
 \end{enumerate}
-
-TODO: example of exending with \verb|@LOADTEMPLATES|?
 
 \section{Other purposes}
 

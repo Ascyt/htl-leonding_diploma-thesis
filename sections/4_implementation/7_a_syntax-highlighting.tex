@@ -69,11 +69,11 @@ After the editor and theme were successfully configured, the core task was to de
 
 \subsection{Tokenization and State Machine}
 
-Monarch basically just uses Regex to handle the tokenization. The step-by-step-process starts with the lexer, that reads the document text in order and tries  to match the defined regular expression patterns. When it finds a match, the matched text is assigned a specific token class. This can be a specific keyword or a comment or it could also just be a newly defined custom modifier. The editor then maps these token classes to the specific color values defined in the active theme.
+Monarch basically just uses \gls{regex} to handle the tokenization. The step-by-step-process starts with the lexer, that reads the document text in order and tries  to match the defined regular expression patterns. When it finds a match, the matched text is assigned a specific token class. This can be a specific keyword or a comment or it could also just be a newly defined custom modifier. The editor then maps these token classes to the specific color values defined in the active theme.
 
-A global list of Regex rules is sufficient for simple languages. But for the custom annotations there is a need for context-aware parsing. For example, the arguments that follow an \texttt{@VERSION} annotation should be highlighted, but if the same argument is written in a comment it should not.
+A global list of \gls{regex} rules is sufficient for simple languages. But for the custom annotations there is a need for context-aware parsing. For example, the arguments that follow an \texttt{@VERSION} annotation should be highlighted, but if the same argument is written in a comment it should not.
 
-Monarch's state machine solved this problem. The lexer starts in a default \texttt{@root} state, when a specific pattern is matched, the lexer jumps into a different, explicitly defined state, and different Regex rules apply in this new state.
+Monarch's state machine solved this problem. The lexer starts in a default \texttt{@root} state, when a specific pattern is matched, the lexer jumps into a different, explicitly defined state, and different \gls{regex} rules apply in this new state.
 
 \subsection{Handling Modifiers and Arguments}
 
@@ -130,7 +130,7 @@ versionArgsSemver: [
 ],
 \end{lstlisting}
 
-The Regex for the semantic version argument might look complicated and hard to maintain, but it is the officially provided Regex by the organization behind semantic versions. 
+The \gls{regex} for the semantic version argument might look complicated and hard to maintain, but it is the officially provided \gls{regex} by the organization behind semantic versions. 
 
 \section{Troubleshooting and Error Handling}
 
@@ -152,7 +152,7 @@ In the beginning, this caused a big conflict with Monarch's stateful tokenizatio
 \end{figure}
 
 
-To fix this ``state bleed'', the lexer had to recognize line breaks as termination triggers. Normally, Monarch works line-by-line and does not pass line break characters to the Regex engine. To change this, the \texttt{includeLF} property was enabled in the language configuration (see Listing~\ref{lst:monarch_config_lf}).
+To fix this ``state bleed'', the lexer had to recognize line breaks as termination triggers. Normally, Monarch works line-by-line and does not pass line break characters to the \gls{regex} engine. To change this, the \texttt{includeLF} property was enabled in the language configuration (see Listing~\ref{lst:monarch_config_lf}).
 
 \begin{lstlisting}[caption={\texttt{includeLF} in the Monarch config}, label={lst:monarch_config_lf}, float=htbp]
 (<any>window).monaco.languages.setMonarchTokensProvider('robot', {
@@ -185,7 +185,7 @@ endOfLine: [
 ],
 \end{lstlisting}
 
-For example for the case, when a developer accidentally types a  \texttt{@BRACKETSTART argument}, the lexer first recognizes the annotation, jumps to the \texttt{endOfLine} state. There, it expects the end of the line. Instead, it encounters a space, and the word ``argument''. Because these characters do not match the \texttt{/\textbackslash n/} Regex, they fall through to the \texttt{/./} rule.
+For example for the case, when a developer accidentally types a  \texttt{@BRACKETSTART argument}, the lexer first recognizes the annotation, jumps to the \texttt{endOfLine} state. There, it expects the end of the line. Instead, it encounters a space, and the word ``argument''. Because these characters do not match the \texttt{/\textbackslash n/} \gls{regex}, they fall through to the \texttt{/./} rule.
 
 As a result, the string ``argument'' turns red, gets underlined and italic, and by doing so, shows the developer a syntax error. The user sees a clear syntax error right away without backend validation. Real-time error feedback is a useful feature, and even better, everything remains strictly within the boundaries of the Monarch lexer architecture.
 
@@ -205,7 +205,7 @@ The standard Robot Framework language on the other hand works differently. Here 
 \end{figure}
 
 
-The Monarch API only allows this setting for the entire language, because it is only possible through the global \texttt{ignoreCase} property defined in the \texttt{IMonarchLanguage} interface. A custom override for one tokenizer rule(\texttt{IMonarchLanguageRule}) or a single state is not possible. Therefore, the setting affects everything, the entire tokenizer. In the implemented editor configuration this global setting also affects the custom annotation rules, and as a result, if a developer types \texttt{@version} in lowercase, the frontend lexer still matches the rule and applies the corresponding syntax highlighting. But with the same script, the validation crashes when the backend EBNF parser takes the script. The reason is that the parser strictly needs the uppercase syntax~\cite{MonacoMonarchTypes0341}.
+The Monarch \gls{api} only allows this setting for the entire language, because it is only possible through the global \texttt{ignoreCase} property defined in the \texttt{IMonarchLanguage} interface. A custom override for one tokenizer rule(\texttt{IMonarchLanguageRule}) or a single state is not possible. Therefore, the setting affects everything, the entire tokenizer. In the implemented editor configuration this global setting also affects the custom annotation rules, and as a result, if a developer types \texttt{@version} in lowercase, the frontend lexer still matches the rule and applies the corresponding syntax highlighting. But with the same script, the validation crashes when the backend EBNF parser takes the script. The reason is that the parser strictly needs the uppercase syntax~\cite{MonacoMonarchTypes0341}.
 
 This limitation leads to a small difference between the visual representation and the backend, but it is an unavoidable compromise. Disabling \texttt{ignoreCase} globally completely breaks the standard Robot Framework code highlighting, and that code is the vast majority of the file. That is why it is more important, that the base language simply has to function. This was the basis for the final architectural decision together with KEBA, even if it means the developer will only notice the error during transpilation and not while typing.
 

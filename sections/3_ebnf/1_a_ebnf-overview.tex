@@ -17,7 +17,7 @@ One of the most important metalanguages for programming has been BNF (the so-cal
 
 As BNF was first used for ALGOL 60 and became the model for many later languages, over time, people added changes or extensions, which created some confusion. Despite this, BNF showed the importance of clear, formal syntax.
 
-Therefore, Extended BNF was later developed from BNF and included the most common extensions. The large amount of variants motivated the standardization effort that resulted in the standard named \emph{ISO/IEC~14977} by the International Organization for Standardization~\cite[p.~V]{ISO/IEC149771996InformationBNF}.
+Therefore, Extended BNF was later developed from BNF and included the most common extensions. The large amount of variants motivated the standardization effort that resulted in the standard named \emph{ISO/IEC~14977} by the International Organization for Standardization~(ISO)~\cite[p.~V]{ISO/IEC149771996InformationBNF}.
 
 \section{The Evolution to Extended BNF (EBNF)}
 
@@ -42,7 +42,7 @@ The main disadvantage of BNF according to ISO/IEC~14977 was:
 \end{quote}
 
 
-The added advantages, but also the limitations of EBNF, will be discussed in more detail in later chapters.
+The added advantages, but also the limitations of EBNF, will be discussed in more detail in later sections and chapters.
 
 \section{Wirth's Approach to Syntax Definition}
 
@@ -66,7 +66,7 @@ Wirth listed the following properties to extend BNF~\cite{Wirth1977WhatDefinitio
     
     \item The notation avoids explicit representation of the empty string, such as by using \texttt{<empty>} or $\varepsilon$.
     
-    \item The notation is based on the ASCII character set. This makes it easy to use in most technical environments.
+    \item The notation is based on the \gls{ascii} character set. This makes it easy to use in most technical environments.
 \end{enumerate}
 
 In his article, he showed the power of EBNF by defining its own syntax as an example (see Figure~\ref{fig:defebnf}):
@@ -138,7 +138,7 @@ While classical BNF is theoretically sufficient for describing any context-free 
 \end{figure}
 
 
-As demonstrated in the example in figure~\ref{fig:bnfvsebnf}, the structural differences lead to a significant reduction in the number of rules required:
+As demonstrated in the example in Figure~\ref{fig:bnfvsebnf}, the structural differences lead to a significant reduction in the number of rules required:
 
 \begin{itemize}
     \item \textbf{Repetition via Braces in this example:} In the BNF version of the expression grammar, an \texttt{<expr>} must be defined recursively to handle a sequence of additions or subtractions. EBNF replaces this recursion with braces \texttt{\{...\}}, which denote that the enclosed part can be repeated indefinitely or left out entirely.
@@ -184,7 +184,7 @@ As mentioned earlier, the Except symbol (\texttt{-}) allows the assembler to def
 ``If a syntactic exception is permitted to be an arbitrary syntactic factor, Extended BNF could define a wider class of languages than the context-free grammars, including attempts which lead to Russell-like paradoxes... Such a license is undesirable and the form of a syntactic exception is therefore restricted to cases that can be proved to be safe.''~\cite[p.~2]{ISO/IEC149771996InformationBNF}
 \end{quote}
 
-A good explanation for the Russell Paradox, formulated by Bertrand Russell, is the so-called barber's example: In a village, the barber shaves precisely all the men who don't shave themselves—and only these men. The question of whether the barber shaves himself leads directly to a contradiction: If he shaves himself, he shouldn't, by definition; if he doesn't shave himself, he should~\cite{WikipediaBarbierParadoxon}.
+A good explanation for the Russell Paradox, formulated by Bertrand Russell, is the so-called barber's example: In a village, the barber shaves precisely all the men who don't shave themselves, and only these men. The question of whether the barber shaves himself leads directly to a contradiction: If he shaves himself, he shouldn't, by definition; if he doesn't shave himself, he should~\cite{WikipediaBarbierParadoxon}.
 
 This example illustrates that such self-referential definitions can lead to logical inconsistencies in formal systems.
 

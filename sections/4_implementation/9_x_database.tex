@@ -1,3 +1,5 @@
+% !TEX root = ../../thesis.tex
+
 Besides the extension of the Script Assembler's capabilities and the creation of a new EBNF language that makes the software more extendable, another main focus of the project is the creation of a mockup of the TestRail database. This mockup is not only made for testing purposes, but allows the user to work independently of the TestRail instance. The mockup is designed to be as close to the real TestRail database as possible, allowing a seamless switch between the two instances. This means that all functionalities that are available in the real TestRail database are also available in the new mockup.
 
 This section aims to give an overview of the different types of databases, the structure and functionalities of the TestRail database specifically, the resulting design and implementation of the mockup database, and the way the database switch is finally implemented.
@@ -19,7 +21,7 @@ The most important qualities of a database type can be expressed in the followin
     The query model of a database type describes the means of accessing the data. This can occur in the form of a specifically designed query language, an API or other methods. This has an undeniable impact on the ease of use of the database and how the user writes and optimizes queries.
 \end{itemize}
 
-Based on these qualities, various databases types have been developed, each with their own unique advantages and disadvantages. Some of the most common types of databases include but are not limited to relational databases, object-oriented databases and NoSQL databases, which can be further categorized by the data model they use, such as document stores, key-value stores, column-family stores and graph databases \cite{DigitalOceanDatabaseTypes}.
+Based on these qualities, various databases types have been developed, each with their own unique advantages and disadvantages. Some of the most common types of databases include but are not limited to relational databases, object-oriented databases and NoSQL databases, which can be further categorized by the data model they use, such as document stores, key-value stores, column-family stores and graph databases~\cite{DigitalOceanDatabaseTypes}.
 
 \section{Relational Databases}
 
@@ -29,7 +31,7 @@ For the purpose of this project, we will take a closer look at relational databa
 
 Relational databases are based on the relational model, which organizes its data into tables, consisting of rows and columns. Each table represents a specific entity and each row in the table represents an instance of that entity. The columns in the table represent the attributes of the entity. 
 
-Relationships between these entities can be established through the use of keys. A primary key is a unique identifier for each instance of an entity, while a foreign key is a reference to the primary key of another entity. Meaningful relationships between entities can be built with the usage of these keys, allowing complex queries to be executed across multiple linked entities \cite{WikipediaRelationalDatabase}.
+Relationships between these entities can be established through the use of keys. A primary key is a unique identifier for each instance of an entity, while a foreign key is a reference to the primary key of another entity. Meaningful relationships between entities can be built with the usage of these keys, allowing complex queries to be executed across multiple linked entities~\cite{WikipediaRelationalDatabase}.
 
 Grouping in queries allows for the aggregation of data based on specific attributes, while joins allow for the combination of data from multiple tables based on the established relationships.
 
@@ -40,7 +42,7 @@ Grouping in queries allows for the aggregation of data based on specific attribu
     \label{fig:erd}
 \end{figure}
 
-In figure \ref{fig:erd}, we can see a simplified example of a relational database structure. The three entities "Artist", "Label" and "Album" are represented as tables, with their respective attributes as columns. The relationships between the entities are established through the usage of primary and foreign keys, allowing for queries to be executed across multiple linked entities. For example, we can query for all albums by a specific artist or a specific label.
+In figure~\ref{fig:erd}, we can see a simplified example of a relational database structure. The three entities "Artist", "Label" and "Album" are represented as tables, with their respective attributes as columns. The relationships between the entities are established through the usage of primary and foreign keys, allowing for queries to be executed across multiple linked entities. For example, we can query for all albums by a specific artist or a specific label.
 
 \subsection{ACID}
 
@@ -60,7 +62,7 @@ ACID is an acronym that stands for the four key properties of a safe database tr
     Durability ensures that once a transaction has been successfully completed and committed, the state of the database persists even in the case of a crash, power failure or any other issue. 
 \end{itemize}
 
-Databases that adhere to these properties are considered to be reliable and safe for use in critical environments, as they guarantee that the data not only remains consistent, but also that it is not lost or corrupted due to unforseen events \cite{WikipediaACID}.
+Databases that adhere to these properties are considered to be reliable and safe for use in critical environments, as they guarantee that the data not only remains consistent, but also that it is not lost or corrupted due to unforseen events~\cite{WikipediaACID}.
 
 \subsection{Advantages and Disadvantages of Relational Databases}
 
@@ -130,11 +132,11 @@ The open-source management tool "pgAdmin" is used for the administration of the 
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.95\textwidth]{pics/pgadmin-interface.png}
-    \caption{Screenshot of the pgAdmin interface \cite{pgAdminInterface}.}
+    \caption{Screenshot of the pgAdmin interface~\cite{pgAdminInterface}.}
     \label{fig:pgadmin-interface}
 \end{figure}
 
-The current version of pgAdmin, which is pgAdmin 4, provides a wide range of features for managing and administering PostgreSQL databases, some of which include but are not limited to the following: \cite{pgAdminInterface}.
+The current version of pgAdmin, which is pgAdmin 4, provides a wide range of features for managing and administering PostgreSQL databases, some of which include but are not limited to the following:~\cite{pgAdminInterface}.
 
 \begin{itemize}
     \item \textbf{SQL query tool:} \\
@@ -182,7 +184,7 @@ The communication with the TestRail database is achieved through the usage of th
 
 \end{lstlisting}
 
-In listing \ref{lst:tr-function}, one of the functions of the TRSession class can be seen. This function is responsible for retrieving the title of a test case based on its ID. Using the ID of the wanted test case, a GET request is sent to the TestRail API, which then returns the relevant data. The function then processes the response data and returns the title. 
+In listing~\ref{lst:tr-function}, one of the functions of the TRSession class can be seen. This function is responsible for retrieving the title of a test case based on its ID. Using the ID of the wanted test case, a GET request is sent to the TestRail API, which then returns the relevant data. The function then processes the response data and returns the title. 
 
 All functions of the TRSession class follow a similar structure, with the type of interaction with the API being the main difference. For example, functions that create new entities in the database use POST requests and send the relevant data in the body of the request.
 
@@ -213,7 +215,7 @@ The DBSession class is designed to replicate all used functionalities of the exi
 
 \end{lstlisting}
 
-In listing \ref{lst:db-function}, the same function as in listing \ref{lst:tr-function} can be seen, but this time within the DBSession class. Thus, while the parameters and return value of the function are identical to the one in the TRSession class, the implementation is different.
+In listing~\ref{lst:db-function}, the same function as in listing~\ref{lst:tr-function} can be seen, but this time within the DBSession class. Thus, while the parameters and return value of the function are identical to the one in the TRSession class, the implementation is different.
 
 Instead of interacting with an API, this function uses a connection to the PostgreSQL database to execute a SQL query that retrieves the title of the specified test case. 
 
@@ -254,7 +256,7 @@ Here, the PostgreSQL mockup database is used, as the argument is passed to the s
 
 Since the structure of the TestRail database is not publicly available, the structure of the PostgreSQL mockup database is based on the structure of the response data the TestRail API provides. All entities contain their respective attributes, as well as keys that establish the relationships between the different entities.
 
-It is important to note that the relationships between entities are not made with the usage of foreign keys, as the logic for the relationships is implemented in the backend of the system, and the database is only used for storing data. While this is not the most efficient way to implement the relationships between entities, as a mockup database, it is sufficient for the purpose of this project. Despite that, in section \ref{sec:potential-future-steps}, potential future steps are discussed, one of which is the implementation of proper relationships between entities with the usage of foreign keys.
+It is important to note that the relationships between entities are not made with the usage of foreign keys, as the logic for the relationships is implemented in the backend of the system, and the database is only used for storing data. While this is not the most efficient way to implement the relationships between entities, as a mockup database, it is sufficient for the purpose of this project. Despite that, in section~\ref{sec:potential-future-steps}, potential future steps are discussed, one of which is the implementation of proper relationships between entities with the usage of foreign keys.
 
 The database contains tables for all the entities of the TestRail system, that are relevant for the functionalities of the Script Assembler. All entities are listed below, along with their respective attributes.
 

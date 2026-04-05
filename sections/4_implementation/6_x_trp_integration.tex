@@ -1,3 +1,5 @@
+% !TEX root = ../../thesis.tex
+
 The following section will focus on two aspects, namely the usage of the testing environment and the assembling of the final script, which occurs in the background.
 
 \section{Using The Testing Environment}
@@ -24,7 +26,7 @@ The function that is responsible for assembling the final script has undergone t
 
 \end{lstlisting}
 
-In listing \ref{lst:old_no_ketop}, the old code checks for the presence of the NO\_KETOP keyword in the script directly, and if it is foung, it is removed from the script and a corresponding variable is set to True. This approach is straightforward and works well enough for the old functionality, but it does not take into account any new features that may be added in the future. Since the expandability of the system is a key aspect of our work, this approach has been modified.
+In listing~\ref{lst:old_no_ketop}, the old code checks for the presence of the NO\_KETOP keyword in the script directly, and if it is foung, it is removed from the script and a corresponding variable is set to True. This approach is straightforward and works well enough for the old functionality, but it does not take into account any new features that may be added in the future. Since the expandability of the system is a key aspect of our work, this approach has been modified.
 
 \begin{lstlisting}[language=Python, caption={New: Checking for NO\_KETOP keyword in script}, label={lst:new_no_ketop}]
     if formatted.no_ketop:
@@ -33,7 +35,7 @@ In listing \ref{lst:old_no_ketop}, the old code checks for the presence of the N
         variables['NO_KETOP'] = True
 \end{lstlisting}
 
-In listing \ref{lst:new_no_ketop}, the new code checks for the presence of the NO\_KETOP keyword in a more structured way, by using a formatted object that contains all the relevant information about the given script. This includes the presence of a BRACKETSTART or BRACKETEND keyword. This approach allows the functionality of the test script format to be more extendable, as data pertaining to a new keyword can easily be added to the formatted object without having to modify the core logic of the script assembly process.
+In listing~\ref{lst:new_no_ketop}, the new code checks for the presence of the NO\_KETOP keyword in a more structured way, by using a formatted object that contains all the relevant information about the given script. This includes the presence of a BRACKETSTART or BRACKETEND keyword. This approach allows the functionality of the test script format to be more extendable, as data pertaining to a new keyword can easily be added to the formatted object without having to modify the core logic of the script assembly process.
 
 Additionally, the new code also includes a check to ensure that the NO\_KETOP flag has not already been set for the given test case, since that unintended behavior would indicate a potential issue in the system.
 
@@ -50,7 +52,7 @@ Additionally, the new code also includes a check to ensure that the NO\_KETOP fl
             end += brackets[1]
 \end{lstlisting}
 
-The check for the BRACKETSTART and BRACKETEND keywords worked similarly to the NO\_KETOP keyword, as shown in listing \ref{lst:old_bracket_keywords}. The script was split into lines. If the first line contained the BRACKETSTART keyword, the script was split into two parts using the BRACKETEND keyword as a delimiter. The first part was added to the start variable, while the second part was added to the end variable. The identical problems that were present in the NO\_KETOP keyword check arise here as well.
+The check for the BRACKETSTART and BRACKETEND keywords worked similarly to the NO\_KETOP keyword, as shown in listing~\ref{lst:old_bracket_keywords}. The script was split into lines. If the first line contained the BRACKETSTART keyword, the script was split into two parts using the BRACKETEND keyword as a delimiter. The first part was added to the start variable, while the second part was added to the end variable. The identical problems that were present in the NO\_KETOP keyword check arise here as well.
 
 \begin{lstlisting}[language=Python, caption={New: Checking for BRACKETSTART and BRACKETEND keyword in script}, label={lst:new_bracket_keywords}]
     if formatted.bracketstart != '':
@@ -61,7 +63,7 @@ The check for the BRACKETSTART and BRACKETEND keywords worked similarly to the N
         end += self._add_tab(formatted.bracketend) + '\n'
 \end{lstlisting}
 
-As shown in listing \ref{lst:new_bracket_keywords}, the bodies of the BRACKETSTART and BRACKETEND keywords are now stored in the formatted object as separate variables after the script has been parsed. The contents of these variables are then added to the start or end variable respectively, if they are not empty.
+As shown in listing~\ref{lst:new_bracket_keywords}, the bodies of the BRACKETSTART and BRACKETEND keywords are now stored in the formatted object as separate variables after the script has been parsed. The contents of these variables are then added to the start or end variable respectively, if they are not empty.
 
 \subsection{Ordering of Scripts}
 
@@ -86,7 +88,7 @@ This approach worked well enough and has been extended in the new implementation
         regular += script
 \end{lstlisting}
 
-If the script did not contain any of the special ordering keywords, it arrives at the code shown in listing \ref{lst:old_regular_script} and is added to the regular variable. 
+If the script did not contain any of the special ordering keywords, it arrives at the code shown in listing~\ref{lst:old_regular_script} and is added to the regular variable. 
 
 \begin{lstlisting}[language=Python, caption={New: Finding and inserting regular scripts}, label={lst:new_regular_script}]
     if formatted.script != '':
@@ -105,5 +107,5 @@ In the new implementation, the code simply checks if the script variable in the 
     combined_script = preamble + start + regular + end
 \end{lstlisting}
 
-In listing \ref{lst:final_assembly}, the new preamble variable is created by iterating through the \textit{robot\_preamble\_dict}, which is a dictionary containing the bodies of all the PREAMBLE keywords, and adding the contents of these keywords to the preamble variable. This dictionary is already ordered by the index of each PREAMBLE keyword, making sure that the preamble variable is assembled correctly. This step happens after the start, regular and end variables have been completely assembled, leading into the final assembly of the script, which is a combination of all four variables.
+In listing~\ref{lst:final_assembly}, the new preamble variable is created by iterating through the \textit{robot\_preamble\_dict}, which is a dictionary containing the bodies of all the PREAMBLE keywords, and adding the contents of these keywords to the preamble variable. This dictionary is already ordered by the index of each PREAMBLE keyword, making sure that the preamble variable is assembled correctly. This step happens after the start, regular and end variables have been completely assembled, leading into the final assembly of the script, which is a combination of all four variables.
 

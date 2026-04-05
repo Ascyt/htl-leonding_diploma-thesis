@@ -1,4 +1,6 @@
-Just like the TestRail Procedure (\gls{trp}) project for which this project aims to provite an extension for, it was mainly written in the Python programming language. Aside from that, other tools have also been used or are otherwise important to be mentioned. The goal of this section is to give a broad overview of some of the most important technologies that each make up an integral part of our final project. 
+% !TEX root = ../../thesis.tex
+
+Just like the \gls{trp} project for which this project aims to provide an extension for, it was mainly written in the \textit{Python} programming language. Aside from that, other tools have also been used or are otherwise important to be mentioned. The goal of this section is to give a broad overview of some of the most important technologies that each make up an integral part of our final project. 
 
 \section{Python}
 
@@ -14,7 +16,7 @@ The external modules used in this project include, but are not limited to:
 \begin{itemize}
     \item \verb|lark|, which allows for parsing of a given piece of text using a custom grammar language which is based on \gls{ebnf}. The core of our parser is built around this library~\cite{py-module-lark}.
     \item \verb|semantic-version|, which is a small library that ``provides tools to handle \\
-    SemVer''\cite{py-module-semantic-version}. \textit{SemVer} stands for \textit{Semantic Versioning}, and it refers to a scheme that intents to dictate how a software's version number is to be assigned and incremented~\cite{semver}. This library is used to for parsing version strings for our \verb|@VERSION| Keyword~\cite{py-module-semantic-version}.
+    SemVer''\cite{py-module-semantic-version}. \textit{SemVer} stands for \textit{Semantic Versioning}, and it refers to a scheme that intents to dictate how a software's version number is to be assigned and incremented~\cite{SemanticVersioning}. This library is used to for parsing version strings for our \verb|@VERSION| Keyword~\cite{py-module-semantic-version}.
     \item \verb|psycopg|, which allows for communication with a \textit{PostgreSQL} database~\cite{py-module-psycopg}. This library is used for our \textit{Mockup Database} system.
 \end{itemize}
 
@@ -22,7 +24,7 @@ The external modules used in this project include, but are not limited to:
 
 Robot Framework is a framework for test automation. It allows for defining so-called \textit{Test Suites}, which are files ending in \verb|.robot| and may contain any amount of test cases~\cite{robot-framework}.
 
-In the context of KEBA Group AG, Robot Framework is used to execute various test cases on KeTop devices. However, since our parser only acts as a preprocessor to robot script files, treating them as arbitrary text to be either included, excluded, and/or moved to different positions depending on the defined keywords and context, Robot Framework's actual syntax is, for the purposes of our project, irrelevant. Exceptions to this include the question of which characters of a standard \textit{ASCII} format are syntactically relevant, and its use of \textit{significant indentation}. 
+In the context of \textit{KEBA Group AG}, Robot Framework is used to execute various test cases on KeTop devices. However, since our parser only acts as a preprocessor to robot script files, treating them as arbitrary text to be either included, excluded, and/or moved to different positions depending on the defined keywords and context, Robot Framework's actual syntax is, for the purposes of our project, irrelevant. Exceptions to this include the question of which characters of a standard \gls{ascii} format are syntactically relevant, and its use of \textit{significant indentation}. 
 
 \section{Monaco Editor}
 
@@ -30,18 +32,14 @@ The Monaco Editor is a code editor with support for features such as \textit{Int
 
 Our project makes use of its \textit{Syntax Colorization} feature, which we instead refer to as \textit{Syntax Highlighting} in this thesis. 
 
-\section{Angular}
-
-TODO
-
 \section{PostgreSQL}
 
-PostgreSQL is an \textit{ACID}-compliant object relational database management system which uses an extended version of the \textit{SQL} language~\cite{postgresql}.
+PostgreSQL is an object relational database management system, it's compliant with the \gls{acid} properties, and uses an extended version of the \textit{SQL} language~\cite{postgresql}.
 
 PostgreSQL was our choice for our \textit{Mockup Database} system, which is needed to allow for running our project independently from the proprietary \textit{TestRail} test management software.
 
 \section{Regular Expressions}
 
-A regular expression, commonly shortened to \gls{regex}, can be thought of small programming languages used for pattern matching in a given string. Regular expressions can be used for purposes such as checking whether or not a given string matches a certain pattern or finding patterns inside a given string. In Python, it is possible to use them through Python's \verb|re| module~\cite{py-re}.
+A regular expression, commonly shortened to \textit{regex}, can be thought of small programming languages used for pattern matching in a given string. Regular expressions can be used for purposes such as checking whether or not a given string matches a certain pattern or finding patterns inside a given string. In Python, it is possible to use them through Python's \verb|re| module~\cite{py-re}.
 
-In our project, regular expressions are mainly used for parsing purposes, as they offer an easy and compact way to find simple or complicated patterns in an arbitrary sequence of characters. 
+In our project, regular expressions are mainly used for parsing purposes, as they offer an easy and compact way to find simple or complicated patterns in an arbitrary sequence of characters.

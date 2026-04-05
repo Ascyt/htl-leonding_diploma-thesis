@@ -1,3 +1,5 @@
+% !TEX root = ../../thesis.tex
+
 \section{Introduction}
 
 In this chapter, we will focus on the \textit{parser}, which is the part of our project that reads the input sequence given by the preprocessor alongside context information and outputs a so-called \verb|FormattedResponse|. 
@@ -88,7 +90,7 @@ ALLOWED_OPTIONS: "NO_KETOP"
 ALLOWED_MODIFIERS: "VERSION" | "BRACKETSTART" | "BRACKETEND" | "OS" | "PREAMBLE"
 \end{lstlisting}
 
-The following is changed in listing \ref{lst:our_ebnf_lark} compared to listing \ref{lst:our_ebnf}:
+The following is changed in listing~\ref{lst:our_ebnf_lark} compared to listing~\ref{lst:our_ebnf}:
 \begin{itemize}
     \item Grammar definition syntax is changed from \verb|=| to \verb|:| and the seperator character between terminals (\verb|,|) and the end-of-rule character (\verb|;|) are omitted.
     \item Repetition is changed from using curly braces (\verb|{...}|) to an asterisk (\verb|...*|). It is important to note that, while it is not needed for our EBNF, Lark also allows for the definition of \textit{one or more} using a plus sign (\verb|...+|) instead.

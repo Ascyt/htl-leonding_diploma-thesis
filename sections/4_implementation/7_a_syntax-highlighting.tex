@@ -4,14 +4,19 @@ One part of this project presented in this theis, was the development of Syntax 
 
 There is a fundamental problem though. Because standard text-editors and native Robot Framework syntax highlighters do not recognize this new grammar, custom annotations would be displayed as plain text, or worse, marked as syntax errors.
 
-For KEBA, the frontend editor needs a way to visually mark these custom elements, because if they are not able to do so, it can lead to worse developer experience and more errors that go unnoticed until execution. Without visual validation, developers make more syntax mistakes. For example, writing \texttt{@VERISON} instead of \texttt{@VERSION}) or using an invalid argument type, like passing a plain string where a semantic version number is expected, would not be recognized while typing. These mistakes remain unnoticed. The errors are only found during the backend transpilation phase much later, when an error log is generated. This breaks the entire programming workflow and wastes precious time.
+For KEBA, the frontend editor needs a way to visually mark these custom elements, because if they are not able to do so, it can lead to worse developer experience and more errors that go unnoticed until execution. Without visual validation, developers make more syntax mistakes. 
 
-To fix this, custom syntax highlighting should be integrated into the web-based pre-existing code editor. The main objective simply was to get immediate visual feedback and validation. Correct keywords, different types of arguments and errors should all be highlighted in unique colors. This should reduce the time needed for test development using the annotations by a lot. Figure \ref{fig:syntax_highlighting} shows how the editor is supposed to handle valid and invalid inputs.
+For example, writing \texttt{@VERISON} instead of \texttt{@VERSION} or using an invalid argument type, like passing a plain string where a semantic version number is expected, would not be recognized while typing. These mistakes remain unnoticed. The errors are only found during the backend transpilation phase much later, when an error log is generated. This breaks the entire programming workflow and wastes precious time.
+
+To fix this, custom syntax highlighting should be integrated into the web-based pre-existing code editor. The main objective simply was to get immediate visual feedback and validation. Correct keywords, different types of arguments and errors should all be highlighted in unique colors. This should reduce the time needed for test development, with our Script Assembler annotations/modifiers in use, by a lot. Figure \ref{fig:syntax_highlighting} shows how the editor is supposed to handle valid and invalid inputs.
 
 \begin{figure}
     \centering
     \includegraphics[width=0.75\linewidth]{pics/SyntaxHighlighting/SyntaxWHITE.png}
-    \caption{Syntax Highlighting in Action}
+    \captionsetup{justification=centering,singlelinecheck=false}
+    \caption{
+      Syntax Highlighting in Action\\
+{\small\itshape (color scheme was modified for better visibility in print)}}    
     \label{fig:syntax_highlighting}
 \end{figure}
 
@@ -26,7 +31,7 @@ Over time the frontend ecosystem of the project has been updated to Angular 15, 
 
 This workaround made it possible for the legacy code to somehow continue working, but it also created major risks for maintainability and the build process. Forcing npm installation is a bad practice since it only covers up package mismatches and other errors. Because of this, there is a major risk that one might get unpredictable runtime behaviors \cite{npmForceDocs}. Since we do not want that, especially later on in production, the package needed to be replaced.
 
-After some research, the best and most widely used package seemed to be \texttt{ngx-monaco-editor-v2}. This version is an actively maintained community fork that is compatible with mordern Angular versions \cite{NgxMonacoEditorV2}.
+After some research, the best and most widely used package, fitting exactly our requirements, seemed to be \texttt{ngx-monaco-editor-v2}. This version is an actively maintained community fork that is compatible with mordern Angular versions \cite{NgxMonacoEditorV2}.
 
 The migration was handled in several steps to ensure a stable base. The \texttt{package.json} had to be updated, then the \texttt{app.module.ts} was refactored to match the new library and finally the asset paths in \texttt{angular.json} had to be updated.
 
@@ -40,7 +45,7 @@ Looking in the documentation gave me a hint in the right direction. The engine o
 
 The solution was to add an empty \texttt{colors} object to the theme definition. Listing \ref{lst:theme_definition} shows the working theme configuration, which includes the required \texttt{colors} property alongside the specific token rules.
 
-\begin{lstlisting}[caption={Custom monaco theme including the required color object}, label={lst:theme_definition}]
+\begin{lstlisting}[caption={Custom monaco theme including the required color object}, label={lst:theme_definition}, float=htbp]
 // Definition of the custom language theme
 (<any>window).monaco.editor.defineTheme('robot-theme', {
   base: 'vs-dark',
@@ -74,7 +79,7 @@ The annotations can be roughly divided into two categories. Those without any ar
 
 Modifiers without arguments, such as \texttt{@BRACKETSTART}, are simple to implement. As shown in Listing \ref{lst:root_tokenizer}, when the lexer encounters this keyword, it transitions to an \texttt{@endOfLine} state. This state  makes sure that no more text is accepted on this line. 
 
-\begin{lstlisting}[caption={Monarch tokenizers root state}, label={lst:root_tokenizer}]
+\begin{lstlisting}[caption={Monarch tokenizers root state}, label={lst:root_tokenizer}, float=htbp]
 tokenizer: {
   root: [
     // Standard Robot Framework variables
@@ -96,11 +101,12 @@ tokenizer: {
 
 Modifiers with arguments are more difficult, because hey require a more complex sequence of state transitions. The modifier \texttt{@VERSION} is a good example of this as the version check needs three different components. Also important is,  they have to be in an exact order, starting with an identifier (the BIOS or software name), than a comparison operator (e.g., <, >=), and at last a valid semantic version string.
 
-A chain of states was implemented, Root to identifier, Identifier to operator, Operator to version. That means in detail, when \texttt{@VERSION} is found in the \texttt{@root} state, the lexer transitions to \texttt{versionArgsIdentifier}. Once a valid word is found there, it transitions to \texttt{versionArgsOperator} and finally to \texttt{versionArgsSemver}.
+A chain of states was implemented, Root to identifier, Identifier to operator, Operator to version. That means that when \texttt{@VERSION} is found in the \texttt{@root} state, the lexer transitions to \texttt{versionArgsIdentifier}. Once a valid word is found there, it transitions to \texttt{versionArgsOperator} and finally to \texttt{versionArgsSemver}.
 
 This ``state machine'' approach guarantees that the syntax highlighting exactly fits to the strict sequence that the parser needs. Listing \ref{lst:version_states} shows this state chain in detail. 
 
-\begin{lstlisting}[caption={State transitions for the \texttt{@VERSION} modifier}, label={lst:version_states}]
+\begin{lstlisting}[caption={State transitions for the \texttt{@VERSION} modifier}, label={lst:version_states}, 
+  breaklines=true, breakatwhitespace=false, float=htbp ]
 versionArgsIdentifier: [ 
   // Entry point: match a word, then proceed to operator state
   [/[\w_]+/, 'arg.word', '@versionArgsOperator'],
@@ -134,11 +140,19 @@ During the implementation of the lexer, two main problems appeared, firstly to p
 
 The custom EBNF grammar for the Script Assembler is strictly line-bound, so an annotation has to be strictly on a singular line. So if a line break occurs the editor should return to the standard context used for the syntax highlighting of the Robot Framework.
 
-In the beginning, this caused a big conflict with Monarch's stateful tokenization. When the lexer goes into a state like \texttt{versionArgsIdentifier}, it just stays inside it until an explicit command such as \texttt{@root} or \texttt{@pop} is triggered. If a developer typed the keyword \texttt{@VERSION} and then pressed the Enter key without any arguments, the lexer got stuck in the \texttt{versionArgsIdentifier} state on the next line. Because of this, normal Robot Framework code on the following lines was wrongly checked against the version argument regular expressions. This completely destroyed the syntax highlighting for the whole rest of the file.
+In the beginning, this caused a big conflict with Monarch's stateful tokenization. When the lexer goes into a state like \texttt{versionArgsIdentifier}, it just stays inside it until an explicit command such as \texttt{@root} or \texttt{@pop} is triggered. If a developer typed the keyword \texttt{@VERSION} and then pressed the Enter key without any arguments, the lexer got stuck in the \texttt{versionArgsIdentifier} state on the next line. Because of this, normal Robot Framework code on the following lines was wrongly checked against the version argument regular expressions. This completely destroyed the syntax highlighting for the whole rest of the file (see Figure \ref{fig:statebleed} for example).
 
-To fix this ``state bleed'', the lexer had to recognize line breaks as termination triggers. Normally, Monarch works line-by-line and does not pass line break characters to the Regex engine \cite[pp.~8-9]{Krieken2023DerivingGrammars}. To change this, the \texttt{includeLF} property was enabled in the language configuration (see Listing \ref{lst:monarch_config_lf}).
+\begin{figure}[hbtp]
+    \centering
+    \includegraphics[width=1\linewidth]{pics/SyntaxHighlighting/state-bleed-white.png}
+    \caption{State bleed in the editor when line breaks are not included}
+    \label{fig:statebleed}
+\end{figure}
 
-\begin{lstlisting}[caption={\texttt{includeLF} in the Monarch config}, label={lst:monarch_config_lf}]
+
+To fix this ``state bleed'', the lexer had to recognize line breaks as termination triggers. Normally, Monarch works line-by-line and does not pass line break characters to the Regex engine. To change this, the \texttt{includeLF} property was enabled in the language configuration (see Listing \ref{lst:monarch_config_lf}).
+
+\begin{lstlisting}[caption={\texttt{includeLF} in the Monarch config}, label={lst:monarch_config_lf}, float=htbp]
 (<any>window).monaco.languages.setMonarchTokensProvider('robot', {
   ignoreCase: true,
   includeLF: true, // Exposes newline to the regex engine
@@ -152,7 +166,7 @@ With \texttt{includeLF} set to true, line breaks can be recognized. As can be se
 
 \subsection{Visualizing Syntax Errors}
 
-A major goal for the fronted-editor was to show syntax errors to the user right away, but there was a strict rule for this. The error highlighting had to work only through the Monarch configuration, because complex language server or an extra linter were not an option, as tools like that just use too many resources.
+A major goal for the fronted-editor was to show syntax errors to the user right away, but there was a strict rule for this. The error highlighting had to work only through the Monarch configuration, because a complex language server or an extra linter were not an option, as tools like that just use too many resources.
 
 This was quite a problem because Monarch is really just a lexical analyzer, meaning a lexer, and not a semantic parser \cite{MonacoMonarchDocs};~\cite[pp.~5-8]{Aho2006}. It only uses regular expressions to map strings to token classes. It does not know anything about ``errors'' or ``warnings''. It also cannot draw the typical red wavy lines, that are used for code defects in modern \glspl{ide}.
 
@@ -162,30 +176,34 @@ This \texttt{invalid} category then served as a catch-all mechanism in the state
 
 A good  example for this is the modifier \texttt{@BRACKETSTART}. As it does not allow any arguments, the following happens by running the system. When the lexer sees this exact keyword, it switches to the \texttt{endOfLine} state (see Listing \ref{lst:end_of_line_state}).
 
-\begin{lstlisting}[caption={The \texttt{endOfLine} state}, label={lst:end_of_line_state}]
+\begin{lstlisting}[caption={The \texttt{endOfLine} state}, label={lst:end_of_line_state}, float=htbp]
 endOfLine: [
   [/\n/, '', '@root'], // Valid: line ends, return to root
   [/./, 'invalid']     // Error: any other character is invalid
 ],
 \end{lstlisting}
 
-For example for the case, when a developer accidentally types a  \texttt{@BRACKETSTART argument}, the lexer first recognizes the annotation, jumps to the \texttt{endOfLine} state. There, it expects the end of the line. Instead, it encounters a space, and the word ``argument''. Because these characters do not match the \texttt{/\textbackslash n/} Regex, they fall through to the \texttt{/./} rule. As a result, the string ``argument'' turns red, gets underlined and italic, and is signaling by this way a  syntax error to the developer.  The user sees a clear syntax error right away without backend validation. Real-time error feedback is a useful feature, and even better, everything remains strictly within the boundaries of the Monarch lexer architecture.
+For example for the case, when a developer accidentally types a  \texttt{@BRACKETSTART argument}, the lexer first recognizes the annotation, jumps to the \texttt{endOfLine} state. There, it expects the end of the line. Instead, it encounters a space, and the word ``argument''. Because these characters do not match the \texttt{/\textbackslash n/} Regex, they fall through to the \texttt{/./} rule.
+
+As a result, the string ``argument'' turns red, gets underlined and italic, and by doing so, shows the developer a syntax error. The user sees a clear syntax error right away without backend validation. Real-time error feedback is a useful feature, and even better, everything remains strictly within the boundaries of the Monarch lexer architecture.
 
 \section{Limitations}
 
-Being able to catch errors early with the syntax highlighting was definitely worth the addition. But even with all effort, there is a limitation that could not be fixed, since there is a conflict between the rules of the two used languages, which could only be fixed through an own Language Server.
+Being able to catch errors early with the syntax highlighting was definitely worth the addition. But even with all the effort, there is a limitation that could not be fixed, since there is a conflict between the rules of the two used languages, which could only be fixed through a custom Language Server.
 
 The EBNF grammar for the backend is strictly case-sensitive. That means, all annotations and modifiers like \texttt{@VERSION} or \texttt{@OS}, have to be in uppercase, and different spelling leads to  a syntax error during transpilation.
 
-The standard Robot Framework language on the other hand works differently. Here upper and lower case do not matter, the language is case-insensitive \cite{RobotFrameworkCaseInsensitive}). Because of this, the \texttt{ignoreCase} property of the Monarch lexer must be set to true globally, if not, the normal keywords and variables do not get the correct highlighting (see Figure \ref{fig:statebleed} for example. 
+The standard Robot Framework language on the other hand works differently. Here upper and lower case do not matter, the language is case-insensitive \cite{RobotFrameworkCaseInsensitive}. Because of this, the \texttt{ignoreCase} property of the Monarch lexer must be set to true globally, if not, the normal keywords and variables do not get the correct highlighting (see example in Figure \ref{fig:case-sensitivity-issue}). 
 
-\begin{figure}[hbtp]
+\begin{figure}[htb]
     \centering
-    \includegraphics[width=1\linewidth]{pics/SyntaxHighlighting/state-bleed-white.png}
-    \caption{State bleed in the editor when line breaks are not included}
-    \label{fig:statebleed}
+    \includegraphics[width=0.8\linewidth]{pics/SyntaxHighlighting/case-sensitivity-issue.png}
+    \caption{Case sensitivity issues in syntax highlighting}
+    \label{fig:case-sensitivity-issue}
 \end{figure}
 
-The Monarch API only allows this setting for the entire language, because it is only possible through the global \texttt{ignoreCase} property defined in the \texttt{IMonarchLanguage} interface. A custom override for one tokenizer rule(\texttt{IMonarchLanguageRule}) or a single state is not possible. Therefore, the setting affects everything, the entire tokenizer. In the implemented editor configuration this global setting also affect the custom annotation rules, and as a result, if a developer types \texttt{@version} in lowercase, the frontend lexer still matches the rule and applies the corresponding syntax highlighting. But with the same script, the validation crashes when the backend EBNF parser takes the script. The reason is that the parser strictly needs the uppercase syntax \cite{MonacoMonarchTypes0341}.
 
-This limitation leads to a small difference between the visual representation and the backend, but it is an unavoidable compromise. Disabling \texttt{ignoreCase} globally completely breaks the standard Robot Framework code highlighting, and hat specific code is the vast majority of the file. The more important thing is, that the base language simply has to function. This was the basis for the final architectural decision together with KEBA.
+The Monarch API only allows this setting for the entire language, because it is only possible through the global \texttt{ignoreCase} property defined in the \texttt{IMonarchLanguage} interface. A custom override for one tokenizer rule(\texttt{IMonarchLanguageRule}) or a single state is not possible. Therefore, the setting affects everything, the entire tokenizer. In the implemented editor configuration this global setting also affects the custom annotation rules, and as a result, if a developer types \texttt{@version} in lowercase, the frontend lexer still matches the rule and applies the corresponding syntax highlighting. But with the same script, the validation crashes when the backend EBNF parser takes the script. The reason is that the parser strictly needs the uppercase syntax \cite{MonacoMonarchTypes0341}.
+
+This limitation leads to a small difference between the visual representation and the backend, but it is an unavoidable compromise. Disabling \texttt{ignoreCase} globally completely breaks the standard Robot Framework code highlighting, and that code is the vast majority of the file. That is why it is more important, that the base language simply has to function. This was the basis for the final architectural decision together with KEBA, even if it means the developer will only notice the error during transpilation and not while typing.
+

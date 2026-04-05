@@ -266,7 +266,7 @@ Every entity contains an \textit{id} attribute, signifying the unique identifies
 
 Case Types are used to categorize the test cases based on their type, such as functional, performance or security test cases. This is mainly used to group test cases together and strictly serve the organizational purposes of the system.
 
-This table has the following attributes:
+This table has the following attributes:~\cite{TRCaseTypes}
 \begin{itemize}
     \item \textbf{is_default:} \\
     This attribute is a boolean value that is set to true for one specific case type, which is assigned as the default case type. All other case types have this attribute set to false.
@@ -279,7 +279,7 @@ This table has the following attributes:
 
 Groups are used to categorize users based on their roles, permissions or tasks. Similarily to case types, groups are mainly used for organizational purposes.
 
-This table has the following attributes:
+This table has the following attributes:~\cite{TRGroups}
 \begin{itemize}
     \item \textbf{name:} \\
     This attribute is a string value that contains the name of the group.
@@ -292,7 +292,7 @@ This table has the following attributes:
 
 Priorities are used to order test cases in the system. Test cases with a higher value of priority are considered more important and are therefore executed before others with a lower value of priority. This also influences the ordering of test cases in the user interface, as well as the order they are assembled in the final script.
 
-This table has the following attributes:
+This table has the following attributes:~\cite{TRPriorities}
 \begin{itemize}
     \item \textbf{is_default:} \\
     This attribute is a boolean value that is set to true for one specific priority, which is assigned as the default priority. All other priorities have this attribute set to false.
@@ -311,7 +311,7 @@ This table has the following attributes:
 
 Projects are the uppermost level of organization in the system. They contain other entities such as test suites and by extension sections and test cases. Projects represent a specific testing effort or testing environment for an entire system.
 
-This table has the following attributes:
+This table has the following attributes:~\cite{TRProjects}
 \begin{itemize}
     \item \textbf{announcement:} \\
     This attribute is a string value that contains the announcement message for the project, which provides more information about the project and its purpose.
@@ -345,7 +345,7 @@ This table has the following attributes:
 
 Test Suites are collections of test cases that are grouped together based on their purpose or functionality.
 
-This table has the following attributes:
+This table has the following attributes:~\cite{TRSuites}
 \begin{itemize}
     \item \textbf{description:} \\
     This attribute is a string value that contains the description of the specific test suite.
@@ -364,7 +364,7 @@ This table has the following attributes:
 
 Sections further divide and organize the test cases within a test suite.
 
-This table has the following attributes:
+This table has the following attributes:~\cite{TRSections}
 \begin{itemize}
     \item \textbf{depth:} \\
     The depth attribute is an integer value that indicates the level of the section within the hierarchy of sections. The lower the value, the higher the section is in the hierarchy.
@@ -389,7 +389,7 @@ This table has the following attributes:
 
 Test cases represent the individual tests that can be executed. Considering that the TestRail API provides a lot of data related to test cases, the test case entity contains a large number of attributes. Many of these are not used but are included regardless to ensure the structure remains true to the TestRail database, to avoid any issues when switching between the two database types.
 
-The most important attributes of the table are the following:
+The most important attributes of the table include the following:~\cite{TRCases}
 \begin{itemize}
     \item \textbf{title:} \\
     This attribute is a string value containing the title of the test case.
@@ -426,7 +426,7 @@ The most important attributes of the table are the following:
 
 Test results represent the outcome of a test case within a test run. 
 
-This table has the following attributes:
+This table has the following attributes:~\cite{TRResults}
 \begin{itemize}
     \item \textbf{assignedto_id:} \\
     This attribute is an integer value containing the ID of the user that is assigned to and responsible for the test result.
@@ -458,23 +458,107 @@ This table has the following attributes:
 
 \subsection{Test Runs}
 
-This table has the following attributes:
+Test runs represent a specific execution of a batch of test cases. Similarly to test cases, test runs have a large number of attributes, many of which are not used but are included regardless to ensure the structure remains true to the TestRail database.
+
+The most important attributes of the table include the following:~\cite{TRRuns}
 \begin{itemize}
-    \item \textbf{} \\
+    \item \textbf{name:} \\
+    This attribute is a string value containing the name of the test run.
+
+    \item \textbf{description:} \\
+    This attribute is a string value containing the description of the test run.
+
+    \item \textbf{assignedto_id:} \\
+    This attribute is an integer value containing the ID of the user that is assigned to the test run.
+
+    \item \textbf{is_completed:} \\
+    This attribute is a boolean value indicating whether the test run has been successfully completed or not.
+
+    \item \textbf{completed_on:} \\
+    This attribute is an integer value containing the UNIX timestamp of when the test run was completed.
+
+    \item \textbf{passed/blocked/untested/retest/failed_count:} \\
+    These attributes are integer values containing the count of test cases within the test run that have the status of passed, blocked, untested, retest and failed respectively.
+
+    \item \textbf{project_id:} \\
+    This attribute is an integer value containing the ID of the project that the test run is assigned to.
+
+    \item \textbf{created_by:} \\
+    This attribute is an integer value containing the ID of the user that originally created the test run.
+
+    \item \textbf{created_on:} \\
+    This attribute is an integer value containing the UNIX timestamp of when the test run was originally created.
+
+    \item \textbf{url:} \\
+    This attribute is a string value containing the URL of the test run.
+
+    \item \textbf{case_ids:} \\
+    This attribute is an array of integers containing the IDs of all test cases that are a part of the test run.
 \end{itemize}
 
 \subsection{Tests}
 
-This table has the following attributes:
+Tests are executed instances of test cases within a test run. There can be multiple tests for the same test case, as a test case can be executed multiple times through multiple test runs.
+
+This table has the following attributes:~\cite{TRTests}
 \begin{itemize}
-    \item \textbf{} \\
+    \item \textbf{assignedto_id:} \\
+    This attribute is an integer value containing the ID of the user that is assigned to and responsible for the test.
+
+    \item \textbf{case_id:} \\
+    This attribute is an integer value containing the ID of the test case that the test is an instance of.
+
+    \item \textbf{priority_id:} \\
+    This attribute is an integer value containing the ID of the assigned priority for the test.
+
+    \item \textbf{run_id:} \\
+    This attribute is an integer value containing the ID of the test run that the test is a part of.
+
+    \item \textbf{status_id:} \\
+    This attribute is an integer value containing the ID of the status of the test.
+
+    \item \textbf{title:} \\
+    This attribute is a string value containing the title of the test. This usually refers back to the title of the test case that the test is an instance of, but has a unique name to differentiate it from other instances of the same test case.
+
+    \item \textbf{type_id:} \\
+    This attribute is an integer value containing the ID of the assigned case type for the test.
 \end{itemize}
 
 \subsection{Users}
 
-This table has the following attributes:
+Users are the individuals that interact with the system. They can have different roles and permissions within the system and can be assigned to various entities within the system, such as test runs or test plans as creators and updaters.
+
+This table has the following attributes:~\cite{TRUsers}
 \begin{itemize}
-    \item \textbf{} \\
+    \item \textbf{email:} \\
+    This attribute is a string value that contains the email address of the user.
+
+    \item \textbf{email_notifications:} \\
+    This attribute is a boolean value that indicates whether the user has email notifications enabled or not.
+
+    \item \textbf{is_active:} \\
+    This attribute is a boolean value that indicates whether the user is active or not.
+
+    \item \textbf{is_admin:} \\
+    This attribute is a boolean value that indicates whether the user has admin privileges or not.
+
+    \item \textbf{name:} \\
+    This attribute is a string value that contains the name of the user.
+
+    \item \textbf{role_id:} \\
+    This attribute is an integer value that contains the ID of the role assigned to the user.
+
+    \item \textbf{role:} \\
+    This attribute is a string value that contains the name of the role assigned to the user.
+
+    \item \textbf{group_ids:} \\
+    This attribute is an array of integers that contains the IDs of all groups that the user a part of.
+
+    \item \textbf{assigned_projects:} \\
+    This attribute is an array of integers that contains the IDs of all projects that the user is assigned to.
+
+    \item \textbf{password:} \\
+    This attribute is a string value that contains the password of the user. This is stored in plain text in the database, which is not ideal for security reasons, but is sufficient for the purpose of the local mock database. In section \ref{sec:potential-future-steps}, potential future steps are discussed, one of which is the implementation of a system for encrypting or hashing the credentials of all users.
 \end{itemize}
 
 \section{Potential Future Steps} \label{sec:potential-future-steps}

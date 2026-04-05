@@ -85,7 +85,7 @@ In his article, he showed the power of EBNF by defining its own syntax as an exa
 
 The following overview focuses in more detail on the differences between BNF and Extended Backus-Naur Form (EBNF) as described in Concepts of Programming Languages by Robert W. Sebesta \cite[pp.~149-151]{SebestaConceptsEdition}.
 
-It is essential to note that these extensions do not enhance the descriptive power of BNF. The extensions are made to increase the readability and writability of formal grammars. BNF is theoretically sufficient for describing context-free languages, but EBNF provides a more concise notation for complex structures.
+It is worth noting that these extensions do not add to the descriptive capabilities of BNF. Their purpose is simply to make formal grammars easier to read and write. BNF is theoretically sufficient for describing context-free languages, but EBNF provides a more concise notation for complex structures.
 
 \subsection{Core Syntactic Extensions in EBNF in detail}
 
@@ -94,20 +94,19 @@ Sebesta identifies three primary extensions common to most versions of EBNF:
 \begin{itemize}
     \item \textbf{Optionality} (\texttt{[...]}): \\
     Brackets are used to denote a part of a right-hand side (RHS) that may occur once or not at all. \\
-    Example: A C if-else statement can be described as: \texttt{<if\_stmt> $\rightarrow$ if (<logic\_expr>) <stmt> [else <stmt>]}. \\
-    Instead one uses square brackets to make something optional. For example \texttt{["a"]} means ``a'' or empty.
+    Example: \texttt{[meow]} means meow or empty.
     
     \item \textbf{Repetition} (\texttt{\{...\}}): \\
     Braces indicate that the enclosed part can be repeated any number of times, including zero. This replaces the need for recursion when describing simple lists. \\
-    Example: A list of one or more identifiers separated by commas: \texttt{<ident\_list> $\rightarrow$ <identifier> \{, <identifier>\}}. \\
-    Example: \texttt{\{a\}} means a, aa, aaa, and so on.
+    Example: \texttt{\{chirp\}} can be empty, chirp, chirpchirp, chirpchirpchirp, and so on. \\
+    Example for the usage for lists: \texttt{list = <item> \{<item>\}}, which represents a list of one or more items.
     
-    \item \textbf{Multiple-Choice Options} (\texttt{(...)} and \texttt{|}): \\
-    When one element must be selected from a group, the options are grouped in parentheses and separated by the OR operator. \\
-    Example: Defining a term with different operators: \texttt{<term> $\rightarrow$ <term> (* | / | \%) <factor>}.
+    \item \textbf{Multiple-Choice Options} (\texttt{(...|...)}): \\
+    A set of alternatives can be written in parentheses, with the vertical bar (i.e., the OR operator \texttt{|}) used to separate the possible choices. \\
+    Example: \texttt{(pancake | waffle)} represents either pancake or waffle.
 \end{itemize}
 
-In this notation, brackets, braces, and parentheses serve as metasymbols (notational tools) rather than terminal symbols of the language being described \cite[pp.~149-151]{SebestaConceptsEdition}.
+In this notation, brackets, braces, and parentheses serve as metasymbols rather than terminal symbols of the language being described \cite[pp.~149-151]{SebestaConceptsEdition}.
 
 \subsection{Further Syntactic Extensions in EBNF based on ISO/IEC 14977}
 
@@ -120,7 +119,7 @@ However, there are more differences between BNF and EBNF in the ISO/IEC 14977 de
     
     \item \textbf{Formal comments:} Comments are an important feature, that BNF is not offering. EBNF provides a formal way to add comments using \texttt{(*} and \texttt{*)}. And these notes do not change the machine's logic.
     
-    \item \textbf{Flexible names:} In BNF, names for categories often need brackets. EBNF uses an explicit comma (\texttt{,}) as a so-called concatenate symbol to link parts of a rule. This allows category names to use multiple words without brackets, meta-identifiers no longer have to consist of a single word or be enclosed in angle brackets. It also ensures that the layout of the syntax like spaces or line breaks has no effect on the defined language.
+    \item \textbf{Flexible names:} In BNF, names for categories often need brackets. EBNF uses an explicit comma (\texttt{,}) as a so-called concatenate symbol to link parts of a rule. This removes the restriction that category names or meta-identifiers must be single words or enclosed in brackets, allowing for more flexible naming. It also ensures that the layout of the syntax like spaces or line breaks has no effect on the defined language.
     
     \item \textbf{Extensions:} Programmers can add their own features to EBNF. These are called ``special sequences'' and are placed between question marks (\texttt{?}). This makes the start and end of any extension very easy to find. Extensions were used several times in earlier versions of the solution presented in this thesis, but were eliminated in the final version because there was no longer a need for them.
 \end{itemize}

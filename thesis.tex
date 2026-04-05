@@ -184,7 +184,8 @@
     \renewcommand{\refname}{References}
     \renewcommand{\bibname}{References}
 }
-\spacing{1}{
+{
+%\setstretch{1}
 \IfStrEq{\thesislang}{de}
 {
 	\bibliographystyle{ieeetrande}
@@ -194,6 +195,7 @@
 }
 \nocite{*}
 \bibliography{bib}
+%\par
 }
 \listoffigures
 %\listoftables

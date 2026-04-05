@@ -49,6 +49,15 @@
       "tools": [
         "latexmk-force-no-synctex"
       ]
+    },
+    {
+      "name": "pdflatex + makeglossaries",
+      "tools": [
+        "pdflatex-no-synctex",
+        "makeglossaries",
+        "pdflatex-no-synctex",
+        "pdflatex-no-synctex"
+      ]
     }
   ],
   "latex-workshop.latex.recipe.default": "latexmk (force, no synctex)"

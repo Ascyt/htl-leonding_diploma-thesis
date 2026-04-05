@@ -40,7 +40,7 @@ Grouping in queries allows for the aggregation of data based on specific attribu
     \label{fig:erd}
 \end{figure}
 
-In figure \ref{fig:erd}, we can see a simplified example of a relational database structure. The three entities "Artist", "Label" and "Album" are represented as tables, with their respective attributes as columns. The relationships between the entities are established through the usage of primary and foreign keys, allowing for queries to be executed across multiple linked entities. For example, we can query for all albums by a specific artist or a specific label.
+In figure \ref{fig:erd}, we can see a simplified example of a relational database structure. The three entities \textit{Artist}, \textit{Label} and \textit{Album} are represented as tables, with their respective attributes as columns. The relationships between the entities are established through the usage of primary and foreign keys, allowing for queries to be executed across multiple linked entities. For example, we can query for all albums by a specific artist or a specific label.
 
 \subsection{ACID}
 
@@ -125,7 +125,7 @@ PostgreSQL is not only a database management system that the team is familiar wi
 
 \subsection{pgAdmin}
 
-The open-source management tool "pgAdmin" is used for the administration of the PostgreSQL database, as it provides an easily navigable user interface for management, query execution and other administrative tasks.
+The open-source management tool \textit{pgAdmin} is used for the administration of the PostgreSQL database, as it provides an easily navigable user interface for management, query execution and other administrative tasks.
 
 \begin{figure}[ht]
     \centering
@@ -155,7 +155,7 @@ One approach was to create an API that would allow the main system to interact w
 
 The other approach was to work in the preexisting backend to connect to the database directly. This approach was ultimately chosen, as it not only makes the switch between the two databases simpler, but also integrates the functionality of the new database directly into the main system. This approach was further endorsed by the supervisor of the project, as it helps the system to eventually transition away from the TestRail database and towards the new mockup database, which allows for more independence and expandability in the future.
 
-The python library "psycopg" is used for the connection between the main system and the PostgreSQL database. This library provides a simple and efficient way to connect to the PostgreSQL database and execute various commands and queries. It also provides support for connection pooling, which can help to improve the performance of the database interactions.
+The python library \textit{psycopg} is used for the connection between the main system and the PostgreSQL database. This library provides a simple and efficient way to connect to the PostgreSQL database and execute various commands and queries. It also provides support for connection pooling, which can help to improve the performance of the database interactions.
 
 \section{Database Connections in the System}
 
@@ -188,7 +188,7 @@ All functions of the TRSession class follow a similar structure, with the type o
 
 \subsection{DBSession}
 
-The DBSession class is designed to replicate all used functionalities of the exisitng TRSession class, while replacing the communication with the TestRail API with a direct connection to the PostgreSQL database, using the "psycopg" python library. It is strictly necessary that the functions of the DBSession have the same name, parameters and return values as the functions of the TRSession class, in order to avoid major conflicts when switching between the two database connections.
+The DBSession class is designed to replicate all used functionalities of the exisitng TRSession class, while replacing the communication with the TestRail API with a direct connection to the PostgreSQL database, using the \textit{psycopg} python library. It is strictly necessary that the functions of the DBSession have the same name, parameters and return values as the functions of the TRSession class, in order to avoid major conflicts when switching between the two database connections.
 
 \begin{lstlisting}[caption={Code snippet of the get\_case\_title function within the DBSession class.}, label={lst:db-function}]
 

@@ -8,12 +8,12 @@ In programming, logging is the process of recording information during the execu
 
 In Script Assembler, most things are logged using Python's \verb|logging| module, which had already been set up to work in the \gls{trp} project before the Script Assembler project was started on. 
 
-This module allows for logging on multiple \textit{levels}~\cite{py-logging}. The levels that we utilized in Script Assembler are the following:
+This module allows for logging on multiple \textit{levels}~\cite{py-logging}. The levels that we utilized in Script Assembler are as follows:
 
 \begin{itemize}
     \item \verb|debug|: We use this level to log nearly every step that the parser takes. As the name suggests, it is useful for debugging purposes, when it might be crucial to consider the exact steps that were taken.
     \item \verb|info|: We use this level for anything that might be \textit{useful to know} regarding the overall flow of the program, that is not critical or necessarily important to consider. It is used, for instance, when the body from a conditional modifier, such as \verb|@VERSION|, is discarded.
-    \item \verb|warning|: We use this level to notify the user about situations that, despite not being exceptions, might not be intentional or entirely logical, and could therefore have unforseen consequences. It is used, for instance, when an option that merely sets a single flag to a value, like \verb|@NO_KETOP|, is used multiple times in the same script. 
+    \item \verb|warning|: We use this level to notify the user about situations that, despite not being exceptions, might not be intentional or entirely logical, and could therefore have unforeseen consequences. It is used, for instance, when an option that merely sets a single flag to a value, like \verb|@NO_KETOP|, is used multiple times in the same script. 
 \end{itemize}
 
 In this section, the only log level we will be taking an in-depth look at in this thesis is \verb|warning|, as it may provide insight into certain edge cases. 
@@ -25,7 +25,8 @@ The following is a list of all warnings of \verb|OptionModifierFormat| a user ma
 \begin{itemize}
     \item \textit{NO\_KETOP flag has already been set for this file}: This warning is raised when the \verb|@NO_KETOP| option is used and the \verb|no_ketop| variable is already set to true from a previous use of the option in the same file. In this case, the flag remains enabled. 
     \item \textit{Version for \{\ldots\} is not provided. Discarding block}: This warning is raised when the \verb|@VERSION| modifier is called and the module given in the argument has not been provided in the \verb|versions| dictionary of \verb|FormatterArgs|. That modifier's body gets discarded.
-    \item \textit{Provided OS is None. Discarding block}: This warning is raised when the \verb|@OS| modifier is used and the \verb|os| variable o f \verb|FormatterArgs| is \verb|None|. That modifier's block gets discarded.
+    \item \textit{Provided OS is None. Discarding block}: This warning is raised when the \verb|@OS| modifier is used and the \verb|os| variable of \verb|FormatterArgs| is \verb|None|. That modifier's block gets discarded.
+    \item \textit{Provided OS is None. Discarding block}: This warning is raised when the \verb|@OS| modifier is used and the \verb|os| variable of \verb|FormatterArgs| is \verb|None|. That modifier's block gets discarded.
     \item \textit{Provided actual version (\{\ldots\}) is not in a valid semantic version format (https://semver.org/); trying to force parse\ldots}: This warning is raised when the \verb|@VERSION| modifier is called with an argument with a version that is not a valid semantic version format. When this happens, \verb|semantic_version|'s \verb|Version.coerce| function is used, which attempts to correct the version string. If this fails, a \verb|ParserSyntaxError| is raised.
 \end{itemize}
 
@@ -33,7 +34,7 @@ Many of the warnings above were requirements given by our project partner.
 
 \section{Exceptions}
 
-In programming, when the normal flow of a program is disrupted, an exception often gets thrown. Aside from built-in exceptions like after attempting to divide a number by zero, Python also allows for defining custom exceptions. This can be useful to, for instance, improve the clarity of error messages, make it easier to diagnose issues, and to avoid code duplication~\cite{py-exceptions}. 
+In programming, when the normal flow of a program is disrupted, an exception often gets thrown. Aside from built-in exceptions like when attempting to divide a number by zero, Python also allows for defining custom exceptions. This can be useful to, for instance, improve the clarity of error messages, make it easier to diagnose issues, and to avoid code duplication~\cite{py-exceptions}. 
 
 In this chapter, the terms \textit{exception} and \textit{error} are used interchangeably. 
 

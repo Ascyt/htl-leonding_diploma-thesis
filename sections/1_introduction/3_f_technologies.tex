@@ -4,19 +4,19 @@ Just like the \gls{trp} project for which this project aims to provide an extens
 
 \section{Python}
 
-Python is a high-level, interpreted, dynamically typed object oriented programming language with a focus on allowing programmers to create applications, scripts, or connections between existing programs, quickly~\cite{py-summary}.
+Python is a high-level, interpreted, dynamically typed object-oriented programming language with a focus on allowing programmers to create applications, scripts, or connections between existing programs, quickly~\cite{py-summary}.
 
 \subsection{Modules}
 
-Importantly, Python allows for the import of \textit{modules}, which are essentially files containing Python code which allow for importing functions, classes, or similar, into other Python files~\cite{py-modules-summary}.
+Importantly, Python allows for the import of \textit{modules}, which are essentially files containing Python code that allow for importing functions, classes, or similar, into other Python files~\cite{py-modules-summary}.
 
-While it is possible for modules to be local files, they are also commonly downloaded from the internet using \textit{package managers}. An commonly used example of a package manager for Python, which is also the only Python package manager used for this project, is known as \verb|pip|~\cite{py-modules-install}.
+While it is possible for modules to be local files, they are also commonly downloaded from the internet using \textit{package managers}. A commonly used example of a package manager for Python, which is also the only Python package manager used for this project, is known as \verb|pip|~\cite{py-modules-install}.
 
 The external modules used in this project include, but are not limited to:
 \begin{itemize}
     \item \verb|lark|, which allows for parsing of a given piece of text using a custom grammar language which is based on \gls{ebnf}. The core of our parser is built around this library~\cite{py-module-lark}.
     \item \verb|semantic-version|, which is a small library that ``provides tools to handle \\
-    SemVer''\cite{py-module-semantic-version}. \textit{SemVer} stands for \textit{Semantic Versioning}, and it refers to a scheme that intents to dictate how a software's version number is to be assigned and incremented~\cite{SemanticVersioning}. This library is used to for parsing version strings for our \verb|@VERSION| Keyword~\cite{py-module-semantic-version}.
+    SemVer''\cite{py-module-semantic-version}. \textit{SemVer} stands for \textit{Semantic Versioning}, and it refers to a scheme that is intended to dictate how a software's version number is to be assigned and incremented~\cite{SemanticVersioning}. This library is used for parsing version strings for our \verb|@VERSION| Keyword~\cite{py-module-semantic-version}.
     \item \verb|psycopg|, which allows for communication with a \textit{PostgreSQL} database~\cite{py-module-psycopg}. This library is used for our \textit{Mockup Database} system.
 \end{itemize}
 

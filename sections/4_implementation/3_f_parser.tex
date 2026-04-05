@@ -217,13 +217,13 @@ class ChildArgs:
 
 Here, \verb|preamble_index| represents the index of the preamble bracket that new lines should be appended to. If this variable is set to \verb|0|, it means that the formatter is currently not inside of an \verb|@PREAMBLE| modifier. 
 
-\verb|in_bracketstart| and \verb|in_bracketend| represent whether or not the formatter is currently within a respective \verb|@BRACKETSTART| or \verb|@BRACKETEND| modifier. If either of this is the case, new lines will be appended to the respective \verb|bracketstart| or \verb|bracketend| brackets, respectively.
+\verb|in_bracketstart| and \verb|in_bracketend| represent whether or not the formatter is currently within a respective \verb|@BRACKETSTART| or \verb|@BRACKETEND| modifier. If either of these is the case, new lines will be appended to the respective \verb|bracketstart| or \verb|bracketend| brackets, respectively.
 
 Here, \verb|preamble_index|, \verb|in_bracketstart|, and \verb|in_bracketend| are mutually exclusive to one another, i.e.\ at most only one of them can be \textit{active} at a time.
 
 \subsection{Line handling}
 
-After the formatter is past the \verb|"start"| entry point of the initial \verb|Tree|, it will run \verb|dle_line| on each line element, which is a function with the following header:
+After the formatter is past the \verb|"start"| entry point of the initial \verb|Tree|, it will run \verb|_handle_line| on each line element, which is a function with the following header:
 
 \begin{lstlisting}[language=Python, caption={Method header of \texttt{_handle_line}.}, label={lst:method_definition_parser_handle_line`'}]
 def _handle_line(self, line:Tree)->None:
@@ -239,7 +239,7 @@ This function differentiates whether the \verb|line| matches \verb|"robot_line"|
 
 \verb|_add_script| adds an input string to the output script or respective bracket. This is the function that appends text (Robot lines) to the final \verb|FormattedResponse|. Where exactly the text gets appended to depends on the state of the current \verb|child_args|. If \verb|child_args| specifies that the formatter is currently within a bracket, it will be appended to \verb|bracketstart|, \verb|bracketend|, or the given index of \verb|preamble_dict|, respectively; otherwise, it will be appended to \verb|script|.
 
-\verb|OptionModifierFormat.handle_option| is part of a seperate class to handle the specific option and, in turn, alter flags of the \verb|current| (\verb|FormattedResponse|) provided in the \verb|FormatterInternal| instance. 
+\verb|OptionModifierFormat.handle_option| is part of a separate class to handle the specific option and, in turn, alter flags of the \verb|current| (\verb|FormattedResponse|) provided in the \verb|FormatterInternal| instance. 
 
 \verb|OptionModifierFormat.handle_modifier| is part of a separate class to handle the specific modifier. Unlike \verb|OptionModifierFormat.handle_option|, this function has return values: firstly, its children (which, as stated above, represent the block body) and the new instance of \verb|ChildArgs| to be used as context information for the lines in its block body. 
 

@@ -1,6 +1,6 @@
 % !TEX root = ../../thesis.tex
 
-This chapter highlights the implementiation of how options and modifiers are handled by the parser. 
+This chapter highlights the implementation of how options and modifiers are handled by the parser. 
 
 The \verb|OptionModifierFormat| class is used to handle specific keywords. It includes two main functions, which are \verb|handle_option| and \verb|handle_modifier|. Each of these functions matches for its respective name. 
 
@@ -20,7 +20,7 @@ The argument must be in the form \verb|<component> <comparison> <version>|, wher
 
 The component together with the comparison operator and version will be checked against the \verb|versions| variable provided in \verb|FormatterArgs|, which is a dictionary where the key represents the actual component together with its version on the KeTop. This comparison is case-insensitive and ignores any leading or consecutive whitespace. 
 
-If provided component from the argument is not found in the \verb|versions| dictionary variable, a warning will be logged and the body gets discarded. 
+If the provided component from the argument is not found in the \verb|versions| dictionary variable, a warning will be logged and the body gets discarded. 
 
 If the comparison is satisfied, the body will be further recursively parsed; otherwise, the body will be discarded. 
 
@@ -44,7 +44,7 @@ According to \verb|semantic_version|'s \gls{api} reference, the rules for \verb|
     \item Any extra \verb|+| in the \verb|build| part will be replaced with dots''\cite{py-module-semantic-version-api}
 \end{itemize}
 
-If this fails as well, a \verb|ParserSyntaxError|, which is explained in Chapter~\ref{chap:exceptions-and-warnigs}, is raised. 
+If this fails as well, a \verb|ParserSyntaxError|, which is explained in Chapter~\ref{chap:exceptions-and-warnings}, is raised. 
 
 As \verb|semantic_version| utilizes operator overloading, both versions can be compared using the operators \verb|>|, \verb|<|, \verb|>=|, \verb|<=|, \verb|==|, or \verb|!=| as if they were numbers, where a newer version is considered to be \textit{greater than} an older version.~\cite{py-module-semantic-version-api}. 
 
@@ -54,7 +54,7 @@ A \verb|match| statement is used on the operator string from the argument to cho
 
 The \verb|@OS| modifier represents a conditional statement and requires an argument. 
 
-The argument represents the operating system to check; it is compared against the \verb|os| variable provided in \verb|FormatterArgs|. This comparison is case-insensitive ignores any leading whitespace. 
+The argument represents the operating system to check; it is compared against the \verb|os| variable provided in \verb|FormatterArgs|. This comparison is case-insensitive and ignores any leading whitespace. 
 
 If the provided \verb|os| variable is \verb|None|, a warning will be logged and the body gets discarded. 
 
@@ -70,7 +70,7 @@ A syntax exception will be thrown if it is defined inside \verb|@BRACKETSTART|, 
 
 \section{Modifiers @BRACKETSTART and @BRACKETEND}
 
-The \verb|@BRACKETSTART| or \verb|@BRACKETEND| modifier continue to recursively parse the body text, however the parsed text will be appended to \verb|bracketstart| or \verb|bracketend| respectively, as opposed to \verb|script|. 
+The \verb|@BRACKETSTART| or \verb|@BRACKETEND| modifiers continue to recursively parse the body text, however the parsed text will be appended to \verb|bracketstart| or \verb|bracketend| respectively, as opposed to \verb|script|. 
 
 This is done by returning a \verb|ChildArgs| instance with \verb|in_bracketstart| or \\\verb|in_bracketend| respectively set to \verb|True|.
 

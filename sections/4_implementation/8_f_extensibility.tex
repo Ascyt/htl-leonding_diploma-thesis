@@ -2,7 +2,7 @@
 
 One of the most important requirements given by our project partner is that extending the project, by for example adding new keywords to the parser, should be as easy as possible. 
 
-This chapter will go over the necessary steps required to define a new keyword or to write a seperate implementation of the parser. 
+This chapter will go over the necessary steps required to define a new keyword or to write a separate implementation of the parser. 
 
 \section{Possibilities}
 
@@ -12,11 +12,11 @@ An option or a modifier may be defined to use, require, or optionally allow for 
 
 If needed, it is possible to define keywords to allow for complex logic, for instance by adding an option that sets a variable to a chosen value and adding a modifier to compare it to a different variable.
 
-What follows are a few of examples of keywords that we, for one reason or another, consider to be potentially useful within the context of the \gls{trp} project. 
+What follows are a few examples of keywords that we, for one reason or another, consider to be potentially useful within the context of the \gls{trp} project. 
 
 \subsection{@LOADTEMPLATE}
 
-In this example, \verb|@LOADTEMPLATE| is an option that takes a \textit{template name} as argument. \textit{Templates} could be passed as a dictionary, where each template name maps to a snippet of Robot Framework code that is commonly re-used across seperate test files. 
+In this example, \verb|@LOADTEMPLATE| is an option that takes a \textit{template name} as argument. \textit{Templates} could be passed as a dictionary, where each template name maps to a snippet of Robot Framework code that is commonly re-used across separate test files. 
 
 When this option is encountered, the parser could append the code snippet that belongs to the respective template to the current script or active bracket. 
 
@@ -40,7 +40,7 @@ Unfortunately, there are also some use cases where the core foundation that the 
 
 \subsection{Top-to-bottom processing}
 
-Aside from the preprocessor, the parser traverses the file from the top to bottom. This means that, at any point of the file, it is currenty unaware of all keywords that are defined below, as the parser has not reached that point of the file yet.
+Aside from the preprocessor, the parser traverses the file from the top to bottom. This means that, at any point of the file, it is currently unaware of all keywords that are defined below, as the parser has not reached that point of the file yet.
 
 \subsection{Naming}
 
@@ -67,4 +67,4 @@ Since the parser treats Robot script lines as arbitrary pieces of text, and line
 
 In general, any project where simple, custom keywords may be needed to extend the capabilities of any text-based file might be a good use for Script Assembler. 
 
-For instance, consider something that has nothing to do with \gls{trp}, like a product specification. Critical pieces of information that should not be given away to third parties could, for instance, be defined in a custom modifier named \verb|@SECRET|. Then, a boolean may be added as an input to the parser which decides whether the output should be a version of the specification that intended for internal use, or one that is fit to be sent to a third party. 
+For instance, consider something that has nothing to do with \gls{trp}, like a product specification. Critical pieces of information that should not be given away to third parties could, for instance, be defined in a custom modifier named \verb|@SECRET|. Then, a boolean may be added as an input to the parser which decides whether the output should be a version of the specification that is intended for internal use, or one that is fit to be sent to a third party. 

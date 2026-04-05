@@ -47,7 +47,7 @@ argument = ? some argument for example comparison operators or strings ?.
 
 While the parser implementation stays lightweight and adaptable with this approach, there is a blind spot and it completely fails at validating the actual code structure:
 \begin{enumerate}
-    \item \textbf{Unresolved Ambiguities:} The grammar failed to strictly define and categorize specific keywords. It could not differentate between standalone options (e.g., \texttt{@NO\_KETOP}) and block-defining modifiers (e.g., \texttt{@VERSION}). The parser was basically blind to the meaning of the words and no correct validation was possible.
+    \item \textbf{Unresolved Ambiguities:} The grammar failed to strictly define and categorize specific keywords. It could not differentiate between standalone options (e.g., \texttt{@NO\_KETOP}) and block-defining modifiers (e.g., \texttt{@VERSION}). The parser was basically blind to the meaning of the words and no correct validation was possible.
     \item \textbf{Scope Definition Conflicts:} A critical issue emerged during the following design phases when indentation was chosen over explicit brackets (e.g., \texttt{\{} and \texttt{\}}) as the primary method for defining scopes. The minimal grammar was just defined too loosely for it to be able to differentiate between either an option that has a body despite it not being allowed to (e.g., developer misinterpreting functionality). The parser was not able to detect the syntax error and invalid code might pass through.
 \end{enumerate}
 
@@ -74,7 +74,7 @@ version = "VERSION" , S , ( '>' | '<' | '=' | '>=' | '<=' ) , S , ?version_numbe
 \end{lstlisting}
 
 
-Looking closer at the code, on can see, that in this specific design, \texttt{\#} was introduced for global options, and \texttt{\&} was utilized for statements, which were explicitly terminated by \texttt{\&/}. Since this approach was never fully completed \texttt{@} was not used yet, but the idea was to use it only for sections. The grammar also checks the expected arguments very strictly. For instance, the \texttt{VERSION} statement forces the user to use mathematical comparison operators and a specific version number format (line 12).
+Looking closer at the code, one can see that in this specific design, \texttt{\#} was introduced for global options, and \texttt{\&} was utilized for statements, which were explicitly terminated by \texttt{\&/}. Since this approach was never fully completed, \texttt{@} was not used yet, but the idea was to use it only for sections. The grammar also checks the expected arguments very strictly. For instance, the \texttt{VERSION} statement forces the user to use mathematical comparison operators and a specific version number format (line 12).
 
 \subsection{Problems of the Detailed Approach}
 
@@ -86,7 +86,7 @@ This approach was very precise and stable. Unfortunately, there were two severe 
 
 \section{Conclusion}
 
-Testing these two different approaches provided important details for the final EBNF. The Minimal Approach showed the possible dangers of structural ambiguity. It is clear that the parser needs to ``understand'' the difference between a standalone option and a block-defining modifier. On the other hand, the Detailed Approach proved that excessive rigidity is also not completely perfect. Making the parsing process too easy for the machine just makes extending unneccessary hard.
+Testing these two different approaches provided important details for the final EBNF. The Minimal Approach showed the possible dangers of structural ambiguity. It is clear that the parser needs to ``understand'' the difference between a standalone option and a block-defining modifier. On the other hand, the Detailed Approach proved that excessive rigidity is also not completely perfect. Making the parsing process too easy for the machine just makes extending unnecessarily hard.
 
 The conclusion from this evaluation phase was that the final grammar definitely needed a hybrid design to work. On the inside, it requires the precision of the Detailed Approach, which  means in detail that all keywords must be strictly defined and categorized internally so the parser can recognize valid scopes and modifiers correctly. But at the same time, it still has to keep the same look and the backward compatibility of the old legacy approach by using the \texttt{@} prefix, everywhere, while also making the argument structure much more relaxed to make it easier to add extensions later on.
 

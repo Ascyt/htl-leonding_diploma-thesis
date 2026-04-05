@@ -2,10 +2,10 @@
 
 \section{Introduction}
 
-As already established earlier on, the Script Assembler introduces a custom syntax added on top of the Robot Framework. It uses annotations such as \texttt{@VERSION} to control the test suit setup. To process this grammar the implementation uses the Lark parsing library~\cite{LarkGithub}. However while the chosen indentation-based syntax is very intuitive for the developers, it introduces technical difficulties for the parser.
+    As already established earlier on, the Script Assembler introduces a custom syntax added on top of the Robot Framework. It uses annotations such as \texttt{@VERSION} to control the test suite setup. To process this grammar the implementation uses the Lark parsing library~\cite{LarkGithub}. However while the chosen indentation-based syntax is very intuitive for the developers, it introduces technical difficulties for the parser.
 
 Indentation-based scoping is context-sensitive. To find out if a line belongs to a block, the parser needs to know the indentation level of the previous annotation. That requires it that the current indentation depth is saved. While the Lark library provides its own indenter utility for parsing whitespace-scoped languages, it processes indentation globally~\cite{LarkDocsIndent}.
-Because the Script Assembler has to differentate between its own language and the contained Robot Framework code, Lark's indenter would generate tokens for Robot Framework code indents which might lead to blocks that close too early.
+Because the Script Assembler has to differentiate between its own language and the contained Robot Framework code, Lark's indenter would generate tokens for Robot Framework code indents which might lead to blocks that close too early.
 
 
 That is why an additional preprocessing step is required before the Lark parser can evaluate the script. This step is handled by a preprocessor, whose goal is to isolate the meta-language indentation from the content-language indentation before parsing the script.
@@ -17,7 +17,7 @@ That is why an additional preprocessing step is required before the Lark parser 
 
 The fundamental problem is that both languages use spaces and indentation to define logic and structure. In the Robot Framework, spaces and tabs separate keywords from arguments, and indentation marks the contents of blocks like \texttt{FOR} loops and \texttt{IF} statements, as shown with green highlights in Figure~\ref{fig:indents_highlights}.
 
-At the same time, the Script Assembler uses indentation to determine which lines belong to a specific modifier, as shown with orange highlights in Figure~\ref{fig:indents_highlights}. This leads to the problem of having to somehow seperate those two kind of indents and thus the need for our own Preprocessor instead of the Lark Indenter.
+At the same time, the Script Assembler uses indentation to determine which lines belong to a specific modifier, as shown with orange highlights in Figure~\ref{fig:indents_highlights}. This leads to the problem of having to somehow separate those two kinds of indents and thus the need for our own Preprocessor instead of the Lark Indenter.
 
 \begin{figure}[h]
     \centering
@@ -32,7 +32,7 @@ At the same time, the Script Assembler uses indentation to determine which lines
 To make the syntax context-free, the implicit visual scoping provided by indentation must be changed to explicit block scoping. Clear start and end markers must be defined. This is comparable to the use of curly braces \texttt{\{\}} in C\# or Java, or to opening and closing tags like \texttt{<div>} and \texttt{</div>} in HTML.
 
 
-For each modifier found by the Preprocessor, the start of the block is simply the modifier itself. The end of the block, shown by a decrease in indentation in the raw script. The Preprocessor marks this by inserting the keyword \texttt{@END}.
+For each modifier found by the Preprocessor, the start of the block is simply the modifier itself. The end of the block is shown by a decrease in indentation in the raw script. The Preprocessor marks this by inserting the keyword \texttt{@END}.
 
 
 With these clear boundaries, the EBNF grammar in Lark is simplified. It only needs to search for the \texttt{@END} token to recognize the end of a block, allowing it to completely ignore the surrounding whitespace.
@@ -54,13 +54,13 @@ Setup Test Environment
 \end{lstlisting}
 
 
-In Listing~\ref{lst:raw_script}, a Robot Framework keyword (\texttt{Setup Test Environment}) is the root scope. Within these block, the outer Script Assembler layer performs a BIOS version check. This block contains a normal Robot command (\texttt{Log}) followed by an inner modifier that checks the operating system. This inner modifier contains a command for a driver installation. Finally, a \texttt{Restart Node} command is executed within the BIOS block, but outside the inner operating system check.
+In Listing~\ref{lst:raw_script}, a Robot Framework keyword (\texttt{Setup Test Environment}) is the root scope. Within this block, the outer Script Assembler layer performs a BIOS version check. This block contains a normal Robot command (\texttt{Log}) followed by an inner modifier that checks the operating system. This inner modifier contains a command for a driver installation. Finally, a \texttt{Restart Node} command is executed within the BIOS block, but outside the inner operating system check.
 
 
 The Preprocessor should calculate the active layers of modifiers and remove only the leading indents belonging to these specific layers. Listing~\ref{lst:preprocessed_script} shows the expected output.
 
 
-\begin{lstlisting}[caption={Expected Preprocesssor output}, label={lst:preprocessed_script}, float=htbp]
+\begin{lstlisting}[caption={Expected Preprocessor output}, label={lst:preprocessed_script}, float=htbp]
 
 Setup Test Environment
 @VERSION BIOS == 1.6.1

@@ -385,16 +385,73 @@ This table has the following attributes:
 
 \subsection{Test Cases}
 
-This table has the following attributes:
+Test cases represent the individual tests that can be executed. Considering that the TestRail API provides a lot of data related to test cases, the test case entity contains a large number of attributes. Many of these are not used but are included regardless to ensure the structure remains true to the TestRail database, to avoid any issues when switching between the two database types.
+
+The most important attributes of the table are the following:
 \begin{itemize}
-    \item \textbf{} \\
+    \item \textbf{title:} \\
+    This attribute is a string value containing the title of the test case.
+
+    \item \textbf{section_id:} \\
+    This attribute is an integer value containing the ID of the section that the test case is assigned to.
+
+    \item \textbf{suite_id:} \\
+    This attribute is an integer value containing the ID of the test suite that the test case is assigned to.
+
+    \item \textbf{type_id:} \\
+    This attribute is an integer value containing the ID of the assigned case type.
+
+    \item \textbf{priority_id:} \\
+    This attribute is an integer value containing the ID of the assigned priority.
+
+    \item \textbf{created_by:} \\
+    This attribute is an integer value containing the ID of the user that originally created the test case.
+
+    \item \textbf{created_on:} \\
+    This attribute is an integer value containing the UNIX timestamp of when the test case was originally created.
+
+    \item \textbf{updated_by:} \\
+    This attribute is an integer value containing the ID of the user that last updated the test case.
+
+    \item \textbf{updated_on:} \\
+    This attribute is an integer value containing the UNIX timestamp of when the test case was last updated.
+
+    \item \textbf{custom_automation_instructions:} \\
+    This attribute is a string value containing the entire test script pertaining to the test case. This is a custom attribute that is not present in the TestRail database, but is essential for the functionalities of the Script Assembler.
 \end{itemize}
 
 \subsection{Test Results}
 
+Test results represent the outcome of a test case within a test run. 
+
 This table has the following attributes:
 \begin{itemize}
-    \item \textbf{} \\
+    \item \textbf{assignedto_id:} \\
+    This attribute is an integer value containing the ID of the user that is assigned to and responsible for the test result.
+
+    \item \textbf{comment:} \\
+    This attribute is a string value containing any relevant comments or error messages related to the test result.
+
+    \item \textbf{created_by:} \\
+    This attribute is an integer value containing the ID of the user that originally created the test result.
+
+    \item \textbf{created_on:} \\
+    This attribute is an integer value containing the UNIX timestamp of when the test result was originally created.
+
+    \item \textbf{defects:} \\
+    This attribute is a string value containing a list of defects regarding the test result, if present.
+
+    \item \textbf{elapsed:} \\
+    This attribute is a string value containing the time it took to execute the test. This time is given in the format \textit{"Xm Ys"}, where X is the number of minutes and Y is the number of seconds.
+
+    \item \textbf{status_id:} \\
+    This attribute is an integer value containing the ID of the status of the test result.
+
+    \item \textbf{test_id:} \\
+    This attribute is an integer value containing the ID of the test that the result is assigned to.
+
+    \item \textbf{version:} \\
+    This attribute is a string value containing the version of the system that was tested.
 \end{itemize}
 
 \subsection{Test Runs}

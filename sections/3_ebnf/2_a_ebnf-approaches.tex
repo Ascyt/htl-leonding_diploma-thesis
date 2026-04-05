@@ -1,3 +1,5 @@
+% !TEX root = ../../thesis.tex
+
 \section{Requirements}
 
 When creating new formal grammar, one quickly is confronted with a common problem in software development. On one side, you want a clean design, but on the other there is this old legacy system at the company that everyone is used to. For the development of the Script Assembler, this means that it must not only be able to process multi-line structures correctly, but also that the legacy system used at KEBA must continue to function with the new formal grammar, and unfortunately, backward compatibility is a must-have.
@@ -27,7 +29,7 @@ The testing team at KEBA was already deeply familiar with the \texttt{@} prefix.
 
 One of the two strategies explored was the minimal EBNF approach. The idea behind this specific design was to capture the general script structure as broadly as possible. Theoretically, this offers maximum flexibility and makes future extensions very easy.
 
-Listing \ref{lst:minimal_ebnf} demonstrates this broad structural definition. The grammar does not strictly define every possible keyword. Instead, it simply distinguishes between standard Robot Framework lines, single-line operators, and multi-line operators. 
+Listing~\ref{lst:minimal_ebnf} demonstrates this broad structural definition. The grammar does not strictly define every possible keyword. Instead, it simply distinguishes between standard Robot Framework lines, single-line operators, and multi-line operators. 
 
 
 \begin{lstlisting}[caption={The Minimal EBNF grammar}, label={lst:minimal_ebnf}, float=htbp]
@@ -54,7 +56,7 @@ While the parser implementation stays lightweight and adaptable with this approa
 
 While the Minimal Approach explored maximum flexibility, a completely different and rather strict grammar was developed. This EBNF approach uses clear rules and a strict separation of all constructs. The main goal was a much better parsing clarity.
 
-As shown in Listing \ref{lst:detailed_ebnf},  this iteration uses distinct prefixes for different types of constructs. It also introduces explicit termination symbols to make the structure clear.
+As shown in Listing~\ref{lst:detailed_ebnf},  this iteration uses distinct prefixes for different types of constructs. It also introduces explicit termination symbols to make the structure clear.
 
 \begin{lstlisting}[caption={The Detailed EBNF grammar}, label={lst:detailed_ebnf}, float=htbp]
 S = { ' ' | '\t' } ;

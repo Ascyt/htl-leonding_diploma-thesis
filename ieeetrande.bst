@@ -112,7 +112,7 @@
 %  \@esphack}
 %\makeatother
 %
-% It is called at the start of the document, before the first \cite, like:
+% It is called at the start of the document, before the first~\cite, like:
 % \bstctlcite{IEEEexample:BSTcontrol}
 %
 % IEEEtran.cls V1.6 and later does provide this command.

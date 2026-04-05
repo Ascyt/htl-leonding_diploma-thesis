@@ -1,8 +1,8 @@
+% !TEX root = ../../thesis.tex
+
 This section aims to provide a comprehensive list of keywords and their corresponding definitions and uses in the context of the Script Assembler. 
 
 \section{Options}
-
-Options are one of the two types of keywords that can be used within a script. They are used to set specific parameters or configurations for the specific script execution, essentially acting as flags that modify certain behaviors when dealing with the script. It doesn't require a value to be assigned to it, so its presence alone is enough to trigger the intended effect. The position of the option keyword within the script is not crucial, so it can be placed anywhere within the script while keeping its intended effect intact.
 
 During the making of the project, one option keyword has been implemented: 
 
@@ -14,13 +14,9 @@ The NO\_KETOP option keyword can be used by typing the following line anywhere w
     @NO_KETOP
 \end{verbatim}
 
-If this option keyword is present, the "no\_ketop" flag will be set for the entire script. This ensures that certain components that check if a KeTop device is connected are disabled, allowing the script to run without the prerequisite of a KeTop device. This is most useful for specific test scripts that have to be run without a KeTop, like installation scripts. 
+If this option keyword is present, the \textit{no\_ketop} flag will be set for the entire script. This ensures that certain components that check if a KeTop device is connected are disabled, allowing the script to run without the prerequisite of a KeTop device. This is most useful for specific test scripts that have to be run without a KeTop, like installation scripts. 
 
 \section{Modifiers}
-
-Modifiers are the second type of keywords that can be used within a test script. They differ from options in that they require a body, specified by the presence of indentation, to function properly. The body of a modifier contains further lines of the test script, the modifier keyword itself defines under what conditions the body should be included in the final script. Generally speaking, modifiers are used to either conditionally include or exclude certain parts of the script, or set them in a specific order. 
-
-Bodies of modifiers can also contain other modifiers, allowing the creation of complex and more specific test scripts. 
 
 During the making of the project, the following modifier keywords have been implemented:
 
@@ -57,7 +53,7 @@ The format of the version is intended to be functional for the rules of semantic
     \item The patch version is incremented when there are backwards-compatible bug fixes.
 \end{itemize}
 
-The comparison operators regarding the version numbers examine the recency of the version in question, meaning that a version 1.2.5 would be considered higher and therefore more recent than 1.2.2. Major version changes are considered more significant than minor version changes, which in turn are considered more significant than patch version changes \cite{SemanticVersioning}.
+The comparison operators regarding the version numbers examine the recency of the version in question, meaning that a version 1.2.5 would be considered higher and therefore more recent than 1.2.2. Major version changes are considered more significant than minor version changes, which in turn are considered more significant than patch version changes~\cite{SemanticVersioning}.
 
 \subsection{Modifier: OS}
 
@@ -111,7 +107,7 @@ The PREAMBLE modifier can be used to write scripts that test certain installatio
 
 \section{Visual Example}
 
-Consider listing \ref{lst:script-order}:
+Consider listing~\ref{lst:script-order}:
 
 \begin{lstlisting}[caption={Simple example depicting how test scripts with certain keywords would be ordered}, label={lst:script-order}]
 

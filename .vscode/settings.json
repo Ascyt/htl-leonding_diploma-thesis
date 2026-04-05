@@ -1,0 +1,55 @@
+{
+  "latex-workshop.view.pdf.viewer": "tab",
+  "latex-workshop.latex.tools": [
+    {
+      "name": "latexmk-force-no-synctex",
+      "command": "latexmk",
+      "args": [
+        "-pdf",
+        "-interaction=nonstopmode",
+        "-file-line-error",
+        "-halt-on-error",
+        "-f",
+        "-synctex=0",
+        "%DOC%"
+      ],
+      "env": {}
+    },
+    {
+      "name": "pdflatex-no-synctex",
+      "command": "pdflatex",
+      "args": [
+        "-interaction=nonstopmode",
+        "-file-line-error",
+        "-synctex=0",
+        "%DOC%"
+      ],
+      "env": {}
+    },
+    {
+      "name": "bibtex",
+      "command": "bibtex",
+      "args": [
+        "%DOCFILE%"
+      ],
+      "env": {}
+    },
+    {
+      "name": "makeglossaries",
+      "command": "makeglossaries",
+      "args": [
+        "%DOCFILE%"
+      ],
+      "env": {}
+    }
+  ],
+  "latex-workshop.latex.recipes": [
+    {
+      "name": "latexmk (force, no synctex)",
+      "tools": [
+        "latexmk-force-no-synctex"
+      ]
+    }
+  ],
+  "latex-workshop.latex.recipe.default": "latexmk (force, no synctex)"
+}

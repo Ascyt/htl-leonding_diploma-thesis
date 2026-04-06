@@ -1,4 +1,4 @@
-\documentclass[12pt,a4paper,titlepage,listof=totoc,bibliography=totoc,chapteratlists=0pt]{scrreprt}
+\documentclass[12pt,a4paper,twoside,open=right,titlepage,listof=totoc,bibliography=totoc,chapteratlists=0pt]{scrreprt}
 \input{global-const.tex}
 \input{header}
 
@@ -34,6 +34,8 @@
 \makeindex
 \makeglossaries
 \input{./glossary.tex}
+
+\raggedbottom
 \begin{document}
 \bstctlcite{IEEEexample:BSTcontrol}
 \newcommand{\reminder}[1]
@@ -45,10 +47,13 @@
 \renewcommand{\arraystretch}{1.2}
 
 \includepdf{./titlepage/coversheet}
+
+\cleardoublepage
 \pagenumbering{Roman}
-\newpage
 \input{oath}
+
 \input{./sections/0-0_abstract.tex}
+
 \input{./sections/0-1_acknowledgements.tex}
 
 \pagestyle{plain}
@@ -67,9 +72,9 @@
 	\renewcommand{\listtablename}{List of Tables}
 }{}
 \tableofcontents
-\newpage
+\cleardoublepage
 \setcounter{RPages}{\value{page}}
-\setcounter{page}{0}
+\setcounter{page}{1}
 \pagenumbering{arabic}
 \pagestyle{scrheadings}
 
@@ -168,6 +173,7 @@
 \input{./sections/4_implementation/9_x_database.tex}
 
 \newpage
+\setauthor{}
 \pagenumbering{Roman}
 \setcounter{page}{\value{RPages}}
 %\setlength{\glsdescwidth}{0.8\linewidth}
